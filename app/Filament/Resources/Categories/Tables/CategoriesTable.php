@@ -16,8 +16,6 @@ class CategoriesTable
     {
         return $table
             ->columns([
-                 ImageColumn::make('image')
-                    ->circular(),
                 
                 TextColumn::make('title')
                     ->searchable(  true,function ($query, $search) {

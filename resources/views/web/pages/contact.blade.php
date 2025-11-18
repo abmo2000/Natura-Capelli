@@ -8,6 +8,7 @@ Contact
 
 <x-header header_bg_image="assets/images/headers/header-contact.jpg">
 
+    
 </x-header>
 
 <section class="py-16 md:py-24 bg-black">

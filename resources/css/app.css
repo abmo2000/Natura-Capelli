@@ -10,7 +10,8 @@
 @theme {
     --font-sans: 'Kurale', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    --color-footer:#131313;     
+    --color-footer:#131313;
+    --color-grey:#4d4747;     
 }
 
 @layer component{
@@ -40,5 +41,28 @@
 
     .product-card{
         @apply bg-gray-800 rounded-2xl min-w-[288px] w-72 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 flex-shrink-0
+    }
+
+    .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: #4a5568;
+        border-radius: 4px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+        background: #718096;
+    }
+
+    /* Firefox */
+    .scrollbar-thin {
+        scrollbar-width: thin;
+        scrollbar-color: #4a5568 transparent;
     }
 }

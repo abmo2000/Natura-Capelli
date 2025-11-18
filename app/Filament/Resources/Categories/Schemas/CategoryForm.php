@@ -33,12 +33,6 @@ class CategoryForm
                         ])       
                  ])->columnSpanFull(),
 
-                 FileUpload::make('image')
-                    ->image()
-                    ->imageEditor()
-                    ->directory('categories')
-                    ->visibility('public')
-                    ->columnSpanFull(),
             ]);
     }
 }

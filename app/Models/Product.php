@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Astrotomic\Translatable\Contracts\Translatable;
@@ -31,5 +32,6 @@ class Product extends Model implements Translatable
                 Storage::disk('local')->delete($product->image);
             }
         });
+
     }
 }

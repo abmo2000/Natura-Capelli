@@ -1,16 +1,19 @@
 
 @props(['header_bg_image' => ''])
-<section class="relative min-h-screen">
+<section class="relative min-h-screen" x-data="cartStore()">
     <!-- Background Image with Overlay -->
-    <div class="absolute inset-0 z-0">
-        <div class="absolute inset-0 bg-black/50 z-10"></div>
-        <img src="{{ asset($header_bg_image) }}" 
-             alt="Header Background" 
-             class="w-full h-full object-cover">
-    </div>
+    @if($header_bg_image)
+   <div class="absolute inset-0 z-0 bg-center bg-cover bg-no-repeat" 
+     style="background-image: url('{{ asset($header_bg_image) }}');">
+    <div class="absolute inset-0 bg-black/50 z-10"></div>
+</div>
+    @endif
 
     <!-- Navigation -->
-    <nav x-data="{open:false}" class="relative z-50 ">
+     <nav x-data="{open: false, scrolled: false}" 
+         x-init="window.addEventListener('scroll', () => { scrolled = window.pageYOffset > 50 })"
+         :class="scrolled ? 'bg-gray-900/95 backdrop-blur-md shadow-lg' : 'bg-transparent'"
+         class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-20">
 
@@ -33,11 +36,15 @@
                 <!-- CTA Button -->
                 <div class="hidden  md:flex items-center space-x-10">
                     <!-- Cart Icon with Badge -->
-                    <a href="#" class="icon">
+                    <a href="{{ route('cart') }}" class="icon">
                         <i class="fas fa-shopping-bag text-2xl"></i>
                         <!-- Dynamic Cart Count -->
-                        <span class="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg">
-                            {{ session('cart_count', 0) }}
+                         <span x-show="cartCount > 0"
+                              x-text="cartCount"
+                              x-transition:enter="transition ease-out duration-300"
+                              x-transition:enter-start="opacity-0 scale-50"
+                              x-transition:enter-end="opacity-100 scale-100"
+                              class="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg">
                         </span>
                     </a>
 
@@ -56,7 +63,7 @@
                         <i class="fas fa-shopping-bag text-2xl"></i>
                         <!-- Dynamic Cart Count -->
                         <span class="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg">
-                            {{ session('cart_count', 0) }}
+                          {{ $cartCount }}
                         </span>
                     </a>
 
