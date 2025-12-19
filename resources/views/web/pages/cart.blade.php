@@ -5,7 +5,7 @@ Cart
 @endsection
 
 @section('content')
-<x-header></x-header>
+<x-navbar></x-navbar>
 
 <section class="py-16 md:py-24 bg-black min-h-screen" x-data="cartManager()">
     <h2 class="heading text-white text-center text-4xl font-bold mb-8 py-8">Cart</h2>
@@ -131,7 +131,7 @@ Cart
                         </div>
 
                         <!-- Checkout Button -->
-                        <button class="w-full bg-orange-100 text-black font-bold py-4 rounded-lg hover:bg-orange-200 transition-colors mb-4">
+                        <button  onclick="openCheckoutModal()" class="w-full bg-orange-100 text-black font-bold py-4 rounded-lg hover:bg-orange-200 transition-colors mb-4">
                             Proceed to Checkout
                             <i class="fas fa-arrow-right ml-2"></i>
                         </button>
@@ -174,8 +174,31 @@ Cart
         </div>
     </div>
 </section>
-
+@include('web.pages.partials.checkout-modal');
 <script>
+
+  function openCheckoutModal() {
+        document.getElementById('checkoutModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCheckoutModal() {
+        document.getElementById('checkoutModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    
+    document.getElementById('checkoutModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeCheckoutModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeCheckoutModal();
+        }
+    });   
 function cartManager() {
     return {
         clearing: false,
@@ -295,4 +318,6 @@ function cartManager() {
     }
 }
 </script>
+
 @endsection
+

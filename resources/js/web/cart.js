@@ -1,34 +1,11 @@
 
 document.addEventListener('alpine:init' , () => {
-    Alpine.data('cartStore' , () => {
-    return {
-        cartCount: parseInt(localStorage.getItem('cartCount') || '0'),
-        
-        init() {
-            // Listen for cart updates from other components
-            window.addEventListener('cart-updated', (event) => {
-                this.cartCount = event.detail.count;
-                localStorage.setItem('cartCount', this.cartCount);
-            });
-            
-            // Sync cart count on page load
-            this.syncCartCount();
-        },
-        
-        syncCartCount() {
-            // Get cart count from localStorage or server
-            const storedCount = localStorage.getItem('cartCount');
-            if (storedCount) {
-                this.cartCount = parseInt(storedCount);
-            }
-        }
-    }
-    })
-
-    Alpine.data('productCard' , (product_id , product_name , price) => {
+    
+    Alpine.data('productCard' , (product_id) => {
           return {
                 adding: false,
                 showSuccess: false,
+                quantity: 1,
                 
                 async addToCart() {
                     if (this.adding) return;
@@ -45,7 +22,7 @@ document.addEventListener('alpine:init' , () => {
                             },
                             body: JSON.stringify({
                                 product_id: product_id,
-                                quantity: 1
+                                quantity: this.quantity
                             })
                         });
 
@@ -53,7 +30,8 @@ document.addEventListener('alpine:init' , () => {
 
                         if (data.success) {
                             // Update cart count
-                            const newCount = data.cartCount || this.getCurrentCartCount() + 1;
+                            const newCount = data.data.cart_count;
+                            
                             this.updateCartCount(newCount);
                             
                             // Show success message
@@ -72,15 +50,10 @@ document.addEventListener('alpine:init' , () => {
                     }
                 },
                 
-                getCurrentCartCount() {
-                    return parseInt(localStorage.getItem('cartCount') || '0');
-                },
-                
                 updateCartCount(count) {
-                    localStorage.setItem('cartCount', count);
                     // Dispatch event to update nav
                     window.dispatchEvent(new CustomEvent('cart-updated', {
-                        detail: { count: count }
+                        detail: { count: parseInt(count) }
                     }));
                 }
             }

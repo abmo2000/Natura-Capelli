@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Controllers\Web;
+
+use App\Models\Product;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class ProductsApiCpntroller extends Controller
+{
+    public function __invoke(Request $request)
+    {
+         $query = Product::with('category');
+
+
+       $query = $query->when(($request->has('categories') && is_array($request->categories)) , fn($q) => $q->whereIn('category_id', $request->categories));
+
+        $perPage = $request->get('per_page', 9);
+        $products = $query->paginate($perPage);
+
+        
+        $transformedProducts = $products->map(function ($product) {
+             $productData['html'] = view('components.product', [
+                    'product' => $product
+                ])->render();
+            
+                return $productData;
+
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $transformedProducts,
+            'total' => $products->total(),
+            'per_page' => $products->perPage(),
+            'current_page' => $products->currentPage(),
+            'last_page' => $products->lastPage(),
+        ]);
+    }
+}

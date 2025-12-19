@@ -1,0 +1,95 @@
+<?php
+
+namespace App\Filament\Resources\Orders\Tables;
+
+use Filament\Tables\Table;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Tables\Filters\Filter;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
+
+class OrdersTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('customer_type')
+                    ->searchable(),
+                TextColumn::make('customer.email') // Using relationship
+                  ->label('Customer Email')
+                    ->searchable(),
+                TextColumn::make('payment_method')
+                    ->searchable(),
+                TextColumn::make('status')
+                    ->badge(),
+                TextColumn::make('amount')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('address')
+                      ->label("Customer Address")
+                    ->searchable(),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                 SelectFilter::make('status')
+            ->options([
+                'pending' => 'Pending',
+                'completed' => 'Completed',
+                'cancelled' => 'Cancelled',
+            ])
+            ->label('Status'),
+        
+        // Filter by date range
+        Filter::make('created_at')
+            ->form([
+                DatePicker::make('from')
+                    ->label('From Date'),
+                DatePicker::make('until')
+                    ->label('Until Date'),
+            ])
+            ->query(function (Builder $query, array $data): Builder {
+                return $query
+                    ->when(
+                        $data['from'],
+                        fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                    )
+                    ->when(
+                        $data['until'],
+                        fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                    );
+            })
+            ->indicateUsing(function (array $data): array {
+                $indicators = [];
+                if ($data['from'] ?? null) {
+                    $indicators[] = 'From: ' . \Carbon\Carbon::parse($data['from'])->toFormattedDateString();
+                }
+                if ($data['until'] ?? null) {
+                    $indicators[] = 'Until: ' . \Carbon\Carbon::parse($data['until'])->toFormattedDateString();
+                }
+                return $indicators;
+            }),
+            ])
+            ->recordActions([
+                ViewAction::make(),
+                //EditAction::make(),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+}

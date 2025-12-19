@@ -7,3 +7,4 @@ Alpine.start()
 
 import '@web/slider'
 import '@web/cart'
+import '@web/order'

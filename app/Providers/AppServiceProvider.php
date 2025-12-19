@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Guest;
+use App\Models\User;
 use App\Services\CartService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,5 +38,12 @@ class AppServiceProvider extends ServiceProvider
                 ]);
             }
         });
+
+         Relation::enforceMorphMap([
+            'user' => User::class,
+            'guest' => Guest::class
+         ]);
     }
+
+
 }

@@ -6,13 +6,12 @@ product
 
 @section('content')
 
-<!-- Hero Section with Background -->
+<x-navbar></x-navbar>
 
-<x-header header_bg_image="assets/images/freepik__the-style-is-candid-image-photography-with-natural__63514.png">
 
-</x-header>
 
-<section class="py-16 md:py-24 bg-black">
+
+<section class="py-16 md:py-24 bg-black" x-data="productCard({{ $product->id }})">
     <div class="container mx-auto px-4">
         <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
             <!-- Product Image - Left Side -->
@@ -48,12 +47,8 @@ product
                     </p>
                 </div>
 
-             
-
-             <div x-data="{ 
-                    quantity: 1, 
-                    adding: false 
-                }">
+            
+             <div>
                     <!-- Quantity Selector -->
                     <div class="space-y-4">
                         <label class="block text-white font-semibold">Quantity</label>
@@ -84,12 +79,16 @@ product
                     </div>
 
                     <!-- Add to Cart Button -->
-                    <button type="submit" 
+                    <button  @click="addToCart()" :disabled="adding" type="submit" 
                             class="w-full mt-5 bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 rounded-lg font-semibold text-lg hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                         <i class="fas fa-shopping-cart"></i>
                         <span x-show="!adding">Add to Cart</span>
                         <span x-show="adding">Adding...</span>
                     </button>
+                   <div x-show="showSuccess" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        <span class="text-sm font-medium">Added to cart!</span>
+                 </div>
                 </div>
 
             </div>

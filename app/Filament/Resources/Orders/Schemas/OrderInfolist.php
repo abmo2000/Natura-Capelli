@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Filament\Resources\Orders\Schemas;
+
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Schema;
+
+class OrderInfolist
+{
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                TextEntry::make('customer_type'),
+                TextEntry::make('payment_method'),
+                TextEntry::make('status')
+                    ->badge(),
+                TextEntry::make('amount')
+                    ->numeric(),
+                TextEntry::make('created_at')
+                    ->dateTime()
+                    ->placeholder('-'),
+                TextEntry::make('updated_at')
+                    ->dateTime()
+                    ->placeholder('-'),
+
+                    TextEntry::make('customer.email')
+                            ->label('Customer Email')
+                            ->icon('heroicon-m-envelope')
+                            ->copyable()
+                            ->placeholder('N/A'),
+                        TextEntry::make('customer.name')
+                            ->label('Customer Name')
+                            ->placeholder('N/A'),
+                            TextEntry::make('customer.phone')
+                            ->label('Customer Phone')
+                            ->placeholder('N/A'),
+                        TextEntry::make('address')
+                            ->label('Delivery Address')
+                            ->columnSpanFull(), 
+            ]);
+    }
+}

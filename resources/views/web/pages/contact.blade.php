@@ -6,9 +6,26 @@ Contact
 
 @section('content')
 
+<x-navbar></x-navbar>
 <x-header header_bg_image="assets/images/headers/header-contact.jpg">
 
-    
+    <div class="relative z-40 container mx-auto px-4 flex items-center justify-center" style="height: calc(100vh - 5rem);">
+    <div class="text-center space-y-8">
+        <h1 class="text-white text-6xl md:text-7xl lg:text-8xl font-bold tracking-wider uppercase mx-4">
+            NATURA CAPELLI
+        </h1>
+
+        <h2 class="text-white text-xl md:text-2xl mx-4 font-medium">
+            Hydrate & Nourish your Hair
+        </h2>
+
+        <div class="pt-4">
+            <a href="#" class="custom-btn">
+                We Support Your Choice
+            </a>
+        </div>
+    </div>
+</div>
 </x-header>
 
 <section class="py-16 md:py-24 bg-black">

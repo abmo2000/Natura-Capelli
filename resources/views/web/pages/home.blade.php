@@ -6,8 +6,9 @@ home
 
 @section('content')
 
+<x-navbar></x-navbar>
 <!-- Hero Section with Background -->
-<x-header header_bg_image="assets/images/headers/seascape-texture-waves-water-generative-ai.jpg">
+<x-header header_bg_image="assets/images/headers/homeHeader.jpg">
 
  <div class="relative z-40 container mx-auto px-4 flex items-center justify-center" style="height: calc(100vh - 5rem);">
     <div class="text-center space-y-8">
@@ -31,7 +32,7 @@ home
 <!-- about us -->
 <section class="py-16 md:py-24 bg-black">
     <div class="container mx-auto px-4">
-        <h2 class="heading">WHO ARE WE</h2>
+        <h2 class="heading">About Our Products</h2>
         <p class="sub-heading">Discover Natura Capelli</p>
         <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             
@@ -62,7 +63,7 @@ home
                 </div>
 
                 <div class="pt-4">
-            <a href="#" class="custom-btn">
+            <a href="{{ route("shop") }}" class="custom-btn">
                 See More
             </a>
         </div>
@@ -92,7 +93,7 @@ home
 
                 <!-- Carousel Container -->
                 <div class="overflow-hidden px-12">
-                    <div  x-ref="carousel" @scroll="updateArrows()" class="carousel-container flex gap-6 overflow-x-auto py-4">
+                    <div  x-ref="carousel" @scroll="updateArrows()" class="carousel-container flex gap-6 overflow-x-hidden py-4">
                         @foreach ($products as $product )
                             
                         <div class="product-card" x-data="productCard({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})">
