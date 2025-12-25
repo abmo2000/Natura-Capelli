@@ -6,6 +6,7 @@ use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Components\Tabs\Tab;
 
 class RoutineForm
@@ -22,7 +23,17 @@ class RoutineForm
                                     ->label('Title (EN)')
                                     ->required()
                                     ->maxLength(255),
+
+                                    RichEditor::make('en.description')
+                                        ->label('Description (EN)')
+                                        ->required()
+                                        ->toolbarButtons([
+                                            'blockquote', 'bold', 'bulletList', 'codeBlock',
+                                            'h2', 'h3', 'italic', 'link', 'orderedList',
+                                            'redo', 'strike', 'underline', 'undo',
+                                        ]), 
                             ]),
+
 
                      Tab::make('Arabic')
                         ->schema([
@@ -30,6 +41,15 @@ class RoutineForm
                                     ->label('Title (AR)')
                                     ->required()
                                     ->maxLength(255),
+
+                                 RichEditor::make('ar.description')
+                                        ->label('Description (Arabic)')
+                                        ->required()
+                                        ->toolbarButtons([
+                                            'blockquote', 'bold', 'bulletList', 'codeBlock',
+                                            'h2', 'h3', 'italic', 'link', 'orderedList',
+                                            'redo', 'strike', 'underline', 'undo',
+                                        ]),    
                         ])       
                  ])->columnSpanFull(),
 

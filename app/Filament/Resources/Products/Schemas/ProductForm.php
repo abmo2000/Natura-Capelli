@@ -81,14 +81,19 @@ class ProductForm
                         ->minValue(1)
                         ->inputMode('decimal'),
 
-                    Select::make('routine_id')
-                        ->label('Routine')
+                    Select::make('routines')
+                        ->label('Routines')
                         ->required()
-                        ->options(
-                            Routine::with('translations')
+                        ->multiple()
+                        ->relationship('routines', 'id')
+                        ->options(function () {
+                            return Routine::with('translations')
                                 ->get()
-                                ->pluck('title', 'id')
-                        )
+                                ->mapWithKeys(function ($routine) {
+                                    $title = $routine->translations->first()?->title ?? 'No title';
+                                    return [$routine->id => $title];
+                                });
+                        })
                         ->searchable(),
 
                     Select::make('category_id')

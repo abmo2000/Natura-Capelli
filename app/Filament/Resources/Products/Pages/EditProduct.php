@@ -20,6 +20,7 @@ class EditProduct extends EditRecord
 
               protected function mutateFormDataBeforeFill(array $data): array
     {
+       
         // Load translations into form
         $data['en'] = $this->record->translate('en')?->toArray() ?? [];
         $data['ar'] = $this->record->translate('ar')?->toArray() ?? [];
@@ -29,6 +30,7 @@ class EditProduct extends EditRecord
     
     protected function mutateFormDataBeforeSave(array $data): array
     {
+      
         // Extract translations
         $translations = [];
         foreach (['en', 'ar'] as $locale) {

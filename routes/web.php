@@ -3,9 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\HomeController;
-use App\Http\Controllers\Web\OrderController;
 use App\Http\Controllers\Web\ShopController;
+use App\Http\Controllers\Web\OrderController;
 use App\Http\Controllers\Web\ProductController;
+use App\Http\Controllers\Web\RoutineController;
 use App\Http\Controllers\Web\ProductsApiCpntroller;
 
 Route::get('/', HomeController::class)->name('home');
@@ -15,6 +16,9 @@ Route::get('/contact' , function(){
 })->name('contact');
 
 Route::view('about-us', 'web.pages.about-us')->name('about-us');
+
+
+Route::resource('routines' , RoutineController::class)->only('show' , 'index');
 
 Route::get('/shop' , [ShopController::class, 'index'])->name('shop');
 Route::get('api/products' , ProductsApiCpntroller::class);

@@ -14,6 +14,7 @@ class CreateProduct extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+       
         // Extract translations
         $translations = [];
         foreach (['en', 'ar'] as $locale) {

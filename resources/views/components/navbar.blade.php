@@ -28,7 +28,7 @@
                     <a href="{{ route('home') }}" class="nav-link">Home</a>
                     <a href="{{ route('about-us') }}" class="nav-link">About</a>
                     <a href="{{ route('shop') }}" class="nav-link">Shop</a>
-                    <a href="#Routine" class="nav-link">Routine</a>
+                    <a href="{{ route('routines.index') }}" class="nav-link">Routine</a>
                     <a href="{{ route('contact') }}" class="nav-link">Contact</a>
                 </div>
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Astrotomic\Translatable\Contracts\Translatable;
 use Astrotomic\Translatable\Translatable as AstrotomicTranslatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model implements Translatable
 {
@@ -16,8 +17,8 @@ class Product extends Model implements Translatable
 
     public $translatedAttributes = ['name' , 'description'];
      public $translationModel = \App\Models\Translations\ProductTranslation::class;
-    public function routine(){
-        return $this->belongsTo(Routine::class);
+    public function routines():BelongsToMany{
+        return $this->belongsToMany(Routine::class , 'products_routines');
     }
 
     public function category(){
