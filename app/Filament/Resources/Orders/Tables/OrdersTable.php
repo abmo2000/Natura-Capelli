@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Orders\Tables;
 
+use App\Enums\OrderStatus;
 use Filament\Tables\Table;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -10,6 +11,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -26,8 +28,10 @@ class OrdersTable
                     ->searchable(),
                 TextColumn::make('payment_method')
                     ->searchable(),
-                TextColumn::make('status')
-                    ->badge(),
+               SelectColumn::make('status')
+                  
+                    ->options(OrderStatus::toAssociativeArray())
+              ->selectablePlaceholder(false),
                 TextColumn::make('amount')
                     ->numeric()
                     ->sortable(),
@@ -45,11 +49,7 @@ class OrdersTable
             ])
             ->filters([
                  SelectFilter::make('status')
-            ->options([
-                'pending' => 'Pending',
-                'completed' => 'Completed',
-                'cancelled' => 'Cancelled',
-            ])
+            ->options(OrderStatus::toArray())
             ->label('Status'),
         
         // Filter by date range

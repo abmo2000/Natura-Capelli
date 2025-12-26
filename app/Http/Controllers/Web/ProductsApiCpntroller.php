@@ -10,10 +10,12 @@ class ProductsApiCpntroller extends Controller
 {
     public function __invoke(Request $request)
     {
-         $query = Product::with('category');
+         $query = Product::with(['category' , 'routines']);
 
 
        $query = $query->when(($request->has('categories') && is_array($request->categories)) , fn($q) => $q->whereIn('category_id', $request->categories));
+       $query = $query->when(($request->has('routines') && is_array($request->routines)) , 
+       fn($q) => $q->whereRelation('routines', fn($q) => $q->whereIn('products_routines.routine_id' , $request->routines)));
 
         $perPage = $request->get('per_page', 9);
         $products = $query->paginate($perPage);

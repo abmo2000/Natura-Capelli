@@ -2,8 +2,9 @@
 
 namespace App\Filament\Resources\Orders\Schemas;
 
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 
 class OrderInfolist
 {
@@ -38,6 +39,35 @@ class OrderInfolist
                         TextEntry::make('address')
                             ->label('Delivery Address')
                             ->columnSpanFull(), 
+                        
+                RepeatableEntry::make('items')
+                    ->label('Order Items')
+                    ->schema([
+                        TextEntry::make('name')
+                            ->label('Product'),
+                        TextEntry::make('pivot.quantity')
+                            ->label('Qty'),
+                        TextEntry::make('pivot.amount')
+                        ->money('EGP')
+                            ->label('amount'),    
+                        TextEntry::make('price')
+                            ->label('Price')
+                            ->money('EGP'),
+                      
+                    ])
+                    ->columns(5)
+                    ->columnSpanFull(),
+
+                    TextEntry::make('items_total')
+                    ->label('Items Total')
+                    ->money("EGP")
+                    ->state(function ($record) {
+                        return $record->items->sum('pivot.amount');
+                    })
+                    ->weight('bold'),
+                            
+
+                           
             ]);
     }
 }

@@ -38,7 +38,7 @@ Cart
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Left Side - Cart Items (Scrollable) -->
                 <div class="lg:col-span-2">
-                    <div class="max-h-[calc(100vh-250px)] overflow-y-auto pr-4 space-y-6 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+                    <div class="max-h-[calc(100vh-250px)] overflow-y-auto pe-4 space-y-6 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
 
                         @foreach ($items as $item)
                             <div class="rounded-lg bg-grey p-6" x-data="{ updating: false, removing: false }">
@@ -93,7 +93,7 @@ Cart
                                             </div>
 
                                             <!-- Subtotal -->
-                                            <div class="text-right">
+                                            <div class="text-end">
                                                 <span class="text-orange-100 font-bold text-2xl">${{ number_format($item['subtotal'], 2) }}</span>
                                             </div>
                                         </div>
@@ -133,13 +133,13 @@ Cart
                         <!-- Checkout Button -->
                         <button  onclick="openCheckoutModal()" class="w-full bg-orange-100 text-black font-bold py-4 rounded-lg hover:bg-orange-200 transition-colors mb-4">
                             Proceed to Checkout
-                            <i class="fas fa-arrow-right ml-2"></i>
+                            <i class="fas fa-arrow-right ms-2"></i>
                         </button>
 
                         <!-- Continue Shopping Link -->
                         <a href="{{ route('shop') }}" 
                            class="block text-center text-gray-400 hover:text-white transition-colors">
-                            <i class="fas fa-arrow-left mr-2"></i>
+                            <i class="fas fa-arrow-left me-2"></i>
                             Continue Shopping
                         </a>
 
@@ -148,11 +148,11 @@ Cart
                                 :disabled="clearing"
                                 class="w-full mt-4 border border-red-500 text-red-500 font-semibold py-3 rounded-lg hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                             <span x-show="!clearing">
-                                <i class="fas fa-trash mr-2"></i>
+                                <i class="fas fa-trash me-2"></i>
                                 Clear Cart
                             </span>
                             <span x-show="clearing">
-                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                                <i class="fas fa-spinner fa-spin me-2"></i>
                                 Clearing...
                             </span>
                         </button>
@@ -165,7 +165,7 @@ Cart
         <div x-show="showToast" 
              x-transition
              @click="showToast = false"
-             class="fixed bottom-8 right-8 z-50 max-w-sm bg-grey border-l-4 p-4 rounded-lg shadow-2xl cursor-pointer"
+             class="fixed bottom-8 end-8 z-50 max-w-sm bg-grey border-l-4 p-4 rounded-lg shadow-2xl cursor-pointer"
              :class="toastType === 'success' ? 'border-green-500' : 'border-red-500'">
             <div class="flex items-center gap-3">
                 <i class="fas" :class="toastType === 'success' ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500'"></i>

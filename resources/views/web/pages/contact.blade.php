@@ -80,7 +80,7 @@ Contact
                     <div class="text-center">
                         <button type="submit"
                             class="custom-btn cursor-pointer">
-                            <i class="fas fa-paper-plane mr-2"></i>
+                            <i class="fas fa-paper-plane me-2"></i>
                             Send Message
                         </button>
                     </div>

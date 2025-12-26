@@ -25,6 +25,8 @@ class Product extends Model implements Translatable
         return $this->belongsTo(Category::class);
     }
 
+   
+
      protected static function booted(): void
     {
         static::deleting(function (Product $product) {

@@ -12,18 +12,18 @@ shop
 
 <section class="py-16 md:py-24 bg-black" x-data="productShop()">
     <div class="container mx-auto px-4">
-        <h2 class="text-center font-bold text-white text-4xl mb-2">Featured Products</h2>
-        <p class="text-gray-400 text-center mb-12">Discover our Products</p>
+        <h2 class="text-center font-bold text-white text-4xl mb-2">{{ trans('shop.products') }}</h2>
+        <p class="text-gray-400 text-center mb-12">{{ trans('shop.discover-products') }}</p>
 
         <div class="flex flex-col lg:flex-row gap-8">
             <!-- Left Sidebar Filter -->
             <aside class="lg:w-64 flex-shrink-0">
                 <div class="bg-gray-900 rounded-lg p-6 sticky top-4">
-                    <h3 class="text-white font-bold text-xl mb-6">Filters</h3>
+                    <h3 class="text-white font-bold text-xl mb-6">{{ trans('shop.filters') }}</h3>
                 
                     <!-- Category Filter -->
                     <div class="mb-8">
-                        <h4 class="text-white font-semibold mb-4">Category</h4>
+                        <h4 class="text-white font-semibold mb-4">{{ trans('shop.categories') }}</h4>
                         <div class="space-y-3">
                              <template x-for="category in categories" :key="category.id">
                                 <label class="flex items-center text-gray-300 hover:text-white cursor-pointer">
@@ -33,7 +33,26 @@ shop
                                         x-model="selectedCategories"
                                         @change="applyFilters()"
                                         class="w-4 h-4 rounded border-gray-600 bg-gray-700 text-orange-500 focus:ring-orange-500 focus:ring-offset-gray-900">
-                                    <span class="ml-3" x-text="category.title"></span>
+                                    <span class="ms-3" x-text="category.title"></span>
+                                </label>
+                            </template>
+                            
+                        </div>
+                    </div>
+
+
+                     <div class="mb-8">
+                        <h4 class="text-white font-semibold mb-4">{{ trans('shop.routine') }}</h4>
+                        <div class="space-y-3">
+                             <template x-for="routine in routines" :key="routine.id">
+                                <label class="flex items-center text-gray-300 hover:text-white cursor-pointer">
+                                    <input 
+                                        type="checkbox" 
+                                        :value="routine.id"
+                                        x-model="selectedRoutines"
+                                        @change="applyFilters()"
+                                        class="w-4 h-4 rounded border-gray-600 bg-gray-700 text-orange-500 focus:ring-orange-500 focus:ring-offset-gray-900">
+                                    <span class="ms-3" x-text="routine.title"></span>
                                 </label>
                             </template>
                             
@@ -54,8 +73,10 @@ shop
                 <!-- Sort and View Options -->
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                      <p class="text-gray-400">
-                        Showing <span x-text="((currentPage - 1) * perPage) + 1"></span>-<span x-text="Math.min(currentPage * perPage, totalProducts)"></span> 
-                        of <span x-text="totalProducts"></span> products
+                        {{ trans('shop.showing') }} <span x-text="((currentPage - 1) * perPage) + 1"></span>-<span x-text="Math.min(currentPage * perPage, totalProducts)"></span> 
+                         {{ trans('shop.of') }} 
+                        <span x-text="totalProducts"></span>
+                        {{ trans('shop.products') }}
                     </p>
                     <div class="flex items-center gap-4">
                         {{-- <select class="bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500">
@@ -118,7 +139,9 @@ shop
     return {
         products: [],
         categories: @json($categories ?? []),
+        routines : @json($routines ?? []),
         selectedCategories: [],
+        selectedRoutines: [],
         currentPage: 1,
         perPage: 2,
         totalProducts: 0,
@@ -146,6 +169,12 @@ shop
                     });
                 }
 
+                if(this.selectedRoutines.length > 0){
+                    this.selectedRoutines.forEach(routine => {
+                        params.append('routines[]' , routine);
+                    })
+                }
+
                 // Fetch from your API endpoint
                 const response = await fetch(`/api/products?${params.toString()}`);
                 const data = await response.json();
@@ -171,12 +200,12 @@ shop
 
         resetFilters() {
             this.selectedCategories = [];
+            this.selectedRoutines = [];
             this.currentPage = 1;
             this.fetchProducts();
         },
 
          renderProduct(product) {
-            console.log(product)
              return product.html || '';
         },
 

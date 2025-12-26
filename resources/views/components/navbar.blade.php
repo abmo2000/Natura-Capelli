@@ -1,4 +1,4 @@
-  <nav x-data="{
+<nav x-data="{
         open: false, 
         scrolled: false, 
         cartCount: {{ $cartCount }},
@@ -9,10 +9,26 @@
             window.addEventListener('cart-updated', (e) => {
                 this.cartCount = e.detail.count;
             });
+        },
+        scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                const navHeight = 80; // Height of fixed navbar
+                const elementPosition = section.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu if open
+                this.open = false;
+            }
         }
      }" 
          :class="scrolled ? 'bg-gray-900/95 backdrop-blur-md shadow-lg' : 'bg-transparent'"
-         class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+         class="fixed top-0 start-0 end-0 z-50 transition-all duration-300">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-20">
                   
@@ -25,15 +41,21 @@
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex space-x-8">
-                    <a href="{{ route('home') }}" class="nav-link">Home</a>
-                    <a href="{{ route('about-us') }}" class="nav-link">About</a>
-                    <a href="{{ route('shop') }}" class="nav-link">Shop</a>
-                    <a href="{{ route('routines.index') }}" class="nav-link">Routine</a>
-                    <a href="{{ route('contact') }}" class="nav-link">Contact</a>
+                    <a href="{{ route('home') }}" class="nav-link">{{ trans('navbar.home') }}</a>
+                    @if(Request::is('/'))    
+                    <a href="#about-section" @click.prevent="scrollToSection('about-section')" class="nav-link cursor-pointer">{{ trans('navbar.about') }}</a>
+                    @endif
+                    <a href="{{ route('shop') }}" class="nav-link">{{ trans('navbar.shop') }}</a>
+                    <a href="{{ route('routines.index') }}" class="nav-link">{{ trans('navbar.routine') }}</a>
+                    <a href="{{ route('contact') }}" class="nav-link">{{ trans('navbar.contact') }}</a>
+                    @if(Request::is('/'))    
+                    <a href="#fearured-products" @click.prevent="scrollToSection('fearured-products')" class="nav-link cursor-pointer">{{ trans('navbar.featured-products') }}</a>
+                    @endif
+                    <a href="{{ route('about-us') }}" class="nav-link">{{ trans('navbar.concepts') }}</a>
                 </div>
 
                 <!-- CTA Button -->
-                <div class="hidden  md:flex items-center space-x-10">
+                <div class="hidden md:flex items-center space-x-10">
                     <!-- Cart Icon with Badge -->
                     <a href="{{ route('cart') }}" class="icon">
                         <i class="fas fa-shopping-bag text-2xl"></i>
@@ -43,37 +65,56 @@
                               x-transition:enter="transition ease-out duration-300"
                               x-transition:enter-start="opacity-0 scale-50"
                               x-transition:enter-end="opacity-100 scale-100"
-                              class="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg">
+                              class="absolute -top-2 -end-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg">
                         </span>
                     </a>
 
                     <!-- Language Selector -->
                     <div class="relative">
-                        <select class="bg-white/5 backdrop-blur-md text-white border border-white/20 rounded-lg px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-orange-100 cursor-pointer appearance-none hover:bg-white/10 transition-all">
-                            <option value="en" class="bg-gray-900 text-white">English</option>
-                            <option value="ar" class="bg-gray-900 text-white">العربية</option>
+                        <select 
+                            x-on:change="window.location.href = $event.target.value" 
+                            class="bg-white/5 backdrop-blur-md text-white border border-white/20 rounded-lg px-4 py-2 pe-10 text-sm focus:outline-none focus:ring-2 focus:ring-orange-100 cursor-pointer appearance-none hover:bg-white/10 transition-all"
+                        >
+                            <option value="{{ route('lang-switch', 'en') }}" {{ app()->getLocale() === 'en' ? 'selected' : '' }} class="bg-gray-900 text-white">
+                                English
+                            </option>
+                            
+                            <option value="{{ route('lang-switch', 'ar') }}" {{ app()->getLocale() === 'ar' ? 'selected' : '' }} class="bg-gray-900 text-white">
+                                العربية
+                            </option>
                         </select>
                     </div>
                 </div>
 
                 <!-- Mobile Menu Button -->
-               <div  class="md:hidden flex items-center space-x-4">
-                    <a href="#" class="icon">
+               <div class="md:hidden flex items-center space-x-4">
+                    <a href="{{ route('cart') }}" class="icon">
                         <i class="fas fa-shopping-bag text-2xl"></i>
                         <!-- Dynamic Cart Count -->
-                        <span class="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg">
-                          {{ $cartCount }}
+                         <span x-show="cartCount > 0"
+                              x-text="cartCount"
+                              x-transition:enter="transition ease-out duration-300"
+                              x-transition:enter-start="opacity-0 scale-50"
+                              x-transition:enter-end="opacity-100 scale-100"
+                              class="absolute -top-2 -end-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg">
                         </span>
                     </a>
 
-                <!-- Language Selector - Mobile -->
-              <div class="relative">
-                        <select class="bg-white/5 backdrop-blur-md text-white border border-white/20 rounded-lg px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-orange-100 cursor-pointer appearance-none hover:bg-white/10 transition-all">
-                            <option value="en" class="bg-gray-900 text-white">English</option>
-                            <option value="ar" class="bg-gray-900 text-white">العربية</option>
+                    <!-- Language Selector - Mobile -->
+                    <div class="relative">
+                        <select 
+                            x-on:change="window.location.href = $event.target.value" 
+                            class="bg-white/5 backdrop-blur-md text-white border border-white/20 rounded-lg px-4 py-2 pe-10 text-sm focus:outline-none focus:ring-2 focus:ring-orange-100 cursor-pointer appearance-none hover:bg-white/10 transition-all"
+                        >
+                            <option value="{{ route('lang-switch', 'en') }}" {{ app()->getLocale() === 'en' ? 'selected' : '' }} class="bg-gray-900 text-white">
+                                English
+                            </option>
+                            
+                            <option value="{{ route('lang-switch', 'ar') }}" {{ app()->getLocale() === 'ar' ? 'selected' : '' }} class="bg-gray-900 text-white">
+                                العربية
+                            </option>
                         </select>
-               </div>
-
+                    </div>
 
                     <button x-on:click="open = ! open" class="text-white hover:text-orange-100 focus:outline-none cursor-pointer">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,13 +126,14 @@
         </div>
 
         <!-- Mobile Menu -->
-      <div x-show="open"  @click.away="open = false" x-transition class="md:hidden bg-footer backdrop-blur-md">
-    <div class="px-4 pt-2 pb-4 space-y-2 bg-footer">
-        <a href="{{ route('home') }}" class="block nav-link">Home</a>
-        <a href="#about" class="block nav-link">About</a>
-        <a href="{{ route('shop') }}" class="block nav-link">Shop</a>
-        <a href="#Routine" class="block nav-link">Routine</a>
-        <a href="{{ route('contact') }}" class="block nav-link">Contact</a>
-    </div>
-</div>
+        <div x-show="open" @click.away="open = false" x-transition class="md:hidden bg-footer backdrop-blur-md">
+            <div class="px-4 pt-2 pb-4 space-y-2 bg-footer">
+                <a href="{{ route('home') }}" class="block nav-link">{{ trans('navbar.home') }}</a>
+                <a href="#about-section" @click.prevent="scrollToSection('about-section')" class="block nav-link cursor-pointer">{{ trans('navbar.about') }}</a>
+                <a href="{{ route('shop') }}" class="block nav-link">{{ trans('navbar.shop') }}</a>
+                <a href="{{ route('routines.index') }}" class="block nav-link">{{ trans('navbar.routine') }}</a>
+                <a href="{{ route('contact') }}" class="block nav-link">{{ trans('navbar.contact') }}</a>
+                <a href="#featured-products" @click.prevent="scrollToSection('featured-products')" class="block nav-link cursor-pointer">{{ trans('navbar.featured-products') }}</a>
+            </div>
+        </div>
     </nav>

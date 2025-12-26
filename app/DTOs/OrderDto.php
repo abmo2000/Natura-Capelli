@@ -15,10 +15,5 @@ class OrderDto{
 
     public function userData(){
 
-         return [
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'],
-         ]
     }
 }

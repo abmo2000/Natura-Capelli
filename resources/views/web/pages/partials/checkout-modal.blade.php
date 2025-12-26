@@ -13,7 +13,7 @@
             <!-- Success Message -->
             <div x-show="success" x-transition class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
                 <div class="flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="w-5 h-5 me-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                     </svg>
                     <span>Order placed successfully check the email inbox ..!</span>
@@ -97,7 +97,7 @@
                                 name="payment_method" 
                                 value="cash_on_delivery"
                                 x-model="form.payment_method"
-                                class="mt-1 mr-3"
+                                class="mt-1 me-3"
                             >
                             <div>
                                 <div class="font-medium text-gray-800">Cash on Delivery</div>
@@ -115,7 +115,7 @@
                                 name="payment_method" 
                                 value="instapay"
                                 x-model="form.payment_method"
-                                class="mt-1 mr-3"
+                                class="mt-1 me-3"
                             >
                             <div>
                                 <div class="font-medium text-gray-800">InstaPay</div>
@@ -143,7 +143,7 @@
                 >
                     <span x-show="!loading">Place Order</span>
                     <span x-show="loading" class="flex items-center">
-                        <svg class="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
+                        <svg class="animate-spin h-5 w-5 me-2" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
