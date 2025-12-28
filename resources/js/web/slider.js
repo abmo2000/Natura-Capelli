@@ -7,21 +7,45 @@ document.addEventListener('alpine:init', () => {
             this.$nextTick(() => {
                 this.updateArrows();
                 window.addEventListener('resize', () => this.updateArrows());
+                
+                // Update arrows after images load
+                const carousel = this.$refs.carousel;
+                const images = carousel.querySelectorAll('img');
+                images.forEach(img => {
+                    img.addEventListener('load', () => this.updateArrows());
+                });
             });
         },
         
         scroll(direction) {
-            const scrollAmount = 320; // card width + gap
-            this.$refs.carousel.scrollBy({
-                left: direction * scrollAmount,
-                behavior: 'smooth'
-            });
+            const carousel = this.$refs.carousel;
+            const card = carousel.querySelector('.product-card');
+            
+            if (card) {
+                // Get the actual card width including gap
+                const cardWidth = card.offsetWidth;
+                const gap = parseInt(window.getComputedStyle(carousel).gap) || 24;
+                const scrollAmount = cardWidth + gap;
+                
+                carousel.scrollBy({
+                    left: direction * scrollAmount,
+                    behavior: 'smooth'
+                });
+                
+                // Update arrows after scroll completes
+                setTimeout(() => this.updateArrows(), 300);
+            }
         },
         
         updateArrows() {
             const carousel = this.$refs.carousel;
-            this.isAtStart = carousel.scrollLeft <= 0;
-            this.isAtEnd = carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth - 10;
+            if (!carousel) return;
+            
+            const tolerance = 5; // pixel tolerance for detecting edges
+            this.isAtStart = carousel.scrollLeft <= tolerance;
+            this.isAtEnd = carousel.scrollLeft >= (carousel.scrollWidth - carousel.clientWidth - tolerance);
+            
+            console.log('Scroll:', carousel.scrollLeft, 'Max:', carousel.scrollWidth - carousel.clientWidth);
         }
     }));
 });

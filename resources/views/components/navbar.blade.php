@@ -129,11 +129,17 @@
         <div x-show="open" @click.away="open = false" x-transition class="md:hidden bg-footer backdrop-blur-md">
             <div class="px-4 pt-2 pb-4 space-y-2 bg-footer">
                 <a href="{{ route('home') }}" class="block nav-link">{{ trans('navbar.home') }}</a>
+                @if (Request::is('/'))    
                 <a href="#about-section" @click.prevent="scrollToSection('about-section')" class="block nav-link cursor-pointer">{{ trans('navbar.about') }}</a>
+                @endif
+               <a href="{{ route('about-us') }}" class="block nav-link">{{ trans('navbar.concepts') }}</a>
+
                 <a href="{{ route('shop') }}" class="block nav-link">{{ trans('navbar.shop') }}</a>
                 <a href="{{ route('routines.index') }}" class="block nav-link">{{ trans('navbar.routine') }}</a>
                 <a href="{{ route('contact') }}" class="block nav-link">{{ trans('navbar.contact') }}</a>
-                <a href="#featured-products" @click.prevent="scrollToSection('featured-products')" class="block nav-link cursor-pointer">{{ trans('navbar.featured-products') }}</a>
+                 @if(Request::is('/'))  
+                <a href="#fearured-products" @click.prevent="scrollToSection('fearured-products')" class="block nav-link cursor-pointer">{{ trans('navbar.featured-products') }}</a>
+                @endif
             </div>
         </div>
     </nav>

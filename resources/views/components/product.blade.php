@@ -1,5 +1,5 @@
 @props(['product' => (object)[]])
-<div class="product-card cursor-pointer" x-data="productCard({{ $product->id }})">
+<div class="product-card cursor-pointer min-w-full md:min-w-0 md:flex-1 snap-start" x-data="productCard({{ $product->id }})">
     <div class="relative group">
         <!-- Main clickable link overlay -->
         <a href="{{ route('products.show', $product->slug) }}" class="absolute inset-0 z-10 cursor-pointer"></a>
@@ -7,10 +7,9 @@
         <img class="w-full h-64 object-contain pointer-events-none" src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
 
         <!-- Overlay -->
-        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-
+         <div class="absolute inset-0 bg-black/40 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
         <!-- Action Buttons -->
-        <div class="absolute top-4 end-4 flex flex-col gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+        <div class="absolute top-4 end-4 flex flex-col gap-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 z-20">
             <button 
                 @click.stop="addToCart()" 
                 :disabled="adding" 
