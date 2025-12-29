@@ -49,7 +49,8 @@ class RoutineForm
                                             'blockquote', 'bold', 'bulletList', 'codeBlock',
                                             'h2', 'h3', 'italic', 'link', 'orderedList',
                                             'redo', 'strike', 'underline', 'undo',
-                                        ]),    
+                                        ])
+                                        ->extraAttributes(['dir' => 'rtl', 'style' => 'text-align:right;']),   
                         ])       
                  ])->columnSpanFull(),
 
