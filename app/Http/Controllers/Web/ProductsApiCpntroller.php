@@ -21,9 +21,12 @@ class ProductsApiCpntroller extends Controller
         $products = $query->paginate($perPage);
 
         
-        $transformedProducts = $products->map(function ($product) {
+        $transformedProducts = $products
+        ->values()
+        ->map(function ($product , $index) {
              $productData['html'] = view('components.product', [
-                    'product' => $product
+                    'product' => $product,
+                    'index' => $index
                 ])->render();
             
                 return $productData;

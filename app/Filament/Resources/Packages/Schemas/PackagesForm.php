@@ -1,39 +1,36 @@
 <?php
 
-namespace App\Filament\Resources\Products\Schemas;
+namespace App\Filament\Resources\Packages\Schemas;
 
-use App\Models\Routine;
-use App\Models\Category;
+use App\Models\Product;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Components\Tabs\Tab;
 
-class ProductForm
+class PackagesForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema->components([
-            // Translations & Image side-by-side
-            Section::make()
+        return $schema
+            ->components([
+                 Section::make()
                 ->schema([
                     Tabs::make('Translations')
                         ->tabs([
                             Tab::make('English')
                                 ->schema([
-                                    TextInput::make('en.name')
-                                        ->label('Name (EN)')
+                                    TextInput::make('en.title')
+                                        ->label('Title (EN)')
                                         ->required()
                                         ->maxLength(255),
 
                                     RichEditor::make('en.description')
                                         ->label('Description (EN)')
-                                        ->required()
                                         ->toolbarButtons([
                                             'blockquote', 'bold', 'bulletList', 'codeBlock',
                                             'h2', 'h3', 'italic', 'link', 'orderedList',
@@ -43,15 +40,14 @@ class ProductForm
 
                             Tab::make('Arabic')
                                 ->schema([
-                                    TextInput::make('ar.name')
-                                        ->label('Name (AR)')
-                                        ->required()
+                                    TextInput::make('ar.title')
+                                        ->label('Title (AR)')
                                         ->maxLength(255)
+                                        ->required()
                                         ->extraAttributes(['dir' => 'rtl', 'style' => 'text-align:right;']),
 
                                     RichEditor::make('ar.description')
                                         ->label('Description (AR)')
-                                        ->required()
                                         ->extraAttributes(['dir' => 'rtl'])
                                         ->toolbarButtons([
                                             'blockquote', 'bold', 'bulletList', 'codeBlock',
@@ -62,17 +58,7 @@ class ProductForm
                             ])->columnSpanFull(),
                          ]) ->columnSpanFull(),
 
-                     FileUpload::make('image')
-                        ->label('Image')
-                        ->required()
-                        ->image()
-                        ->imageEditor()
-                        ->directory('products')
-                        ->visibility('public')
-                        ->columnSpanFull(),
-
-            
-            Section::make()
+                Section::make()
                 ->schema([
                     TextInput::make('price')
                         ->label('Price')
@@ -81,52 +67,31 @@ class ProductForm
                         ->minValue(1)
                         ->inputMode('decimal'),
 
-                    Select::make('routines')
-                        ->label('Routines')
+                  
+                        Toggle::make('is_active')->label('Is Active'),
+
+                ])
+                ->columns(2),
+
+                Section::make()
+                ->schema([
+                     Select::make('products')
+                        ->label('Products')
                         ->required()
                         ->multiple()
-                        ->relationship('routines', 'id')
+                        ->relationship('products', 'id')
                         ->options(function () {
-                            return Routine::with('translations')
+                            return Product::with('translations')
                                 ->get()
-                                ->mapWithKeys(function ($routine) {
-                                    $title = $routine->translations->first()?->title ?? 'No title';
-                                    return [$routine->id => $title];
+                                ->mapWithKeys(function ($product) {
+                                    $name = $product->translations->first()?->name ?? 'No title';
+                                    return [$product->id => $name];
                                 });
                         })
                         ->searchable(),
 
-                    Select::make('category_id')
-                        ->label('Category')
-                        ->required()
-                        ->options(
-                            Category::with('translations')
-                                ->get()
-                                ->pluck('title', 'id')
-                        )
-                        ->searchable(),
                 ])
-                ->columns(3),
-
-            // Featured + In Stock
-            Section::make()
-                ->schema( [
-                    Toggle::make('featured')->label('Featured'),
-                    Toggle::make('in_stock')->label('In Stock'),
-                ])
-                ->columns(2),
-              
-             Section::make('Sale')
-             ->schema([
-                  TextInput::make('sale_price')
-                        ->label('Sale Price')
-                        ->numeric()
-                        ->minValue(1)
-                        ->inputMode('decimal')
-                        ->default(null),
-             ])
-              ->relationship('sale')
-             ->columns(1)   
-        ]);
+                ->columns(1),
+            ]);
     }
 }

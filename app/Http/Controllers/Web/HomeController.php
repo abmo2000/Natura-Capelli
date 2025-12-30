@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use Filament\Schemas\Components\View;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {

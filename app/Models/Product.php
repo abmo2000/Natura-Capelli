@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Astrotomic\Translatable\Contracts\Translatable;
 use Astrotomic\Translatable\Translatable as AstrotomicTranslatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model implements Translatable
 {
@@ -23,6 +24,15 @@ class Product extends Model implements Translatable
 
     public function category(){
         return $this->belongsTo(Category::class);
+    }
+
+
+      public function packages():BelongsToMany{
+        return $this->belongsToMany(Package::class , 'package_products');
+    }
+
+    public function sale():HasOne{
+         return $this->hasOne(ProductSale::class);
     }
 
    
