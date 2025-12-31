@@ -12,6 +12,8 @@ class CreateProduct extends CreateRecord
 
      protected array $translations = [];
 
+     protected array $saleData = [];
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
        
@@ -26,8 +28,21 @@ class CreateProduct extends CreateRecord
         
         // Store translations separately to be handled after creation
         $this->translations = $translations;
+
+         $data['_sale'] = [
+            'enabled' => $data['has_sale'] ?? false,
+            'price' => $data['sale_price'] ?? null,
+        ];
+
+        unset(
+            $data['has_sale'],
+            $data['sale_price'],
+        );
         
+        $this->saleData = $data['_sale'];
+
         return $data;
+        
     }
     
     protected function afterCreate(): void
@@ -37,6 +52,14 @@ class CreateProduct extends CreateRecord
             foreach ($this->translations as $locale => $translation) {
                 $this->record->translateOrNew($locale)->fill($translation)->save();
             }
+        }
+
+        $sale = $this->saleData;
+
+        if ($sale['enabled']) {
+            $this->record->sale()->create([
+                'sale_price' => $sale['price'],
+            ]);
         }
     }
 }

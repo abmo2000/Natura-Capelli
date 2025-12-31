@@ -10,6 +10,8 @@ class EditProduct extends EditRecord
 {
     protected static string $resource = ProductResource::class;
     protected array $translations = [];
+
+    protected array $saleData = [];
     protected function getHeaderActions(): array
     {
         return [
@@ -42,7 +44,17 @@ class EditProduct extends EditRecord
         
         // Store translations separately
         $this->translations = $translations;
-        
+
+         $data['_sale'] = [
+            'enabled' => $data['has_sale'] ?? false,
+            'price' => $data['sale_price'] ?? null,
+        ];
+
+        unset(
+            $data['has_sale'],
+            $data['sale_price'],
+        );
+        $this->saleData = $data['_sale'];
         return $data;
     }
     
@@ -53,6 +65,19 @@ class EditProduct extends EditRecord
             foreach ($this->translations as $locale => $translation) {
                 $this->record->translateOrNew($locale)->fill($translation)->save();
             }
+        }
+
+        $sale = $this->saleData;
+
+        if ($sale['enabled']) {
+            $this->record->sale()->updateOrCreate(
+                [],
+                [
+                    'sale_price' => $sale['price'],
+                ]
+            );
+        } else {
+            $this->record->sale()?->delete();
         }
     }
 }

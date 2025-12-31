@@ -8,11 +8,13 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
 
 class ProductForm
 {
@@ -81,6 +83,12 @@ class ProductForm
                         ->minValue(1)
                         ->inputMode('decimal'),
 
+                         TextInput::make('capacity')
+                        ->label('Capacity')
+                        ->required()
+                        ->numeric()
+                        ->minValue(1),
+
                     Select::make('routines')
                         ->label('Routines')
                         ->required()
@@ -106,7 +114,7 @@ class ProductForm
                         )
                         ->searchable(),
                 ])
-                ->columns(3),
+                ->columns(2),
 
             // Featured + In Stock
             Section::make()
@@ -116,17 +124,29 @@ class ProductForm
                 ])
                 ->columns(2),
               
-             Section::make('Sale')
-             ->schema([
-                  TextInput::make('sale_price')
-                        ->label('Sale Price')
-                        ->numeric()
-                        ->minValue(1)
-                        ->inputMode('decimal')
-                        ->default(null),
-             ])
-              ->relationship('sale')
-             ->columns(1)   
+    Section::make('Sale')
+       ->schema([
+        Toggle::make('has_sale')
+            ->label('Has Sale')
+            ->reactive()
+            ->afterStateHydrated(function ($state, callable $set, $record) {
+                $set('has_sale', $record?->sale()->exists());
+            }),
+
+            Group::make([
+                TextInput::make('sale_price')
+                    ->label('Sale Price')
+                    ->numeric()
+                    ->required(fn (Get $get) => $get('has_sale'))
+                    ->afterStateHydrated(function ($state, callable $set, $record) {
+                            $set('sale_price', $record?->sale?->sale_price);
+                    })
+                    ->minValue(1),
+            ])
+            ->columns(1)
+            ->visible(fn (Get $get) => $get('has_sale')),
+
+         ]) ->columns(2), 
         ]);
     }
 }
