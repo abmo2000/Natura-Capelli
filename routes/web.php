@@ -22,7 +22,7 @@ Route::middleware(['locale'])->group(function(){
      Route::resource('routines' , RoutineController::class)->only('show' , 'index');
 
      Route::get('/shop' , [ShopController::class, 'index'])->name('shop');
-     Route::get('api/products' , ProductsApiCpntroller::class);
+     Route::get('api/products/{is_trial}' , ProductsApiCpntroller::class)->defaults('is_trial' , false);
      Route::get('api/packages' , PackagesApiController::class);
 
      Route::resource('products' , ProductController::class)->only(['show' , 'index']);

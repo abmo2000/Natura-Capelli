@@ -12,6 +12,8 @@ class EditProduct extends EditRecord
     protected array $translations = [];
 
     protected array $saleData = [];
+
+     protected array $trialData = [];
     protected function getHeaderActions(): array
     {
         return [
@@ -55,6 +57,10 @@ class EditProduct extends EditRecord
             $data['sale_price'],
         );
         $this->saleData = $data['_sale'];
+         $this->trialData = [
+            'price' => $data['trial_price'],
+            'capacity' => $data['trial_capacity']
+        ];
         return $data;
     }
     
@@ -79,5 +85,10 @@ class EditProduct extends EditRecord
         } else {
             $this->record->sale()?->delete();
         }
+
+        $this->record->trial()->create([
+           'price' => $this->trialData['price'] ?? 0,
+           'capacity' => $this->trialData['capacity'] ?? 0
+        ]);
     }
 }

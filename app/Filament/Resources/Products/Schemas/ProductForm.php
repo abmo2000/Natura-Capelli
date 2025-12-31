@@ -123,6 +123,28 @@ class ProductForm
                     Toggle::make('in_stock')->label('In Stock'),
                 ])
                 ->columns(2),
+            Section::make('Trial')
+            ->schema([
+
+                TextInput::make('trial_price')
+                    ->label('Trial Price')
+                    ->numeric()
+                    ->required()
+                    ->afterStateHydrated(function ($state, callable $set, $record) {
+                            $set('trial_price', $record?->trial?->price);
+                    })
+                    ->minValue(1),
+
+                     TextInput::make('trial_capacity')
+                        ->label('Trial Capacity')
+                        ->required()
+                        ->afterStateHydrated(function ($state, callable $set, $record) {
+                            $set('trial_capacity', $record?->trial?->capacity);
+                         })
+                        ->numeric()
+                        ->minValue(1),
+
+            ]),    
               
     Section::make('Sale')
        ->schema([

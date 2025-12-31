@@ -2,7 +2,19 @@
 <div class="product-card cursor-pointer min-w-full md:min-w-0 md:flex-1 snap-start" x-data="productCard({{ $product->id }})">
     <div class="relative group">
         <!-- Main clickable link overlay -->
-        <a href="{{ route('products.show', $product->slug) }}" class="absolute inset-0 z-10 cursor-pointer"></a>
+        <a href="{{route('products.show', $product->slug) . ($product->isTrial() ? '?trial=1' : '') }}" class="absolute inset-0 z-10 cursor-pointer"></a>
+        
+         @if($product->isTrial())
+        <div class="absolute top-4 start-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg z-20 pointer-events-none">
+            {{ trans('shop.trial') }}
+        </div>
+        @endif
+        <!-- Sale Badge -->
+        @if($product->hasSale())
+        <div class="absolute top-4 start-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg z-20 pointer-events-none">
+            {{ trans('shop.sale') }}
+        </div>
+        @endif
         
         <img class="w-full h-64 object-contain pointer-events-none" src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
 
@@ -36,11 +48,26 @@
     </div>
 
     <div class="p-5 relative cursor-pointer">
-        <a href="{{ route('products.show', $product->slug) }}" class="text-white font-semibold text-lg hover:text-orange-100 transition-colors block mb-2 relative z-10">
+        <a href="{{route('products.show', $product->slug) . ($product->isTrial() ? '?trial=1' : '') }}" class="text-white font-semibold text-lg hover:text-orange-100 transition-colors block mb-2 relative z-10">
             {{ $product->name }}
         </a>
-        <div class="flex items-center justify-between pointer-events-none">
-            <span class="text-orange-100 font-bold text-xl">{{ $product->price . ' EGP ' }}</span>
+
+        
+        <div class="flex items-center gap-3 pointer-events-none">
+            @if($product->hasSale())
+                <!-- Old Price (Slashed) -->
+                <span class="text-gray-400 line-through text-lg">{{ $product->price . ' EGP' }}</span>
+                <!-- Sale Price -->
+                <span class="text-orange-500 font-bold text-xl">{{ $product?->sale?->sale_price . ' EGP' }}</span>
+            @elseif($product->isTrial())
+                 <!-- Original Product Price (Slashed) -->
+                <span class="text-gray-400 line-through text-lg">{{$product->product->price . ' EGP' }}</span>
+                <!-- Trial Price -->
+                <span class="text-blue-400 font-bold text-xl">{{ $product->price . ' EGP' }}</span>
+
+             @else
+              <span class="text-orange-100 font-bold text-xl">{{ $product->price . ' EGP' }}</span>   
+            @endif
         </div>
     </div>
 </div>

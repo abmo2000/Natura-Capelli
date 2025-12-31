@@ -29,6 +29,13 @@ shop
                 class="px-6 py-3 rounded-lg font-semibold transition-all duration-300">
                   Packages 
             </button>
+
+            <button 
+                @click="productType = 'trials'; applyFilters()"
+                :class="productType === 'trials' ? 'bg-orange-400 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'"
+                class="px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                  Trials
+            </button>
         </div>
 
         <div class="flex flex-col lg:flex-row gap-8">
@@ -192,9 +199,11 @@ shop
                     });
                 }
 
+                let isTrial = this.productType === 'trials';
+
                 // Fetch from your API endpoint based on type
-                let url = this.productType === 'products' 
-                    ? `/api/products?${params.toString()}` 
+                let url = this.productType === 'products'|| this.productType === 'trials'  
+                    ? `/api/products/${isTrial}/?${params.toString()}` 
                     : `/api/packages?${params.toString()}`;
                     
                 const response = await fetch(url);

@@ -13,7 +13,8 @@ class CreateProduct extends CreateRecord
      protected array $translations = [];
 
      protected array $saleData = [];
-
+      
+     protected array $trialData = [];
     protected function mutateFormDataBeforeCreate(array $data): array
     {
        
@@ -40,6 +41,10 @@ class CreateProduct extends CreateRecord
         );
         
         $this->saleData = $data['_sale'];
+        $this->trialData = [
+            'price' => $data['trial_price'],
+            'capacity' => $data['trial_capacity']
+        ];
 
         return $data;
         
@@ -61,5 +66,10 @@ class CreateProduct extends CreateRecord
                 'sale_price' => $sale['price'],
             ]);
         }
+
+        $this->record->trial()->create([
+           'price' => $this->trialData['price'] ?? 0,
+           'capacity' => $this->trialData['capacity'] ?? 0
+        ]);
     }
 }

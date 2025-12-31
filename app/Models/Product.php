@@ -35,6 +35,20 @@ class Product extends Model implements Translatable
          return $this->hasOne(ProductSale::class);
     }
 
+    public function isTrial():bool{
+        return false;
+    }
+
+    public function trial(){
+        return $this->hasOne(ProductTrial::class);
+    }
+
+
+    public function hasSale():bool{
+        $this->loadMissing(['sale']);
+         return ! empty($this->sale);
+    }
+
    
 
      protected static function booted(): void

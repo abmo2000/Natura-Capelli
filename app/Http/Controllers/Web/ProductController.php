@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductTrial;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -35,11 +36,17 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $slug)
+    public function show(string $slug , Request $request)
     {
-       $product = Product::query()
-                       ->where('slug' , $slug)
-                       ->firstOrFail();
+
+        $isTrial = $request->query('trial') === '1';
+    
+       $query = $isTrial 
+       ? ProductTrial::query()->whereRelation('product' , fn($q) => $q->where('products.slug' , $slug))  
+       : Product::query()->where('slug' , $slug);
+
+        $product= $query->firstOrFail();
+
 
            return view('web.pages.shop.show')->with(['product' => $product]);            
     }
