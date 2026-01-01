@@ -29,8 +29,7 @@ About us
             <!-- Content Section -->
             <div class="order-1 lg:order-2 text-gray-300 space-y-6">
                 <p class="text-base md:text-lg leading-relaxed">
-                  {{ trans('ourConcept.concept') }}
-
+                  {!!  getBuisnessSettings('content-management')?->description !!}
                 </p>
             </div>
         </div>

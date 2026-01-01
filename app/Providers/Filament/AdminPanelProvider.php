@@ -9,6 +9,8 @@ use Filament\Pages\Dashboard;
 use App\Filament\Auth\CustomLogin;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
+use Filament\Navigation\NavigationItem;
+use Filament\Navigation\NavigationGroup;
 use Filament\Widgets\FilamentInfoWidget;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
@@ -20,6 +22,8 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use App\Filament\Resources\BuisnessInfos\BuisnessInfoResource;
+use App\Filament\Resources\ContentManagement\ContentManagementResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -55,6 +59,27 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->navigationItems([
+            NavigationItem::make('Content Management')
+                ->url(fn () => ContentManagementResource::getUrl('index'))
+                ->icon('heroicon-o-document-text')
+                ->group('Business Settings')
+                ->sort(1)
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.content-management.*')),
+            
+            NavigationItem::make('Business Info')
+                ->url(fn () => BuisnessInfoResource::getUrl('index'))
+                ->icon('heroicon-o-building-office')
+                ->group('Business Settings')
+                ->sort(2)
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.business-info.*')),
+        ])
+        ->navigationGroups([
+            NavigationGroup::make('Business Settings')
+                // ->icon('heroicon-o-cog-6-tooth')
+                ->collapsible()
+                ->collapsed(false), // Start expanded
+        ]);
     }
 }

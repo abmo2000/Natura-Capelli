@@ -71,7 +71,7 @@ home
             
                 <button  
                     @click="scroll(-1)" 
-                    x-show="!isAtStart" 
+                    x-show="isRTL() ? isAtStart : !isAtStart" 
                     x-transition 
                     class="absolute start-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 shadow-lg p-4 rounded-full transition-all duration-300 hover:scale-110"
                     style="display: block !important;">

@@ -36,6 +36,12 @@ document.addEventListener('alpine:init', () => {
                 setTimeout(() => this.updateArrows(), 300);
             }
         },
+
+          isRTL() {
+        return document.documentElement.dir === 'rtl' || 
+               document.body.dir === 'rtl' ||
+               getComputedStyle(document.documentElement).direction === 'rtl';
+    },
         
         updateArrows() {
             const carousel = this.$refs.carousel;

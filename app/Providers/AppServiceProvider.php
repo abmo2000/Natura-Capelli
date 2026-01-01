@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\BuisnessSetting;
 use App\Models\Guest;
 use App\Models\User;
 use App\Services\CartService;
@@ -35,12 +36,15 @@ class AppServiceProvider extends ServiceProvider
                     'cartCount' => $cartService->getCount(),
                     'cartTotal' => $cartService->getTotal(),
                 ]);
+
+
             } catch (\Exception $e) {
                 $view->with([
                     'cartCount' => 0,
                     'cartTotal' => 0,
                 ]);
             }
+
         });
 
          Relation::enforceMorphMap([
