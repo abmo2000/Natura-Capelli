@@ -128,7 +128,7 @@ document.addEventListener("alpine:init", () => {
                         this.closeModal();
                        
                         if(data.payment_method === 'instapay'){
-                           window.open("https://ipn.eg/S/qachg/instapay/9jFsdH", '_blank');
+                           window.open("heidi.a.rezk@instapay", '_blank');
                         }
                          window.location.reload()
                          

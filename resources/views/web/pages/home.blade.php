@@ -16,12 +16,12 @@ home
         </h1>
 
         <h2 class="text-white text-base sm:text-lg md:text-xl lg:text-2xl font-medium">
-            Hydrate & Nourish your Hair
+            {{ trans('home.hydrate-&-nourish-your-hair') }}
         </h2>
 
         <div class="pt-2 sm:pt-3 md:pt-4 pb-4">
-            <a href="#" class="custom-btn inline-block">
-                We Support Your Choice
+            <a href="{{ route('shop') }}" class="custom-btn inline-block">
+                {{ trans('home.we-support-your-choice') }}
             </a>
         </div>
     </div>

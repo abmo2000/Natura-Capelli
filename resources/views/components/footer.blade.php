@@ -10,27 +10,27 @@
             <div class="flex flex-col gap-3 items-center">
                 <h3 class="text-white font-bold text-xl tracking-wide">Natura Capelli</h3>
                 <div class="flex gap-6">
-                    <a href="{{ route('home') }}" class="footer-link">Home</a>
-                    <a href="#" class="footer-link">About</a>
-                    <a href="{{ route('shop') }}" class="footer-link">shop</a>
-                    <a href="{{ route('contact') }}" class="footer-link">Contact</a>
+                    <a href="{{ route('home') }}" class="footer-link">{{ trans('navbar.home') }}</a>
+                    <a href="{{ route('about-us') }}" class="footer-link">{{ trans('navbar.concepts') }}</a>
+                    <a href="{{ route('shop') }}" class="footer-link">{{ trans('navbar.shop') }}</a>
+                    <a href="{{ route('contact') }}" class="footer-link">{{ trans('navbar.contact') }}</a>
                 </div>
             </div>
 
             <!-- Social Media Icons -->
             <div class="flex gap-4 items-center">
                 <!-- Facebook -->
-                <a href="https://www.facebook.com/" class="icon" target="_blank">
+                <a href="https://www.facebook.com/share/17eCcJqX98/" class="icon" target="_blank">
                     <i class="fab fa-facebook text-lg"></i>
                 </a>
                 
                 <!-- Instagram -->
-                <a href="https://www.instagram.com/" class="icon" target="_blank">
+                {{-- <a href="https://www.instagram.com/" class="icon" target="_blank">
                     <i class="fab fa-instagram text-lg"></i>
-                </a>
+                </a> --}}
                 
                 <!-- Phone -->
-                <a href="https://wa.me/+201148992811" target="_blank" class="icon">
+                <a href="https://wa.me/+201120964699" target="_blank" class="icon">
                     <i class="fab fa-whatsapp text-lg"></i>
                 </a>
             </div>
