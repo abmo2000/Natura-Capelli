@@ -26,15 +26,18 @@ class ContentManagementForm
                                         ->label('Description (EN)')
                                         ->required()
                                         ->afterStateHydrated(function ($state, callable $set, $record) {
-                                               $arTranslation = $record->translations()->where('locale', 'en')->first();
-        
-                                                if ($arTranslation?->value) {
-                                                    $decodedValue = json_decode($arTranslation->value, true);
-                                                    $description = $decodedValue['description'] ?? '<p></p>';
-                                                    $set('en.description', $description ?: '<p></p>');
-                                                } else {
-                                                    $set('en.description', '<p></p>');
-                                                }
+                                              if($record){
+
+                                                  $arTranslation = $record->translations()->where('locale', 'en')->first();
+           
+                                                   if ($arTranslation?->value) {
+                                                       $decodedValue = json_decode($arTranslation->value, true);
+                                                       $description = $decodedValue['description'] ?? '<p></p>';
+                                                       $set('en.description', $description ?: '<p></p>');
+                                                   } else {
+                                                       $set('en.description', '<p></p>');
+                                                   }
+                                              }
                                           })
                                         ->toolbarButtons([
                                             'blockquote', 'bold', 'bulletList', 'codeBlock',
@@ -50,15 +53,18 @@ class ContentManagementForm
                                         ->required()
                                         ->extraAttributes(['dir' => 'rtl'])
                                         ->afterStateHydrated(function ($state, callable $set, $record) {
-                                              $arTranslation = $record->translations()->where('locale', 'ar')->first();
-        
-                                                if ($arTranslation?->value) {
-                                                    $decodedValue = json_decode($arTranslation->value, true);
-                                                    $description = $decodedValue['description'] ?? '<p></p>';
-                                                    $set('ar.description', $description ?: '<p></p>');
-                                                } else {
-                                                    $set('ar.description', '<p></p>');
-                                                }
+                                             if($record){
+
+                                                 $arTranslation = $record->translations()->where('locale', 'ar')->first();
+           
+                                                   if ($arTranslation?->value) {
+                                                       $decodedValue = json_decode($arTranslation->value, true);
+                                                       $description = $decodedValue['description'] ?? '<p></p>';
+                                                       $set('ar.description', $description ?: '<p></p>');
+                                                   } else {
+                                                       $set('ar.description', '<p></p>');
+                                                   }
+                                             }
                                           })
                                         ->toolbarButtons([
                                             'blockquote', 'bold', 'bulletList', 'codeBlock',

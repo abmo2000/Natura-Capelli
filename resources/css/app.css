@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @import '@fortawesome/fontawesome-free/css/all.css';
-
+@import 'intl-tel-input/build/css/intlTelInput.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -11,7 +11,9 @@
     --font-sans: 'Kurale', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
     --color-footer:#131313;
-    --color-grey:#4d4747;     
+    --color-grey:#4d4747; 
+    
+
 }
 
 @layer component{
@@ -43,6 +45,10 @@
         @apply bg-gray-800 rounded-2xl  w-72 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 flex-shrink-0
     }
 
+    .auth-input{
+        @apply w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-2 focus:ring-orange-100 focus:border-transparent transition duration-200
+    }
+
     .scrollbar-thin::-webkit-scrollbar {
       width: 8px;
     }
@@ -65,6 +71,10 @@
         scrollbar-width: thin;
         scrollbar-color: #4a5568 transparent;
     }
+
+      .iti {
+    display: unset !important;
+}
 
     @media (max-width: 768px) {
     .carousel-container .product-card {

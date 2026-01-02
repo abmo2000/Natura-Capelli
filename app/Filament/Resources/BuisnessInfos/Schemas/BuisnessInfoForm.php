@@ -16,11 +16,12 @@ class BuisnessInfoForm
             ->components([
                   Section::make("Buisness Info")
                 ->schema([
-TextInput::make('email')
+                    TextInput::make('email')
                     ->label('Email')
                     ->required()
                     ->email()
                     ->afterStateHydrated(function ($state, callable $set, $record) {
+                          if ($record) {
                             $arTranslation = $record->translations()->where('locale', 'en')->first();
         
                              if ($arTranslation?->value) {
@@ -30,6 +31,7 @@ TextInput::make('email')
                                  } else {
                                      $set('email', '<p></p>');
                                  }
+                          }
                             })
                     ->maxLength(255),
 
@@ -39,15 +41,18 @@ TextInput::make('email')
                     ->prefix('https://')
                     ->placeholder('facebook.com/yourpage')
                      ->afterStateHydrated(function ($state, callable $set, $record) {
-                            $arTranslation = $record->translations()->where('locale', 'en')->first();
-        
-                             if ($arTranslation?->value) {
-                                 $decodedValue = json_decode($arTranslation->value, true);
-                                 $description = $decodedValue['facebook_link'] ?? '<p></p>';
-                                 $set('facebook_link', $description ?: '<p></p>');
-                                 } else {
-                                     $set('facebook_link', '<p></p>');
-                                 }
+                          if($record){
+
+                              $arTranslation = $record->translations()->where('locale', 'en')->first();
+          
+                               if ($arTranslation?->value) {
+                                   $decodedValue = json_decode($arTranslation->value, true);
+                                   $description = $decodedValue['facebook_link'] ?? '<p></p>';
+                                   $set('facebook_link', $description ?: '<p></p>');
+                                   } else {
+                                       $set('facebook_link', '<p></p>');
+                                   }
+                          }
                             })
                     ->maxLength(255),
 
@@ -57,15 +62,18 @@ TextInput::make('email')
                     ->prefix('+20')
                     ->placeholder('1234567890')
                       ->afterStateHydrated(function ($state, callable $set, $record) {
-                            $arTranslation = $record->translations()->where('locale', 'en')->first();
-        
-                             if ($arTranslation?->value) {
-                                 $decodedValue = json_decode($arTranslation->value, true);
-                                 $description = $decodedValue['whatsapp_number'] ?? '<p></p>';
-                                 $set('whatsapp_number', $description ?: '<p></p>');
-                                 } else {
-                                     $set('whatsapp_number', '<p></p>');
-                                 }
+                           if($record){
+
+                               $arTranslation = $record->translations()->where('locale', 'en')->first();
+           
+                                if ($arTranslation?->value) {
+                                    $decodedValue = json_decode($arTranslation->value, true);
+                                    $description = $decodedValue['whatsapp_number'] ?? '<p></p>';
+                                    $set('whatsapp_number', $description ?: '<p></p>');
+                                    } else {
+                                        $set('whatsapp_number', '<p></p>');
+                                    }
+                           }
                             })
                     ->maxLength(15),
 
@@ -75,15 +83,18 @@ TextInput::make('email')
                     ->required()
                     ->prefix('+20')
                      ->afterStateHydrated(function ($state, callable $set, $record) {
-                            $arTranslation = $record->translations()->where('locale', 'en')->first();
-        
-                             if ($arTranslation?->value) {
-                                 $decodedValue = json_decode($arTranslation->value, true);
-                                 $description = $decodedValue['mobile_number'] ?? '<p></p>';
-                                 $set('mobile_number', $description ?: '<p></p>');
-                                 } else {
-                                     $set('mobile_number', '<p></p>');
-                                 }
+                         if($record){
+
+                             $arTranslation = $record->translations()->where('locale', 'en')->first();
+         
+                              if ($arTranslation?->value) {
+                                  $decodedValue = json_decode($arTranslation->value, true);
+                                  $description = $decodedValue['mobile_number'] ?? '<p></p>';
+                                  $set('mobile_number', $description ?: '<p></p>');
+                                  } else {
+                                      $set('mobile_number', '<p></p>');
+                                  }
+                         }
                             })
                     ->placeholder('1234567890')
                     ->maxLength(15),
@@ -92,15 +103,18 @@ TextInput::make('email')
                     ->label('Instapay Account')
                     ->placeholder('username@instapay')
                      ->afterStateHydrated(function ($state, callable $set, $record) {
-                            $arTranslation = $record->translations()->where('locale', 'en')->first();
-        
-                             if ($arTranslation?->value) {
-                                 $decodedValue = json_decode($arTranslation->value, true);
-                                 $description = $decodedValue['instapay_account'] ?? '<p></p>';
-                                 $set('instapay_account', $description ?: '<p></p>');
-                                 } else {
-                                     $set('instapay_account', '<p></p>');
-                                 }
+                          if($record){
+
+                              $arTranslation = $record->translations()->where('locale', 'en')->first();
+          
+                               if ($arTranslation?->value) {
+                                   $decodedValue = json_decode($arTranslation->value, true);
+                                   $description = $decodedValue['instapay_account'] ?? '<p></p>';
+                                   $set('instapay_account', $description ?: '<p></p>');
+                                   } else {
+                                       $set('instapay_account', '<p></p>');
+                                   }
+                          }
                             })
                     ->maxLength(255),
 
