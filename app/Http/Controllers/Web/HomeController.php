@@ -10,6 +10,7 @@ class HomeController extends Controller
     public function __invoke()
     {
       
+  
          $products =Product::query()
            ->where('featured' , true)
           ->where('in_stock' , true)

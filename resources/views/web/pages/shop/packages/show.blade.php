@@ -77,9 +77,12 @@ package
 
                 <div class="bg-slate-800 rounded-xl p-6 mb-6">
                     <div class="flex items-baseline gap-4">
-                        <span class="text-gray-500 line-through text-2xl">
-                            {{ $package->original_price }} EGP
-                        </span>
+                             <span class="relative text-gray-500 text-lg">
+                                <span class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <span class="absolute w-full h-[2px] bg-gray-500 rotate-[-30deg] origin-center"></span>
+                                </span>
+                                {{ $package->original_price }} EGP
+                            </span>
                         <span class="text-gray-500 text-4xl font-bold">
                             {{ $package->price }} EGP
                         </span>

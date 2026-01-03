@@ -56,12 +56,17 @@
         <div class="flex items-center gap-3 pointer-events-none">
             @if($product->hasSale())
                 <!-- Old Price (Slashed) -->
-                <span class="text-gray-400 line-through text-lg">{{ $product->price . ' EGP' }}</span>
+                     <span class="relative text-gray-500 text-lg">
+                        <span class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <span class="absolute w-full h-[2px] bg-gray-500 rotate-[-30deg] origin-center"></span>
+                        </span>
+                        {{ $product->price }} EGP
+                    </span>
                 <!-- Sale Price -->
                 <span class="text-orange-500 font-bold text-xl">{{ $product?->sale?->sale_price . ' EGP' }}</span>
             @elseif($product->isTrial())
                  <!-- Original Product Price (Slashed) -->
-                <span class="text-gray-400 line-through text-lg">{{$product->product->price . ' EGP' }}</span>
+                {{-- <span class="text-gray-400 line-through text-lg">{{$product->product->price . ' EGP' }}</span> --}}
                 <!-- Trial Price -->
                 <span class="text-blue-400 font-bold text-xl">{{ $product->price . ' EGP' }}</span>
 

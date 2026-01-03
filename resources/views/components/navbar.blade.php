@@ -1,5 +1,6 @@
 <nav x-data="{
         open: false, 
+        userDropdown: false,
         scrolled: false, 
         cartCount: {{ $cartCount }},
         init() {
@@ -13,7 +14,7 @@
         scrollToSection(sectionId) {
             const section = document.getElementById(sectionId);
             if (section) {
-                const navHeight = 80; // Height of fixed navbar
+                const navHeight = 80;
                 const elementPosition = section.getBoundingClientRect().top;
                 const offsetPosition = elementPosition + window.pageYOffset - navHeight;
                 
@@ -22,7 +23,6 @@
                     behavior: 'smooth'
                 });
                 
-                // Close mobile menu if open
                 this.open = false;
             }
         }
@@ -59,8 +59,7 @@
                     <!-- Cart Icon with Badge -->
                     <a href="{{ route('cart') }}" class="icon">
                         <i class="fas fa-shopping-bag text-2xl"></i>
-                        <!-- Dynamic Cart Count -->
-                         <span x-show="cartCount > 0"
+                        <span x-show="cartCount > 0"
                               x-text="cartCount"
                               x-transition:enter="transition ease-out duration-300"
                               x-transition:enter-start="opacity-0 scale-50"
@@ -68,6 +67,44 @@
                               class="absolute -top-2 -end-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg">
                         </span>
                     </a>
+
+                    <!-- User Dropdown -->
+                    @auth    
+                    <div class="relative" @click.away="userDropdown = false">
+                        <button @click="userDropdown = !userDropdown" 
+                                class="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all focus:outline-none focus:ring-2 focus:ring-orange-100">
+                            <i class="fas fa-user text-white text-lg"></i>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div x-show="userDropdown"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="absolute end-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                            
+                            <a href="" 
+                               class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                                <i class="fas fa-user-circle w-4"></i>
+                                <span>Profile</span>
+                            </a>
+                            
+                            <div class="border-t border-gray-200 my-1"></div>
+                            
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit"
+                                        class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                                    <i class="fas fa-sign-out-alt w-4"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    @endauth
 
                     <!-- Language Selector -->
                     <div class="relative">
@@ -90,8 +127,7 @@
                <div class="md:hidden flex items-center space-x-4">
                     <a href="{{ route('cart') }}" class="icon">
                         <i class="fas fa-shopping-bag text-2xl"></i>
-                        <!-- Dynamic Cart Count -->
-                         <span x-show="cartCount > 0"
+                        <span x-show="cartCount > 0"
                               x-text="cartCount"
                               x-transition:enter="transition ease-out duration-300"
                               x-transition:enter-start="opacity-0 scale-50"
@@ -99,6 +135,45 @@
                               class="absolute -top-2 -end-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg">
                         </span>
                     </a>
+
+                    <!-- User Dropdown - Mobile -->
+                    @auth
+                        
+                    <div class="relative" @click.away="userDropdown = false">
+                        <button @click="userDropdown = !userDropdown" 
+                                class="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all focus:outline-none">
+                            <i class="fas fa-user text-white text-lg"></i>
+                        </button>
+
+                        <!-- Dropdown Menu - Mobile -->
+                        <div x-show="userDropdown"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="absolute end-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                            
+                            <a href="" 
+                               class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                                <i class="fas fa-user-circle w-4"></i>
+                                <span>Profile</span>
+                            </a>
+                            
+                            <div class="border-t border-gray-200 my-1"></div>
+                            
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit"
+                                        class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                                    <i class="fas fa-sign-out-alt w-4"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    @endauth
 
                     <!-- Language Selector - Mobile -->
                     <div class="relative">
