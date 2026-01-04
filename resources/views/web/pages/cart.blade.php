@@ -131,10 +131,19 @@ Cart
                         </div>
 
                         <!-- Checkout Button -->
+                        @if(auth()->check())     
                         <button  onclick="openCheckoutModal()" class="w-full bg-orange-100 text-black font-bold py-4 rounded-lg hover:bg-orange-200 transition-colors mb-4">
                             Proceed to Checkout
                             <i class="fas fa-arrow-right ms-2"></i>
                         </button>
+                        @else
+
+                         <button onclick="openSignInModal()" class="w-full bg-orange-100 text-black font-bold py-4 rounded-lg hover:bg-orange-200 transition-colors mb-4">
+                              Proceed to Checkout
+                            <i class="fas fa-arrow-right ms-2"></i>
+                         </button>
+                            
+                        @endif
 
                         <!-- Continue Shopping Link -->
                         <a href="{{ route('shop') }}" 
@@ -175,12 +184,18 @@ Cart
     </div>
 </section>
 @include('web.pages.partials.checkout-modal');
+@include('web.pages.partials.login-modal');
 <script>
 
   function openCheckoutModal() {
         document.getElementById('checkoutModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
+
+  function openSignInModal(){
+        document.getElementById('signinModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+  }  
 
     function closeCheckoutModal() {
         document.getElementById('checkoutModal').classList.add('hidden');
