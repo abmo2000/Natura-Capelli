@@ -39,12 +39,22 @@ class CreateProduct extends CreateRecord
             $data['has_sale'],
             $data['sale_price'],
         );
+
+        $data['_trial'] = [
+            'enabled' => $data['has_trial'] ?? false,
+             'price' => $data['trial_price']??null,
+            'capacity' => $data['trial_capacity']??null,
+            'image' => $data['trial_image']??null,
+        ];
+
+        unset(
+            $data['has_trial'],
+             $data['trial_price'],
+            $data['trial_capacity'],
+        );
         
         $this->saleData = $data['_sale'];
-        $this->trialData = [
-            'price' => $data['trial_price'],
-            'capacity' => $data['trial_capacity']
-        ];
+        $this->trialData = $data['_trial'];
 
         return $data;
         
@@ -66,10 +76,16 @@ class CreateProduct extends CreateRecord
                 'sale_price' => $sale['price'],
             ]);
         }
+           
+       $trial = $this->trialData;
+       if($trial['enabled']){
+           $this->record->trial()->create([
+              'price' => $this->trialData['price'] ?? 0,
+              'capacity' => $this->trialData['capacity'] ?? 0,
+              'image' => $trial['image'] ?? null
+           ]);
 
-        $this->record->trial()->create([
-           'price' => $this->trialData['price'] ?? 0,
-           'capacity' => $this->trialData['capacity'] ?? 0
-        ]);
+           
+       } 
     }
 }

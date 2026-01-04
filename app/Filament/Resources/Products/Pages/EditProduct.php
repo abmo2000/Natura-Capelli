@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\Products\Pages;
 
-use App\Filament\Resources\Products\ProductResource;
 use Filament\Actions\DeleteAction;
+use Illuminate\Support\Facades\Storage;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Products\ProductResource;
 
 class EditProduct extends EditRecord
 {
@@ -51,16 +52,26 @@ class EditProduct extends EditRecord
             'enabled' => $data['has_sale'] ?? false,
             'price' => $data['sale_price'] ?? null,
         ];
-
+        
         unset(
             $data['has_sale'],
             $data['sale_price'],
         );
         $this->saleData = $data['_sale'];
-         $this->trialData = [
-            'price' => $data['trial_price'],
-            'capacity' => $data['trial_capacity']
+        
+          $data['_trial'] = [
+            'enabled' => $data['has_trial'] ?? false,
+             'price' => $data['trial_price']??null,
+            'capacity' => $data['trial_capacity']??null,
+            'trial_image' => $data['trial_image']??null,
         ];
+
+        unset(
+            $data['has_trial'],
+             $data['trial_price'],
+            $data['trial_capacity'],
+        );
+          $this->trialData = $data['_trial'];
         return $data;
     }
     
@@ -74,6 +85,9 @@ class EditProduct extends EditRecord
         }
 
         $sale = $this->saleData;
+        $trial = $this->trialData;
+
+       
 
         if ($sale['enabled']) {
             $this->record->sale()->updateOrCreate(
@@ -86,9 +100,29 @@ class EditProduct extends EditRecord
             $this->record->sale()?->delete();
         }
 
-        $this->record->trial()->create([
-           'price' => $this->trialData['price'] ?? 0,
-           'capacity' => $this->trialData['capacity'] ?? 0
-        ]);
+
+        $existingTrial = $this->record->trial;
+        $oldImage = $existingTrial?->image;
+
+        
+
+     if($trial['enabled']){
+            
+            $this->record->trial()->updateOrCreate(
+                [],
+                [
+                    'price' => $this->trialData['price'] ?? 0,
+                    'capacity' => $this->trialData['capacity'] ?? 0,
+                    'image' => $trial['trial_image'] ?? null
+                ]
+            );
+
+        }else{
+            $this->record->trial()->delete(); 
+        }
+
+          if ($oldImage) {
+                Storage::disk('local')->delete($oldImage);
+          }
     }
 }

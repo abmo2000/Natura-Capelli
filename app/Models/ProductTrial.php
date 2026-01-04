@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -11,7 +12,7 @@ class ProductTrial extends Model
 {
     protected $guarded = ['id' , 'created_at' , 'updated_at'];
 
-  protected $appends = ['name', 'slug', 'image', 'description', 'category', 'routines'];
+  protected $appends = ['name', 'slug', 'description', 'category', 'routines'];
     public function product():BelongsTo{
         return $this->belongsTo(Product::class);
     }
@@ -27,12 +28,6 @@ class ProductTrial extends Model
         );
     }
 
-
-     public function image():Attribute{
-        return new Attribute(
-            get:fn()=>$this->product?->image
-        );
-    }
 
       public function slug():Attribute{
         return new Attribute(
@@ -53,7 +48,6 @@ class ProductTrial extends Model
 
 
 
-
     public function description():Attribute{
         return new Attribute(
             get:fn()=>$this->product?->description
@@ -66,13 +60,5 @@ class ProductTrial extends Model
             get:fn()=>$this->product?->routines
         );
     }
-
-
-
-
-
-
-
-
     
 }

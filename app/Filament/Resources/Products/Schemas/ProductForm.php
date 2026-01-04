@@ -74,101 +74,126 @@ class ProductForm
                         ->columnSpanFull(),
 
             
-            Section::make()
-                ->schema([
-                    TextInput::make('price')
-                        ->label('Price')
-                        ->required()
-                        ->numeric()
-                        ->minValue(1)
-                        ->inputMode('decimal'),
+                        Section::make()
+                            ->schema([
+                                TextInput::make('price')
+                                    ->label('Price')
+                                    ->required()
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->inputMode('decimal'),
 
-                         TextInput::make('capacity')
-                        ->label('Capacity')
-                        ->required()
-                        ->numeric()
-                        ->minValue(1),
+                                    TextInput::make('capacity')
+                                    ->label('Capacity')
+                                    ->required()
+                                    ->numeric()
+                                    ->minValue(1),
 
-                    Select::make('routines')
-                        ->label('Routines')
-                        ->required()
-                        ->multiple()
-                        ->relationship('routines', 'id')
-                        ->options(function () {
-                            return Routine::with('translations')
-                                ->get()
-                                ->mapWithKeys(function ($routine) {
-                                    $title = $routine->translations->first()?->title ?? 'No title';
-                                    return [$routine->id => $title];
-                                });
-                        })
-                        ->searchable(),
+                                Select::make('routines')
+                                    ->label('Routines')
+                                    ->required()
+                                    ->multiple()
+                                    ->relationship('routines', 'id')
+                                    ->options(function () {
+                                        return Routine::with('translations')
+                                            ->get()
+                                            ->mapWithKeys(function ($routine) {
+                                                $title = $routine->translations->first()?->title ?? 'No title';
+                                                return [$routine->id => $title];
+                                            });
+                                    })
+                                    ->searchable(),
 
-                    Select::make('category_id')
-                        ->label('Category')
-                        ->required()
-                        ->options(
-                            Category::with('translations')
-                                ->get()
-                                ->pluck('title', 'id')
-                        )
-                        ->searchable(),
-                ])
-                ->columns(2),
+                                Select::make('category_id')
+                                    ->label('Category')
+                                    ->required()
+                                    ->options(
+                                        Category::with('translations')
+                                            ->get()
+                                            ->pluck('title', 'id')
+                                    )
+                                    ->searchable(),
+                            ])
+                            ->columns(2),
 
-            // Featured + In Stock
-            Section::make()
-                ->schema( [
-                    Toggle::make('featured')->label('Featured'),
-                    Toggle::make('in_stock')->label('In Stock'),
-                ])
-                ->columns(2),
-            Section::make('Trial')
-            ->schema([
+                        // Featured + In Stock
+                        Section::make()
+                            ->schema( [
+                                Toggle::make('featured')->label('Featured'),
+                                Toggle::make('in_stock')->label('In Stock'),
+                            ])
+                            ->columns(2),
 
-                TextInput::make('trial_price')
-                    ->label('Trial Price')
-                    ->numeric()
-                    ->required()
-                    ->afterStateHydrated(function ($state, callable $set, $record) {
-                            $set('trial_price', $record?->trial?->price);
-                    })
-                    ->minValue(1),
+                        //Trials   
+                        Section::make('Trial')
+                        ->schema([
+                            Toggle::make('has_trial')
+                            ->label('Has Trial')
+                            ->reactive()
+                            ->afterStateHydrated(function ($state, callable $set, $record) {
+                                $set('has_trial', $record?->trial()->exists());
+                            }),
 
-                     TextInput::make('trial_capacity')
-                        ->label('Trial Capacity')
-                        ->required()
-                        ->afterStateHydrated(function ($state, callable $set, $record) {
-                            $set('trial_capacity', $record?->trial?->capacity);
-                         })
-                        ->numeric()
-                        ->minValue(1),
+                            Group::make([
 
-            ]),    
-              
-    Section::make('Sale')
-       ->schema([
-        Toggle::make('has_sale')
-            ->label('Has Sale')
-            ->reactive()
-            ->afterStateHydrated(function ($state, callable $set, $record) {
-                $set('has_sale', $record?->sale()->exists());
-            }),
+                                TextInput::make('trial_price')
+                                    ->label('Trial Price')
+                                    ->numeric()
+                                    ->required(fn (Get $get) => $get('has_trial'))
+                                    ->afterStateHydrated(function ($state, callable $set, $record) {
+                                            $set('trial_price', $record?->trial?->price);
+                                    })
+                                    ->minValue(1),
+                
+                                    TextInput::make('trial_capacity')
+                                        ->label('Trial Capacity')
+                                        ->required(fn (Get $get) => $get('has_trial'))
+                                        ->afterStateHydrated(function ($state, callable $set, $record) {
+                                            $set('trial_capacity', $record?->trial?->capacity);
+                                        })
+                                        ->numeric()
+                                        ->minValue(1),
+                
+                                        FileUpload::make('trial_image')
+                                        ->label('Trial Image')
+                                        ->required(fn (Get $get) => $get('has_trial'))
+                                        ->image()
+                                        ->imageEditor()
+                                        ->directory('trials')
+                                        ->afterStateHydrated(function ($state, callable $set, $record) {
+                                            $set('trial_image', $record?->trial?->image);
+                                        })
+                                        ->visibility('public'),
+                            ])->columns(1)
+                            ->visible(fn (Get $get) => $get('has_trial')),
 
-            Group::make([
-                TextInput::make('sale_price')
-                    ->label('Sale Price')
-                    ->numeric()
-                    ->required(fn (Get $get) => $get('has_sale'))
-                    ->afterStateHydrated(function ($state, callable $set, $record) {
-                            $set('sale_price', $record?->sale?->sale_price);
-                    })
-                    ->minValue(1),
-            ])
-            ->columns(1)
-            ->visible(fn (Get $get) => $get('has_sale')),
 
-         ]) ->columns(2), 
+                        ]),    
+                        
+                       //sale  
+                        Section::make('Sale')
+                        ->schema([
+                            Toggle::make('has_sale')
+                                ->label('Has Sale')
+                                ->reactive()
+                                ->afterStateHydrated(function ($state, callable $set, $record) {
+                                    $set('has_sale', $record?->sale()->exists());
+                                }),
+
+                                Group::make([
+                                    TextInput::make('sale_price')
+                                        ->label('Sale Price')
+                                        ->numeric()
+                                        ->required(fn (Get $get) => $get('has_sale'))
+                                        ->afterStateHydrated(function ($state, callable $set, $record) {
+                                                $set('sale_price', $record?->sale?->sale_price);
+                                        })
+                                        ->minValue(1),
+                                ])
+                                ->columns(1)
+                                ->visible(fn (Get $get) => $get('has_sale')),
+
+                            ]) ->columns(2), 
         ]);
     }
 }
