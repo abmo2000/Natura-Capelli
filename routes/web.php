@@ -35,7 +35,11 @@ Route::middleware(['locale'])->group(function(){
           Route::delete('remove/{product_id}' , [CartController::class , 'remove']);
           Route::delete('clear' , [CartController::class , 'clear']);
      });
-     Route::post('order' , [OrderController::class , 'store']);
+
+     Route::group(['middleware' => 'auth'] , function(){
+          Route::get('checkout' , [OrderController::class , "index"])->name('checkout');
+          Route::post('order' , [OrderController::class , 'store'])->name('checkout');
+     });
 });
 
 Route::get('locale/{locale}' , LocaleController::class)->name('lang-switch');

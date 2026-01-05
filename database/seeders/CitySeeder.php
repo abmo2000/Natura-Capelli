@@ -19,7 +19,7 @@ class CitySeeder extends Seeder
             // القاهرة والجيزة - Price 0, No discussion
             [
                 'has_discussion_for_delivery' => true,
-                'price' => 70,
+                'price' => 85,
                 'translations' => [
                     'ar' => ['name' => 'القاهرة'],
                     'en' => ['name' => 'Cairo']
@@ -27,7 +27,7 @@ class CitySeeder extends Seeder
             ],
             [
                 'has_discussion_for_delivery' => true,
-                'price' => 70,
+                'price' => 85,
                 'translations' => [
                     'ar' => ['name' => 'الجيزة'],
                     'en' => ['name' => 'Giza']

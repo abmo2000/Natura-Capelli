@@ -62,6 +62,10 @@ class User extends Authenticatable implements FilamentUser
          return $this->role_name === 'admin';
     }
 
+    public function city(){
+        return $this->belongsTo(City::class);
+    }
+
     public function canAccessPanel(Panel $panel): bool{
          return $this->isAdmin();
     }

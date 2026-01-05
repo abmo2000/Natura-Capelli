@@ -29,12 +29,14 @@ if (!function_exists('getBuisnessSettings')) {
 if(!function_exists('getCities')){
   
     function getCities(){
-         
+         Cache::forget('cities');
        return Cache::remember('cities' , now()->addDay(),function(){
                return City::query()->get()->map(function ($city) {
                       return [
                         'id' => $city->id,
                         'value' => $city?->name,
+                        'price' => $city->price,
+                        'has_discussion_for_delivery' => $city->has_discussion_for_delivery,
                       ];
                });
         });

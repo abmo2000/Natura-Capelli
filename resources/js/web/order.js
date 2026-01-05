@@ -1,12 +1,13 @@
-
+// Checkout form Alpine.js component
 document.addEventListener("alpine:init", () => {
-
-    Alpine.data('checkoutForm', (total = 0) => ({
+    Alpine.data('checkoutForm', (total = 0, userData = {}, hasDeliveryOption = false) => ({
         form: {
-            name: '',
-            email: '',
-            phone: '',
-            address: '',
+            name: userData.name || '',
+            email: userData.email || '',
+            phone: userData.phone || '',
+            address: userData.address || '',
+            city_id: userData.city_id || '',
+            delivery_option: '',
             payment_method: ''
         },
         errors: {
@@ -14,12 +15,100 @@ document.addEventListener("alpine:init", () => {
             email: '',
             phone: '',
             address: '',
+            city_id: '',
+            delivery_option: '',
             payment_method: ''
         },
-        total: total, 
+        total: total,
+        deliveryPrice: 0,
+        selectedCityHasDiscussion: false,
+        showDeliveryOptions: false,
+        hasDeliveryOption: hasDeliveryOption,
         loading: false,
         success: false,
         orderId: '',
+        
+        init() {
+            console.log('Alpine init - User Data:', userData);
+            console.log('Has Delivery Option:', this.hasDeliveryOption);
+            console.log('Form City ID:', this.form.city_id);
+            
+            // City selection is now mandatory - no pre-filling
+            // Delivery options will appear after user selects a city
+        },
+
+        checkCityDeliveryOptions() {
+            console.log('Checking city delivery options...');
+            const citySelect = document.getElementById('city_id');
+            if (!citySelect) {
+                console.log('City select not found!');
+                return;
+            }
+            
+            const selectedOption = citySelect.options[citySelect.selectedIndex];
+            console.log('Selected option:', selectedOption);
+            console.log('Selected value:', selectedOption?.value);
+            
+            if (selectedOption && selectedOption.value) {
+                const hasDiscussion = selectedOption.getAttribute('data-has-discussion') === 'true';
+                const deliveryPrice = parseFloat(selectedOption.getAttribute('data-delivery-price')) || 0;
+                
+                console.log('Has Discussion:', hasDiscussion);
+                console.log('Delivery Price:', deliveryPrice);
+                
+                this.selectedCityHasDiscussion = hasDiscussion;
+                this.deliveryPrice = deliveryPrice;
+                this.showDeliveryOptions = true;
+                
+                // If city has discussion option, reset delivery option and let user choose
+                if (hasDiscussion) {
+                    this.form.delivery_option = '';
+                    this.errors.delivery_option = '';
+                } else {
+                    // If city doesn't have discussion option, auto-set to proceed with delivery price
+                    this.form.delivery_option = 'proceed';
+                    this.errors.delivery_option = '';
+                }
+                
+                console.log('Show Delivery Options:', this.showDeliveryOptions);
+                console.log('Selected City Has Discussion:', this.selectedCityHasDiscussion);
+            } else {
+                console.log('No city selected');
+                this.showDeliveryOptions = false;
+                this.selectedCityHasDiscussion = false;
+                this.deliveryPrice = 0;
+                this.form.delivery_option = '';
+            }
+        },
+
+        onCityChange() {
+            this.validateField('city_id');
+            this.checkCityDeliveryOptions();
+        },
+
+        shouldShowDeliveryFee() {
+            // Show delivery fee breakdown if:
+            // 1. User selected "proceed" option (for cities with discussion)
+            // 2. City doesn't have discussion (auto-added delivery)
+            return this.deliveryPrice > 0 && 
+                   (this.form.delivery_option === 'proceed' || 
+                   (this.showDeliveryOptions && !this.selectedCityHasDiscussion));
+        },
+
+        calculateTotal() {
+            let finalTotal = this.total;
+            
+            // Add delivery price if:
+            // 1. User selected "proceed" option
+            // 2. OR city doesn't have discussion (auto-added)
+            if (this.deliveryPrice > 0 && 
+                (this.form.delivery_option === 'proceed' || 
+                (this.showDeliveryOptions && !this.selectedCityHasDiscussion))) {
+                finalTotal += this.deliveryPrice;
+            }
+            
+            return finalTotal;
+        },
         
         validateField(field) {
             this.errors[field] = '';
@@ -45,10 +134,30 @@ document.addEventListener("alpine:init", () => {
                     if (!this.form.phone.trim()) {
                         this.errors.phone = 'Phone number is required';
                     } else if (!this.isValidPhone(this.form.phone)) {
-                        this.errors.phone = 'Please enter a valid phone number (begin with +2)';
+                        this.errors.phone = 'Please enter a valid phone number (begin with +20)';
                     }
                     break;
                     
+                case 'address':
+                    if (!this.form.address.trim()) {
+                        this.errors.address = 'Address is required';
+                    } else if (this.form.address.trim().length < 10) {
+                        this.errors.address = 'Please provide a detailed address';
+                    }
+                    break;
+                    
+                case 'city_id':
+                    if (!this.form.city_id) {
+                        this.errors.city_id = 'Please select a city';
+                    }
+                    break;
+                    
+                case 'delivery_option':
+                    // Only validate if city has discussion option
+                    if (this.showDeliveryOptions && this.selectedCityHasDiscussion && !this.form.delivery_option) {
+                        this.errors.delivery_option = 'Please select a delivery option';
+                    }
+                    break;
                     
                 case 'payment_method':
                     if (!this.form.payment_method) {
@@ -63,6 +172,13 @@ document.addEventListener("alpine:init", () => {
             this.validateField('email');
             this.validateField('phone');
             this.validateField('address');
+            this.validateField('city_id');
+            
+            // Only validate delivery option if city has discussion option
+            if (this.showDeliveryOptions && this.selectedCityHasDiscussion) {
+                this.validateField('delivery_option');
+            }
+            
             this.validateField('payment_method');
             
             return !Object.values(this.errors).some(error => error !== '');
@@ -74,13 +190,17 @@ document.addEventListener("alpine:init", () => {
         },
         
         isValidPhone(phone) {
-            const regex = /^\+201[0125]\d{8}$/;
-            return regex.test(phone);
+           return true;
         },
         
         async submitOrder() {
             // Validate all fields
             if (!this.validateAll()) {
+                // Scroll to first error
+                const firstError = document.querySelector('.text-red-500');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                 return;
             }
             
@@ -103,7 +223,11 @@ document.addEventListener("alpine:init", () => {
                         email: this.form.email,
                         phone: this.form.phone,
                         address: this.form.address,
+                        city_id: this.form.city_id,
+                        delivery_option: this.form.delivery_option || 'proceed',
+                        delivery_price: this.shouldShowDeliveryFee() ? this.deliveryPrice : 0,
                         payment_method: this.form.payment_method,
+                        total: this.calculateTotal()
                     })
                 });
                 
@@ -113,24 +237,21 @@ document.addEventListener("alpine:init", () => {
                     this.success = true;
                     this.orderId = data.order_id || data.id || 'N/A';
                     
-                    // Reset form
-                    this.form = {
-                        name: '',
-                        email: '',
-                        phone: '',
-                        address: '',
-                        payment_method: ''
-                    };
-                    const modalContent = document.querySelector('#checkoutModal .overflow-y-auto');
-                    modalContent.scrollTo({ top: 0, behavior: 'smooth' });
-                    // Close modal after 3 seconds and redirect if needed
+                    // Scroll to success message
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    
+                    // Handle redirect based on payment method
                     setTimeout(() => {
-                        this.closeModal();
-                       
                         if(data.payment_method === 'instapay'){
                            window.open("heidi.a.rezk@instapay", '_blank');
                         }
-                         window.location.reload()
+                        
+                        // Redirect to order confirmation page or reload
+                        if (data.redirect_url) {
+                            window.location.href = data.redirect_url;
+                        } else {
+                            window.location.reload();
+                        }
                          
                     }, 2000);
                     
@@ -144,6 +265,14 @@ document.addEventListener("alpine:init", () => {
                                     : data.errors[key];
                             }
                         });
+                        
+                        // Scroll to first error
+                        setTimeout(() => {
+                            const firstError = document.querySelector('.text-red-500');
+                            if (firstError) {
+                                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }, 100);
                     } else {
                         alert(data.message || 'An error occurred. Please try again.');
                     }
@@ -154,13 +283,6 @@ document.addEventListener("alpine:init", () => {
                 alert('Network error. Please check your connection and try again.');
             } finally {
                 this.loading = false;
-            }
-        },
-        
-        closeModal() {
-            const modal = document.getElementById('checkoutModal');
-            if (modal) {
-                modal.classList.add('hidden');
             }
         }
     }));

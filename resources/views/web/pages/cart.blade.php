@@ -1,14 +1,14 @@
 @extends('web.layouts.main')
 
 @section('title')
-Cart
+{{ __('cart.cart') }}
 @endsection
 
 @section('content')
 <x-navbar></x-navbar>
 
 <section class="py-16 md:py-24 bg-black min-h-screen" x-data="cartManager()">
-    <h2 class="heading text-white text-center text-4xl font-bold mb-8 py-8">Cart</h2>
+    <h2 class="heading text-white text-center text-4xl font-bold mb-8 py-8">{{ __('cart.cart') }}</h2>
     <div class="container mx-auto px-4">
         @if($items->isEmpty())
             <!-- Empty Cart State -->
@@ -20,16 +20,16 @@ Cart
                     </div>
                     
                     <!-- Empty Cart Message -->
-                    <h3 class="text-white text-3xl font-bold mb-4">Your Cart is Empty</h3>
+                    <h3 class="text-white text-3xl font-bold mb-4">{{ __('cart.cart_empty_title') }}</h3>
                     <p class="text-gray-400 text-lg mb-8">
-                        Looks like you haven't added anything to your cart yet. Start shopping to fill it up!
+                        {{ __('cart.cart_empty_desc') }}
                     </p>
                     
                     <!-- Continue Shopping Button -->
                     <a href="{{ route('shop') }}" 
                        class="inline-flex items-center gap-2 bg-orange-100 text-black font-bold px-8 py-4 rounded-lg hover:bg-orange-200 transition-all duration-300 hover:scale-105">
                         <i class="fas fa-arrow-left"></i>
-                        Continue Shopping
+                        {{ __('cart.continue_shopping') }}
                     </a>
                 </div>
             </div>
@@ -81,7 +81,7 @@ Cart
                                                    class="text-white font-semibold text-xl hover:text-orange-100 transition-colors block mb-2">
                                                     {{ $item['name'] }}
                                                 </a>
-                                                <p class="text-gray-400 text-sm">Price: ${{ number_format($item['price'], 2) }}</p>
+                                                <p class="text-gray-400 text-sm">{{ __('cart.price') }}: ${{ number_format($item['price'], 2) }}</p>
                                             </div>
                                             <button @click="removeItem({{ $item['cart_item_id'] }})" 
                                                     :disabled="removing"
@@ -131,23 +131,23 @@ Cart
                 <!-- Right Side - Order Summary (Fixed/Sticky) -->
                 <div class="lg:col-span-1">
                     <div class="rounded-lg bg-grey p-6 lg:sticky lg:top-24">
-                        <h3 class="text-white text-2xl font-bold mb-6">Order Summary</h3>
+                        <h3 class="text-white text-2xl font-bold mb-6">{{ __('cart.order_summary') }}</h3>
 
                         <!-- Summary Items -->
                         <div class="space-y-4 mb-6">
                             <div class="flex justify-between text-gray-400">
-                                <span>Items ({{ $items->count() }})</span>
+                                <span>{{ __('cart.items') }} ({{ $items->count() }})</span>
                                 <span>${{ number_format($total, 2) }}</span>
                             </div>
                             
                             <div class="flex justify-between text-gray-400">
-                                <span>Delivery</span>
-                                <span>Calculated at checkout</span>
+                                <span>{{ __('cart.delivery') }}</span>
+                                <span>{{ __('cart.delivery_checkout') }}</span>
                             </div>
                             
                             <div class="border-t border-gray-700 pt-4">
                                 <div class="flex justify-between text-white text-xl font-bold">
-                                    <span>Total</span>
+                                    <span>{{ __('cart.total') }}</span>
                                     <span class="text-orange-100">${{ number_format($total, 2) }}</span>
                                 </div>
                             </div>
@@ -155,14 +155,14 @@ Cart
 
                         <!-- Checkout Button -->
                         @if(auth()->check())     
-                        <button  onclick="openCheckoutModal()" class="w-full bg-orange-100 text-black font-bold py-4 rounded-lg hover:bg-orange-200 transition-colors mb-4">
-                            Proceed to Checkout
+                        <button  @click="window.location.href='{{ route('checkout') }}'" class="w-full bg-orange-100 text-black font-bold py-4 rounded-lg hover:bg-orange-200 transition-colors mb-4">
+                            {{ __('cart.proceed_checkout') }}
                             <i class="fas fa-arrow-right ms-2"></i>
                         </button>
                         @else
 
                          <button onclick="openSignInModal()" class="w-full bg-orange-100 text-black font-bold py-4 rounded-lg hover:bg-orange-200 transition-colors mb-4">
-                              Proceed to Checkout
+                              {{ __('cart.proceed_checkout') }}
                             <i class="fas fa-arrow-right ms-2"></i>
                          </button>
                             
@@ -172,7 +172,7 @@ Cart
                         <a href="{{ route('shop') }}" 
                            class="block text-center text-gray-400 hover:text-white transition-colors">
                             <i class="fas fa-arrow-left me-2"></i>
-                            Continue Shopping
+                            {{ __('cart.continue_shopping') }}
                         </a>
 
                         <!-- Clear Cart Button -->
@@ -181,11 +181,11 @@ Cart
                                 class="w-full mt-4 border border-red-500 text-red-500 font-semibold py-3 rounded-lg hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                             <span x-show="!clearing">
                                 <i class="fas fa-trash me-2"></i>
-                                Clear Cart
+                                {{ __('cart.clear_cart') }}
                             </span>
                             <span x-show="clearing">
                                 <i class="fas fa-spinner fa-spin me-2"></i>
-                                Clearing...
+                                {{ __('cart.clearing') }}
                             </span>
                         </button>
                     </div>
@@ -206,7 +206,7 @@ Cart
         </div>
     </div>
 </section>
-@include('web.pages.partials.checkout-modal');
+{{-- @include('web.pages.partials.checkout-modal'); --}}
 @include('web.pages.partials.login-modal');
 <script>
 
@@ -285,12 +285,12 @@ function cartManager() {
                 }
             } catch (error) {
                 console.error('Error updating cart:', error);
-                this.showNotification('Failed to update cart', 'error');
+                this.showNotification("{{ __('cart.update_failed') }}", 'error');
             }
         },
 
         async removeItem(productId) {
-            if (!confirm('Are you sure you want to remove this item from your cart?')) {
+            if (!confirm("{{ __('cart.confirm_remove_item') }}")) {
                 return;
             }
             this.removing = true;
@@ -313,12 +313,12 @@ function cartManager() {
                 }
             } catch (error) {
                 console.error('Error removing item:', error);
-                this.showNotification('Failed to remove item', 'error');
+                this.showNotification("{{ __('cart.remove_failed') }}", 'error');
             }
         },
 
         async clearCart() {
-            if (!confirm('Are you sure you want to clear your entire cart?')) {
+            if (!confirm("{{ __('cart.confirm_clear_cart') }}")) {
                 return;
             }
 
@@ -343,7 +343,7 @@ function cartManager() {
                 }
             } catch (error) {
                 console.error('Error clearing cart:', error);
-                this.showNotification('Failed to clear cart', 'error');
+                this.showNotification("{{ __('cart.clear_failed') }}", 'error');
             } finally {
                 this.clearing = false;
             }
@@ -364,4 +364,3 @@ function cartManager() {
 </script>
 
 @endsection
-

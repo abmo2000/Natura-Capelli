@@ -26,4 +26,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 import '@web/slider'
 import '@web/cart'
-import '@web/order'
+ import '@web/order'

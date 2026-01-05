@@ -72,9 +72,10 @@ class CartService{
    
     public function getItems():Collection
     {
+      
          return CartItem::query()
-        ->with('product')
-        ->when(Auth::check() , 
+        ->with('product')  
+        ->when(!Auth::check() , 
         fn($q)=>$q->where('session_id', $this->getSessionId()),
         fn($q) => $q->where('user_id', Auth::id()))
         ->get()
@@ -110,7 +111,7 @@ class CartService{
      public function getCount(): int
     {
         $query = CartItem::query()
-        ->when(Auth::check() , 
+        ->when(!Auth::check() , 
         fn($q)=>$q->where('session_id', $this->getSessionId()),
         fn($q) => $q->where('user_id', Auth::id()));
 
