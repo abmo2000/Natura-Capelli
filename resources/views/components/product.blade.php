@@ -1,5 +1,12 @@
 @props(['product' => (object)[]])
-<div class="product-card cursor-pointer min-w-full md:min-w-0 md:flex-1 snap-start" x-data="productCard({{ $product->id }})">
+@php($type = $product->isTrial() ? 'trial' : 'product');
+@if( $type === 'trial')
+<div class="product-card cursor-pointer min-w-full md:min-w-0 md:flex-1 snap-start" x-data="productCard( 'trial', {{ $product->id }})">
+    
+@else
+    <div class="product-card cursor-pointer min-w-full md:min-w-0 md:flex-1 snap-start" x-data="productCard( 'product', {{ $product->id }})">
+
+@endif
     <div class="relative group">
         <!-- Main clickable link overlay -->
         <a href="{{route('products.show', $product->slug) . ($product->isTrial() ? '?trial=1' : '') }}" class="absolute inset-0 z-10 cursor-pointer"></a>

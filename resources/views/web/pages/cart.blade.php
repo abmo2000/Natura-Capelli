@@ -44,11 +44,34 @@ Cart
                             <div class="rounded-lg bg-grey p-6" x-data="{ updating: false, removing: false }">
                                 <div class="flex flex-col md:flex-row gap-6">
                                     <!-- Product Image -->
+                                    @if($item['product_type'] === 'package')
+                                           <div class="relative w-full md:w-48 h-40 md:h-32 flex items-center justify-center mx-auto">
+                                                @foreach(array_slice($item['images'], 0, 3) as $idx => $image)
+                                                    <div
+                                                        class="absolute transition-all duration-300 hover:scale-105"
+                                                        style="
+                                                            left: {{ 50 + ($idx - 1) * 22 }}%;
+                                                            transform: translateX(-50%) rotate({{ ($idx - 1) * 6 }}deg);
+                                                            z-index: {{ $idx + 1 }};" >
+                                                        <div class="bg-white rounded-lg shadow-lg p-2">
+                                                            <img
+                                                                src="{{ asset('storage/' . $image->image) }}"
+                                                                alt="{{ $item['name'] }}"
+                                                                class="w-20 h-28 md:w-16 md:h-24 object-contain"
+                                                            >
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                    @else
+                                    
                                     <div class="w-full md:w-32 h-32 flex-shrink-0">
                                         <img src="{{ asset('storage/' . $item['image']) }}" 
                                              class="w-full h-full object-cover rounded-lg" 
                                              alt="{{ $item['name'] }}">
                                     </div>
+
+                                    @endif
 
                                     <!-- Product Details -->
                                     <div class="flex-grow">
@@ -60,7 +83,7 @@ Cart
                                                 </a>
                                                 <p class="text-gray-400 text-sm">Price: ${{ number_format($item['price'], 2) }}</p>
                                             </div>
-                                            <button @click="removeItem({{ $item['product_id'] }})" 
+                                            <button @click="removeItem({{ $item['cart_item_id'] }})" 
                                                     :disabled="removing"
                                                     class="text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50">
                                                 <i class="fas fa-trash-alt" x-show="!removing"></i>
@@ -74,7 +97,7 @@ Cart
                                                 <!-- Quantity Input -->
                                                 <div class="flex items-center border border-gray-700 rounded-lg overflow-hidden">
                                                     <button type="button" 
-                                                            @click="decrementQuantity({{ $item['product_id'] }}, {{ $item['quantity'] }})"
+                                                            @click="decrementQuantity({{ $item['cart_item_id'] }}, {{ $item['quantity'] }})"
                                                             :disabled="updating || {{ $item['quantity'] }} <= 1"
                                                             class="px-4 py-2 text-white hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                                         <i class="fas fa-minus"></i>
@@ -84,7 +107,7 @@ Cart
                                                         <i class="fas fa-spinner fa-spin text-sm" x-show="updating"></i>
                                                     </div>
                                                     <button type="button" 
-                                                            @click="incrementQuantity({{ $item['product_id'] }}, {{ $item['quantity'] }})"
+                                                            @click="incrementQuantity({{ $item['cart_item_id'] }}, {{ $item['quantity'] }})"
                                                             :disabled="updating || {{ $item['quantity'] }} >= 99"
                                                             class="px-4 py-2 text-white hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                                         <i class="fas fa-plus"></i>
@@ -118,7 +141,7 @@ Cart
                             </div>
                             
                             <div class="flex justify-between text-gray-400">
-                                <span>Shipping</span>
+                                <span>Delivery</span>
                                 <span>Calculated at checkout</span>
                             </div>
                             
@@ -220,15 +243,20 @@ function cartManager() {
         showToast: false,
         toastMessage: '',
         toastType: 'success',
+        updating: false,
+        removing:false,
 
         async incrementQuantity(productId, currentQuantity) {
             if (currentQuantity < 99) {
+                this.updating = true;
                 await this.updateQuantity(productId, currentQuantity + 1);
             }
         },
 
         async decrementQuantity(productId, currentQuantity) {
+            
             if (currentQuantity > 1) {
+                this.updating = true;
                 await this.updateQuantity(productId, currentQuantity - 1);
             }
         },
@@ -248,9 +276,10 @@ function cartManager() {
                 const data = await response.json();
 
                 if (data.success) {
+                   
                     this.showNotification(data.message, 'success');
                     // Reload after short delay to show notification
-                    setTimeout(() => location.reload(), 500);
+                    setTimeout(() => location.reload(), 100);
                 } else {
                     this.showNotification(data.message, 'error');
                 }
@@ -264,7 +293,7 @@ function cartManager() {
             if (!confirm('Are you sure you want to remove this item from your cart?')) {
                 return;
             }
-
+            this.removing = true;
             try {
                 const response = await fetch(`/cart/remove/${productId}`, {
                     method: 'DELETE',
@@ -278,7 +307,7 @@ function cartManager() {
 
                 if (data.success) {
                     this.showNotification(data.message, 'success');
-                    setTimeout(() => location.reload(), 500);
+                    setTimeout(() => location.reload(), 100);
                 } else {
                     this.showNotification(data.message, 'error');
                 }

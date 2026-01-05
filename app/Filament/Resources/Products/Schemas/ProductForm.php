@@ -140,7 +140,7 @@ class ProductForm
                                     ->label('Trial Price')
                                     ->numeric()
                                     ->required(fn (Get $get) => $get('has_trial'))
-                                    ->afterStateHydrated(function ($state, callable $set, $record) {
+                                    ->afterStateHydrated(callback: function ($state, callable $set, $record) {
                                             $set('trial_price', $record?->trial?->price);
                                     })
                                     ->minValue(1),
@@ -160,10 +160,13 @@ class ProductForm
                                         ->image()
                                         ->imageEditor()
                                         ->directory('trials')
-                                        ->afterStateHydrated(function ($state, callable $set, $record) {
-                                            $set('trial_image', $record?->trial?->image);
+                                         ->visibility('public')
+                                        ->afterStateHydrated(function ($state, callable $set, $record) {                                           
+                                            if($record){
+                                                $set('trial_image', $record?->trial?->image);
+                                            }
                                         })
-                                        ->visibility('public'),
+                                       
                             ])->columns(1)
                             ->visible(fn (Get $get) => $get('has_trial')),
 

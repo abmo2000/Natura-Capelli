@@ -8,7 +8,8 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CartAddRequest;
 use App\Http\Requests\CartUpdateRequest;
-use App\Http\Requests\Cart\AddToCartRequest;
+
+
 
 class CartController extends Controller
 {
@@ -23,17 +24,19 @@ class CartController extends Controller
     {
         $items = $this->cartService->getItems();
         $total = $this->cartService->getTotal();
-        
+       
         return view('web.pages.cart', compact('items', 'total'));
     }
 
     /**
      * Add product to cart
      */
-    public function add(CartAddRequest $request): JsonResponse
+    public function add(CartAddRequest $request)
     {
+        
         try {
             $this->cartService->addProduct(
+                    $request->type,
                 $request->product_id,
                 $request->quantity
             );
@@ -48,6 +51,7 @@ class CartController extends Controller
             ], 200);
             
         } catch (\Exception $e) {
+          
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -61,6 +65,7 @@ class CartController extends Controller
      */
     public function update(CartUpdateRequest $request, int $productId): JsonResponse
     {
+       
         try {
             $this->cartService->updateQuantity($productId, $request->quantity);
             

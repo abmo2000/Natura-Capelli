@@ -17,11 +17,15 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Heidi',
-            'email' => 'heidi@gmail.com',
-            'password' => 'password@123',
-            'role_name'=> 'admin',
+        // User::factory()->create([
+        //     'name' => 'Heidi',
+        //     'email' => 'heidi@gmail.com',
+        //     'password' => 'password@123',
+        //     'role_name'=> 'admin',
+        // ]);
+
+        $this->call([
+            CitySeeder::class,
         ]);
     }
 }

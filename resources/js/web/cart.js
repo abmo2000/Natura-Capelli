@@ -1,7 +1,7 @@
 
 document.addEventListener('alpine:init' , () => {
     
-    Alpine.data('productCard' , (product_id) => {
+    Alpine.data('productCard' , (type , product_id) => {
           return {
                 adding: false,
                 showSuccess: false,
@@ -21,6 +21,7 @@ document.addEventListener('alpine:init' , () => {
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                             },
                             body: JSON.stringify({
+                                type : type,
                                 product_id: product_id,
                                 quantity: this.quantity
                             })
@@ -43,8 +44,9 @@ document.addEventListener('alpine:init' , () => {
                             alert(data.message || 'Failed to add item to cart');
                         }
                     } catch (error) {
+                        console.log(error.json);
                         console.error('Error adding to cart:', error);
-                        alert('An error occurred. Please try again.');
+                        // alert('An error occurred. Please try again.');
                     } finally {
                         this.adding = false;
                     }

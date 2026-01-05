@@ -3,13 +3,17 @@
 namespace App\Models;
 
 
+use App\Models\Interfaces\Cartable;
+use App\Models\Traits\CartableHandler;
+use App\Models\Traits\HasItems;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ProductTrial extends Model
+class ProductTrial extends Model implements Cartable
 {
+    use HasItems , CartableHandler;
     protected $guarded = ['id' , 'created_at' , 'updated_at'];
 
   protected $appends = ['name', 'slug', 'description', 'category', 'routines'];
@@ -46,6 +50,10 @@ class ProductTrial extends Model
         return true;
     }
 
+     public function getCartAlbum(): string|array
+    {
+        return $this->image;
+    }
 
 
     public function description():Attribute{

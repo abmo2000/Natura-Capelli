@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use App\Models\BuisnessSetting;
 use App\Models\Guest;
+use App\Models\Package;
+use App\Models\Product;
+use App\Models\ProductTrial;
 use App\Models\User;
 use App\Services\CartService;
 use Illuminate\Support\Facades\View;
@@ -49,9 +52,15 @@ class AppServiceProvider extends ServiceProvider
 
          Relation::enforceMorphMap([
             'user' => User::class,
-            'guest' => Guest::class
+            'guest' => Guest::class,
+            'product' => Product::class,
+            'producttrial' => ProductTrial::class,
+            'package' => Package::class
          ]);
+
+    
+               
     }
-
-
+  
+   
 }

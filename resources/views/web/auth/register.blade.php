@@ -14,7 +14,7 @@
 
     <div class="max-w-md mx-auto">
       <!-- Registration Card -->
-      <div class="bg-zinc-900 rounded-2xl shadow-2xl p-8 border border-zinc-800">
+      <div class="bg-gray-800 bg-opacity-95 backdrop-blur-md rounded-3xl shadow-2xl border border-gray-700 p-8 md:p-12">
         
         <!-- Display Validation Errors -->
         <x-errors></x-errors>
@@ -57,6 +57,14 @@
             :placeholder="trans('auth.address-placeholder')"
             rows="3"
             ></x-web-textarea>
+
+             <x-web-select
+            name="city_id"
+            :label="trans('auth.city') ?? 'City'"
+            :placeholder="trans('auth.city-placeholder') ?? 'Select your city'"
+            :options="getCities()"
+            required
+          />
        
 
           <x-web-input 
@@ -79,7 +87,7 @@
           <!-- Submit Button -->
           <button 
             type="submit" 
-            class="custom-btn text-center w-full cursor-pointer"
+            class="bg-orange-500 w-full cursor-pointer hover:bg-orange-600 text-white font-bold py-4 px-10 rounded-xl shadow-lg hover:shadow-orange-500/50 transition-all duration-300 transform hover:scale-105"
           >
             {{ trans('auth.register') ?? 'Create Account' }}
           </button>

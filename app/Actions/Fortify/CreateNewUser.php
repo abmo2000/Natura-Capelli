@@ -35,6 +35,8 @@ class CreateNewUser implements CreatesNewUsers
             'phone' => ['required' , 'unique:users,phone' , new PhoneValidationRule()],
 
             'address' => ['required' , 'string'],
+
+            'city_id' => ['required' , 'exists:cities,id'],
             
             'password' => $this->passwordRules(),
         ])->validate();
@@ -44,6 +46,7 @@ class CreateNewUser implements CreatesNewUsers
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
             'role_name' => 'customer',
+            'city_id' => $input['city_id'],
             'phone' => $input['phone'],
             'address' => $input['address'],
         ]);

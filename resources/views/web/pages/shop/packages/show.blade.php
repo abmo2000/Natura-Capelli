@@ -72,7 +72,7 @@ package
             <!-- RIGHT: PACKAGE DETAILS -->
             <div class="order-2 lg:order-2">
                 <h1 class="text-4xl font-bold text-white mb-4">
-                    {{ $package->title }}
+                    {{ $package->name }}
                 </h1>
 
                 <div class="bg-slate-800 rounded-xl p-6 mb-6">
@@ -166,7 +166,7 @@ package
                     </div>
 
                     <h3 class="text-white font-semibold mb-1">
-                        {{ $product->name }}
+                        {{ $product->title }}
                     </h3>
 
                     <p class="text-gray-400 text-sm">

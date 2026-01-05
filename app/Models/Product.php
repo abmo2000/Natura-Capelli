@@ -2,17 +2,22 @@
 
 namespace App\Models;
 
+use App\Models\Interfaces\Cartable;
+use App\Models\Interfaces\ProductBaseInterface;
+use App\Models\Traits\CartableHandler;
+use App\Models\Traits\HasItems;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Astrotomic\Translatable\Contracts\Translatable;
 use Astrotomic\Translatable\Translatable as AstrotomicTranslatable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Product extends Model implements Translatable
+class Product extends Model implements Translatable , Cartable
 {
-    use AstrotomicTranslatable;
+    use AstrotomicTranslatable , HasItems , CartableHandler;
 
     protected $guarded = ['id' , 'created_at' , 'updated_at'];
 
@@ -39,6 +44,10 @@ class Product extends Model implements Translatable
         return false;
     }
 
+     public function getCartAlbum(): string|array
+    {
+        return $this->image;
+    }
     public function trial(){
         return $this->hasOne(ProductTrial::class);
     }
@@ -49,8 +58,7 @@ class Product extends Model implements Translatable
          return ! empty($this->sale);
     }
 
-   
-
+    
      protected static function booted(): void
     {
         static::deleting(function (Product $product) {
