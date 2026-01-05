@@ -24,6 +24,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use App\Filament\Resources\BuisnessInfos\BuisnessInfoResource;
 use App\Filament\Resources\ContentManagement\ContentManagementResource;
+use App\Filament\Resources\OrderSettings\OrderSettingsResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -74,6 +75,13 @@ class AdminPanelProvider extends PanelProvider
                 ->group('Business Settings')
                 ->sort(2)
                 ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.business-info.*')),
+
+                         NavigationItem::make('Order Settings')
+                ->url(fn () => OrderSettingsResource::getUrl('index'))
+                ->icon('heroicon-o-building-office')
+                ->group('Business Settings')
+                ->sort(2)
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.order_settings.*')),
         ])
         ->navigationGroups([
             NavigationGroup::make('Business Settings')
