@@ -16,9 +16,19 @@ class PackagesApiController extends Controller
 
 
 
-      // $query = $query->when(($request->has('categories') && is_array($request->categories)) , fn($q) => $q->whereIn('category_id', $request->categories));
-    //    $query = $query->when(($request->has('routines') && is_array($request->routines)) , 
-    //    fn($q) => $q->whereRelation('routines', fn($q) => $q->whereIn('products_routines.routine_id' , $request->routines)));
+                $query = $query->when(
+                    $request->has('categories') && is_array($request->categories), 
+                    fn($q) => $q->whereHas('products', function($query) use ($request) {
+                        $query->whereIn('category_id', $request->categories);
+                    })
+                );
+
+                $query = $query->when(
+                    $request->has('routines') && is_array($request->routines), 
+                    fn($q) => $q->whereHas('products.routines', function($query) use ($request) {
+                        $query->whereIn('routine_id', $request->routines);
+                    })
+                );
 
         $perPage = $request->get('per_page', 9);
         $packages = $query->paginate($perPage);

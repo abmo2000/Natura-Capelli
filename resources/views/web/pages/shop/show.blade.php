@@ -8,7 +8,15 @@ product
 
 <x-navbar></x-navbar>
 
-<section class="py-16 md:py-24 bg-black" x-data="productCard({{ $product->id }})">
+ @php
+    $type = (isset($product) && method_exists($product, 'isTrial') && $product->isTrial()) ? 'trial' : 'product';
+    $productId = isset($product->id) ? $product->id : null;
+@endphp
+
+<section
+    class="py-16 md:py-24 bg-black"
+    x-data="productCard('{{ $type }}', {{ json_encode($productId) }})"
+>
     <div class="container mx-auto px-4">
         <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
             <!-- Product Image - Left Side -->

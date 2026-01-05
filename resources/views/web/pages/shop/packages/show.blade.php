@@ -7,7 +7,7 @@ package
 @section('content')
 <x-navbar />
 
-<section class="py-16 md:py-24 bg-black" x-data="productCard({{ $package->id }})">
+<section class="py-16 md:py-24 bg-black" x-data="productCard('package' ,{{ $package->id }})">
     <div class="container mx-auto px-4 py-8">
 
         <!-- ========================= -->

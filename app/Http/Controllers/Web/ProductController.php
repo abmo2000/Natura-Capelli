@@ -39,15 +39,15 @@ class ProductController extends Controller
     public function show(string $slug , Request $request)
     {
 
-        $isTrial = $request->query('trial') === '1';
-    
+        $isTrial = $request->query('trial') === 'trial';
+       
        $query = $isTrial 
        ? ProductTrial::query()->whereRelation('product' , fn($q) => $q->where('products.slug' , $slug))  
        : Product::query()->where('slug' , $slug);
 
         $product= $query->firstOrFail();
 
-
+     
            return view('web.pages.shop.show')->with(['product' => $product]);            
     }
 
