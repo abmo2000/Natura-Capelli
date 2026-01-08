@@ -47,14 +47,34 @@ class BuisnessInfoForm
           
                                if ($arTranslation?->value) {
                                    $decodedValue = json_decode($arTranslation->value, true);
-                                   $description = $decodedValue['facebook_link'] ?? '<p></p>';
-                                   $set('facebook_link', $description ?: '<p></p>');
+                                   $description = $decodedValue['facebook_link'] ?? '';
+                                   $set('facebook_link', $description ?: '');
                                    } else {
-                                       $set('facebook_link', '<p></p>');
+                                       $set('facebook_link', '');
                                    }
                           }
                             })
                     ->maxLength(255),
+
+                    TextInput::make('instagram_link')
+                        ->label('Instagram Link')
+                        ->url()
+                        ->prefix('https://')
+                        ->placeholder('instagram.com/yourprofile')
+                        ->afterStateHydrated(function ($state, callable $set, $record) {
+                            if ($record) {
+                                $arTranslation = $record->translations()->where('locale', 'en')->first();
+
+                                if ($arTranslation?->value) {
+                                    $decodedValue = json_decode($arTranslation->value, true);
+                                    $description = $decodedValue['instagram_link'] ?? '';
+                                    $set('instagram_link', $description ?: '');
+                                } else {
+                                    $set('instagram_link', '');
+                                }
+                            }
+                        })
+                        ->maxLength(255),
 
                 TextInput::make('whatsapp_number')
                     ->label('WhatsApp Number')

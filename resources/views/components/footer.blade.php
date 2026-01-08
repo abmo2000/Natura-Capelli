@@ -20,17 +20,18 @@
             <!-- Social Media Icons -->
             <div class="flex gap-4 items-center">
                 <!-- Facebook -->
-                <a href="https://www.facebook.com/share/17eCcJqX98/" class="icon" target="_blank">
+                <a href="{{ getBuisnessSettings('buisness-info')?->facebook_link }}" class="icon" target="_blank">
                     <i class="fab fa-facebook text-lg"></i>
                 </a>
                 
                 <!-- Instagram -->
-                {{-- <a href="https://www.instagram.com/" class="icon" target="_blank">
+                <a href="{{ getBuisnessSettings('buisness-info')?->instagram_link }}" class="icon" target="_blank">
                     <i class="fab fa-instagram text-lg"></i>
-                </a> --}}
+                </a>
                 
+        
                 <!-- Phone -->
-                <a href="https://wa.me/+201120964699" target="_blank" class="icon">
+                <a href={{ "https://wa.me/+20" . getBuisnessSettings('buisness-info')?->whatsapp_number}}  target="_blank" class="icon">
                     <i class="fab fa-whatsapp text-lg"></i>
                 </a>
             </div>
