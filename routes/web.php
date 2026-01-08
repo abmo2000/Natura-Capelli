@@ -37,7 +37,7 @@ Route::middleware(['locale'])->group(function(){
      });
 
      Route::group(['middleware' => 'auth'] , function(){
-          Route::get('checkout' , [OrderController::class , "index"])->name('checkout');
+          Route::get('checkout' , [OrderController::class , "index"])->middleware('checkOut-checker')->name('checkout');
           Route::post('order' , [OrderController::class , 'store'])->name('checkout');
      });
 });

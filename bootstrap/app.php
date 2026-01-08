@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
       $middleware->alias([
        'locale' => \App\Http\Middleware\SetLocale::class,
+       'checkOut-checker' => \App\Http\Middleware\CheckoutMiddleWare::class
       ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
