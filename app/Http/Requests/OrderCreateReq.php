@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
+use App\Rules\PhoneValidationRule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class OrderCreateReq extends FormRequest
@@ -13,7 +15,7 @@ class OrderCreateReq extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -23,13 +25,21 @@ class OrderCreateReq extends FormRequest
      */
     public function rules(): array
     {
+    
         return [
             "name" => 'nullable|string|max:255',
             'email' => 'required|email',
-            'phone' => 'required', 'string','regex:/^\+201[0125]\d{8}$/',
+            'phone' => ['required', 'string'],
             'address' => 'nullable|string|max:255',
+            'city_id' => 'required|exists:cities,id',
+            'delivery_option' => 'sometimes|in:proceed,discuss',
             'payment_method' => 'required|string',
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+       $this->merge(['delivery_option' => is_null($this->input('delivery_option')) ? 'proceed' : $this->input('delivery_option')]);    
     }
 
     public function messages()

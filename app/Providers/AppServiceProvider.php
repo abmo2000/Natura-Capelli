@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\BuisnessSetting;
 use App\Models\Guest;
 use App\Models\Package;
 use App\Models\Product;

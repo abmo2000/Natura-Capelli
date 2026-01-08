@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CartService{
- public function __construct(private CartStorageManager $manager)
+ public function __construct()
     {
     }
 
@@ -133,7 +133,7 @@ class CartService{
      public function clear(): bool
     {
         $query = CartItem::query()
-        ->when(Auth::check() , 
+        ->when(!Auth::check() , 
         fn($q)=>$q->where('session_id', $this->getSessionId()),
         fn($q) => $q->where('user_id', Auth::id()));
 
@@ -173,7 +173,7 @@ class CartService{
     {
         $cartItem = CartItem::query()
         ->where('id', $cartItemId)
-        ->when(Auth::check() , 
+        ->when(!Auth::check() , 
         fn($q)=>$q->where('session_id', $this->getSessionId()),
         fn($q) => $q->where('user_id', Auth::id()))
         ->first();
@@ -194,6 +194,38 @@ class CartService{
             'package' => Package::find($id),
             default => null,
         };
+    }
+
+     public function transferGuestCartToUser(int $userId): void
+    {
+        $sessionId = $this->getSessionId();
+        
+        // Get guest cart items
+        $guestItems = CartItem::where('session_id', $sessionId)
+            ->whereNull('user_id')
+            ->get();
+
+        foreach ($guestItems as $guestItem) {
+            // Check if user already has this item in cart
+            $userItem = CartItem::where('user_id', $userId)
+                ->where('product_type', $guestItem->product_type)
+                ->where('product_id', $guestItem->product_id)
+                ->first();
+
+            if ($userItem) {
+                // Merge quantities
+                $product = $guestItem->product;
+                
+                 $newQuantity = $userItem->quantity + $guestItem->quantity;
+                   
+                
+                $userItem->update(['quantity' => $newQuantity]);
+                $guestItem->delete();
+            } else {
+                // Transfer to user
+                $guestItem->update(['user_id' => $userId]);
+            }
+        }
     }
 
      protected function getSessionId(): string

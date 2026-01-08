@@ -5,12 +5,16 @@ namespace App\Providers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Fortify;
+use App\Services\CartService;
+use Illuminate\Support\Facades\Auth;
 use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use Illuminate\Support\Facades\RateLimiter;
+
+use Laravel\Fortify\Contracts\LoginResponse;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
@@ -31,7 +35,20 @@ class FortifyServiceProvider extends ServiceProvider
                return redirect()->route('cart');
             }
         };
-    });
+       });
+
+          $this->app->singleton(LoginResponse::class, function () {
+            return new class implements LoginResponse {
+                public function toResponse($request)
+                {
+                        
+                    app(CartService::class)->transferGuestCartToUser(auth()->user()->id);
+                    
+                    return redirect()->intended(route('home'))
+                        ->with('success', 'Welcome back!');
+                }
+            };
+        });
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Models\Interfaces\Cartable;
 use App\Models\Interfaces\ProductBaseInterface;
 use App\Models\Traits\CartableHandler;
 use App\Models\Traits\HasItems;
+use App\Models\Traits\HasOrders;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -14,10 +15,11 @@ use Astrotomic\Translatable\Translatable as AstrotomicTranslatable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Product extends Model implements Translatable , Cartable
 {
-    use AstrotomicTranslatable , HasItems , CartableHandler;
+    use AstrotomicTranslatable , HasItems , CartableHandler , HasOrders;
 
     protected $guarded = ['id' , 'created_at' , 'updated_at'];
 
@@ -57,6 +59,7 @@ class Product extends Model implements Translatable , Cartable
         $this->loadMissing(['sale']);
          return ! empty($this->sale);
     }
+
 
     
      protected static function booted(): void

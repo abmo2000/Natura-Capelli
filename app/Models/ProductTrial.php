@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Interfaces\Cartable;
 use App\Models\Traits\CartableHandler;
 use App\Models\Traits\HasItems;
+use App\Models\Traits\HasOrders;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductTrial extends Model implements Cartable
 {
-    use HasItems , CartableHandler;
+    use HasItems , CartableHandler , HasOrders;
     protected $guarded = ['id' , 'created_at' , 'updated_at'];
 
   protected $appends = ['name', 'slug', 'description', 'category', 'routines'];

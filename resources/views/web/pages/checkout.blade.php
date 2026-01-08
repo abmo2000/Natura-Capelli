@@ -12,6 +12,7 @@ Checkout
     email: '{{ auth()->check() ? auth()->user()->email ?? '' : '' }}',
     phone: '{{ auth()->check() ? auth()->user()->phone ?? '' : '' }}',
     address: '{{ auth()->check() ? addslashes(auth()->user()->address ?? '') : '' }}',
+    'city_id': '{{  auth()->check() ? auth()->user()->city_id ?? '' : '' }}',
 })">
   <div class="container mx-auto px-4">
     <h2 class="text-white text-center text-4xl md:text-5xl font-bold mb-16">{{ trans('checkout.checkout') }}</h2>
@@ -65,22 +66,20 @@ Checkout
             <label for="phone" class="block text-gray-300 text-sm font-medium mb-2">
               {{ trans('checkout.phone_number') }} <span class="text-red-500">*</span>
             </label>
-            <div class="flex">
-              <span class="inline-flex items-center px-3 bg-gray-900 border border-r-0 border-gray-600 rounded-l-lg text-white">
-                🇪🇬 +20
-              </span>
+            <div x-ignore.self>
               <input 
                 type="tel" 
                 id="phone" 
                 name="phone"
-                x-model="form.phone"
+                 x-model.lazy="form.phone"
                 @blur="validateField('phone')"
                 :placeholder="'{{ trans('checkout.phone_placeholder') ?? '+201148992811' }}'"
                 required
-                class="flex-1 px-4 py-3 bg-gray-900 border border-gray-600 rounded-r-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                class="auth-input"
                 :class="{ 'border-red-500': errors.phone }"
               >
             </div>
+
             <p x-show="errors.phone" x-text="errors.phone" class="text-red-500 text-sm mt-1"></p>
           </div>
 
@@ -110,6 +109,7 @@ Checkout
             <select 
               id="city_id" 
               name="city_id"
+               x-ref="citySelect"
               x-model="form.city_id"
               @change="onCityChange"
               required

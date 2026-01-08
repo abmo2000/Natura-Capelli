@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Interfaces\Cartable;
 use App\Models\Traits\CartableHandler;
 use App\Models\Traits\HasItems;
+use App\Models\Traits\HasOrders;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Astrotomic\Translatable\Contracts\Translatable;
@@ -14,7 +15,7 @@ use Astrotomic\Translatable\Translatable as AstrotomicTranslatable;
 
 class Package extends Model implements Translatable , Cartable
 {
-    use AstrotomicTranslatable , HasItems , CartableHandler;
+    use AstrotomicTranslatable , HasItems , CartableHandler , HasOrders;
 
   public $translationModel = \App\Models\Translations\PackageTranslation::class;
     protected $guarded = ['id' , 'created_at' , 'updated_at'];

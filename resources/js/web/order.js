@@ -29,57 +29,36 @@ document.addEventListener("alpine:init", () => {
         orderId: '',
         
         init() {
-            console.log('Alpine init - User Data:', userData);
-            console.log('Has Delivery Option:', this.hasDeliveryOption);
-            console.log('Form City ID:', this.form.city_id);
-            
-            // City selection is now mandatory - no pre-filling
-            // Delivery options will appear after user selects a city
+            this.checkCityDeliveryOptions();
         },
 
-        checkCityDeliveryOptions() {
-            console.log('Checking city delivery options...');
-            const citySelect = document.getElementById('city_id');
-            if (!citySelect) {
-                console.log('City select not found!');
-                return;
-            }
-            
-            const selectedOption = citySelect.options[citySelect.selectedIndex];
-            console.log('Selected option:', selectedOption);
-            console.log('Selected value:', selectedOption?.value);
-            
-            if (selectedOption && selectedOption.value) {
-                const hasDiscussion = selectedOption.getAttribute('data-has-discussion') === 'true';
-                const deliveryPrice = parseFloat(selectedOption.getAttribute('data-delivery-price')) || 0;
-                
-                console.log('Has Discussion:', hasDiscussion);
-                console.log('Delivery Price:', deliveryPrice);
-                
-                this.selectedCityHasDiscussion = hasDiscussion;
-                this.deliveryPrice = deliveryPrice;
-                this.showDeliveryOptions = true;
-                
-                // If city has discussion option, reset delivery option and let user choose
-                if (hasDiscussion) {
-                    this.form.delivery_option = '';
-                    this.errors.delivery_option = '';
-                } else {
-                    // If city doesn't have discussion option, auto-set to proceed with delivery price
-                    this.form.delivery_option = 'proceed';
-                    this.errors.delivery_option = '';
-                }
-                
-                console.log('Show Delivery Options:', this.showDeliveryOptions);
-                console.log('Selected City Has Discussion:', this.selectedCityHasDiscussion);
-            } else {
-                console.log('No city selected');
-                this.showDeliveryOptions = false;
-                this.selectedCityHasDiscussion = false;
-                this.deliveryPrice = 0;
-                this.form.delivery_option = '';
-            }
-        },
+       checkCityDeliveryOptions() {
+        this.$refs.citySelect.value = this.form.city_id || '';
+    const selectedOption = this.$refs.citySelect.selectedOptions[0];
+    if (!selectedOption || !selectedOption.value) {
+        this.showDeliveryOptions = false;
+        this.selectedCityHasDiscussion = false;
+        this.deliveryPrice = 0;
+        this.form.delivery_option = '';
+        return;
+    }
+
+    const hasDiscussion = selectedOption.dataset.hasDiscussion === 'true';
+    const deliveryPrice = parseFloat(selectedOption.dataset.deliveryPrice) || 0;
+
+    this.selectedCityHasDiscussion = hasDiscussion;
+    this.deliveryPrice = deliveryPrice;
+    this.showDeliveryOptions = true;
+
+    if (hasDiscussion) {
+        this.form.delivery_option = '';
+        this.errors.delivery_option = '';
+    } else {
+        this.form.delivery_option = 'proceed';
+        this.errors.delivery_option = '';
+    }
+},
+
 
         onCityChange() {
             this.validateField('city_id');
@@ -131,6 +110,7 @@ document.addEventListener("alpine:init", () => {
                     break;
                     
                 case 'phone':
+                     
                     if (!this.form.phone.trim()) {
                         this.errors.phone = 'Phone number is required';
                     } else if (!this.isValidPhone(this.form.phone)) {
@@ -225,9 +205,7 @@ document.addEventListener("alpine:init", () => {
                         address: this.form.address,
                         city_id: this.form.city_id,
                         delivery_option: this.form.delivery_option || 'proceed',
-                        delivery_price: this.shouldShowDeliveryFee() ? this.deliveryPrice : 0,
                         payment_method: this.form.payment_method,
-                        total: this.calculateTotal()
                     })
                 });
                 
