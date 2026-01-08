@@ -29,7 +29,7 @@ class OrderCreateReq extends FormRequest
         return [
             "name" => 'nullable|string|max:255',
             'email' => 'required|email',
-            'phone' => ['required', 'string'],
+            'phone' => ['required', 'string' , new PhoneValidationRule()],
             'address' => 'nullable|string|max:255',
             'city_id' => 'required|exists:cities,id',
             'delivery_option' => 'sometimes|in:proceed,discuss',

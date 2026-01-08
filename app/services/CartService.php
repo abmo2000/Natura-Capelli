@@ -86,15 +86,17 @@ class CartService{
                     return collect([]); 
                 }
 
+                $price = ($item->product_type === 'product' && $product->hasSale()) ? $product?->sale?->sale_price : $product->getCartPrice();
+
                 $attributes = [
                     'cart_item_id' => $item->id,
                     'product_id' => $product->id,
                     'product_type' => $item->product_type,
                     'name' => $product->getCartName(),
                     'description' => $product->getCartDescription(),
-                    'price' => $product->getCartPrice(),
+                    'price' => $price,
                     'quantity' => $item->quantity,
-                    'subtotal' => $product->getCartPrice() * $item->quantity,
+                    'subtotal' => $price * $item->quantity,
                     'attributes' => $item->attributes ?? [],
                 ];
                 if(is_array($product->getCartAlbum())){

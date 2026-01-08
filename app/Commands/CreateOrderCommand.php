@@ -31,8 +31,14 @@ class CreateOrderCommand{
              
              if(is_null($user->city_id)){     
                  $user->city_id = $city->id;
-                 $user->save();
-             }            
+                 
+             }
+             
+             if(is_null($user->phone)){
+                $user->phone = $data['phone'];
+             }
+
+             $user->save();
         
             $amount = $cartItems->sum(fn($item) => $item['price'] * $item['quantity']);
 
