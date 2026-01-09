@@ -221,7 +221,7 @@ document.addEventListener("alpine:init", () => {
                     // Handle redirect based on payment method
                     setTimeout(() => {
                         if(data.payment_method === 'instapay'){
-                           window.open("heidi.a.rezk@instapay", '_blank');
+                           window.open(userData.instapay, '_blank');
                         }
                         
                         // Redirect to order confirmation page or reload

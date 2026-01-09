@@ -32,7 +32,7 @@
             <button 
                 type="button"
                 @click="show = !show"
-                class="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-white transition"
+                class="absolute inset-y-0  ltr:right-0 rtl:left-0 ltr:pr-3 rtl:pl-3  flex items-center text-zinc-400 hover:text-white transition"
             >
                 <!-- Eye Icon (show password) -->
                 <svg x-show="!show" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

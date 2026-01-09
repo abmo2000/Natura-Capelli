@@ -36,33 +36,38 @@ class OrderInfolist
                             TextEntry::make('customer.phone')
                             ->label('Customer Phone')
                             ->placeholder('N/A'),
-                        TextEntry::make('address')
+                        TextEntry::make('customer_address')
                             ->label('Delivery Address')
                             ->columnSpanFull(), 
                         
                 RepeatableEntry::make('items')
                     ->label('Order Items')
                     ->schema([
-                        TextEntry::make('name')
+                        TextEntry::make('typeable.name')
                             ->label('Product'),
-                        TextEntry::make('pivot.quantity')
+                        TextEntry::make('quantity')
                             ->label('Qty'),
-                        TextEntry::make('pivot.amount')
+                        TextEntry::make('amount')
                         ->money('EGP')
                             ->label('amount'),    
-                        TextEntry::make('price')
+                        TextEntry::make('typeable.price')
                             ->label('Price')
                             ->money('EGP'),
+                       TextEntry::make('typeable.sale.sale_price')
+                        ->label('On Sale')
+                        ->money('EGP')
+                        ->placeholder('N/A')
+
                       
                     ])
                     ->columns(5)
                     ->columnSpanFull(),
 
-                    TextEntry::make('items_total')
+                    TextEntry::make('items')
                     ->label('Items Total')
                     ->money("EGP")
                     ->state(function ($record) {
-                        return $record->items->sum('pivot.amount');
+                        return $record->items->sum('amount');
                     })
                     ->weight('bold'),
                             

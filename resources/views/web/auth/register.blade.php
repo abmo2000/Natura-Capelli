@@ -97,9 +97,9 @@
         <div class="mt-6 text-center">
           <p class="text-white text-sm">
             {{ trans('auth.have-account') }} 
-            <a href="{{ route('login') }}" class="text-white hover:text-orange-100 font-medium transition">
+            <button onclick="openSignInModal()" class="text-white hover:text-orange-100 font-medium transition">
               {{ trans('auth.login') ?? 'Login here' }}
-            </a>
+            </button>
           </p>
         </div>
 
@@ -131,4 +131,12 @@
 
    </div>
  </section>
+ @include('web.pages.partials.login-modal');
+
+ <script>
+   function openSignInModal(){
+        document.getElementById('signinModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+  } 
+ </script>
 @endsection

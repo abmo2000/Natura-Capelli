@@ -21,7 +21,9 @@ class OrderController extends Controller
        
       $total =  $this->service->getTotal();
       $orderSettings = getBuisnessSettings('order_settings');
-        return view('web.pages.checkout')->with(['total' => $total ,  'orderSettings' => $orderSettings]);
+      $buisnessSettings = getBuisnessSettings('buisness-info');
+      
+        return view('web.pages.checkout')->with(['total' => $total ,  'orderSettings' => $orderSettings , 'buisnessSettings' => $buisnessSettings]);
 
     }
     public function store(OrderCreateReq $request):JsonResponse{

@@ -2,7 +2,7 @@
     <div class="bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
         <div class="p-6">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-white">Sign In</h2>
+                <h2 class="text-2xl font-bold text-white">{{ trans('auth.sign_in') }}</h2>
                 <button @click="closeModal()" class="text-gray-400 hover:text-gray-200">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -16,7 +16,7 @@
                     <svg class="w-5 h-5 me-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                     </svg>
-                    <span>Signed in successfully!</span>
+                    <span>{{ trans('login_success') }}</span>
                 </div>
             </div>
 
@@ -24,31 +24,48 @@
                 
                 <!-- Email -->
                 <div class="mb-4">
-                    <label for="email" class="block text-gray-300 font-medium mb-2">Email Address *</label>
+                    <label for="email" class="block text-gray-300 font-medium mb-2">{{ trans('auth.email') }} <span class="text-danger">*</span></label>
                     <input 
                         type="email" 
                         id="email" 
                         x-model="form.email"
                         :class="{ 'border-red-500': errors.email }"
                         @blur="validateField('email')"
-                        class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="john@example.com"
+                        class="auth-input"
+                        placeholder="{{ trans('auth.email-placeholder') }}"
                     >
                     <p x-show="errors.email" x-text="errors.email" class="text-red-400 text-sm mt-1"></p>
                 </div>
 
                 <!-- Password -->
-                <div class="mb-6">
-                    <label for="password" class="block text-gray-300 font-medium mb-2">Password *</label>
+                <div x-data="{ show: false }" class="mb-6 relative">
+                    <label for="password" class="block text-gray-300 font-medium mb-2">{{ trans('auth.pass')}} <span class="text-danger">*</span></label>
                     <input 
-                        type="password" 
+                         :type="show ? 'text' : 'password'"
                         id="password" 
                         x-model="form.password"
                         :class="{ 'border-red-500': errors.password }"
                         @blur="validateField('password')"
-                        class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="Enter your password"
+                        class="auth-input"
+                        placeholder="{{ trans('auth.password-placeholder') }}"
                     >
+
+                    
+            <button 
+                type="button"
+                @click="show = !show"
+                class="absolute inset-y-0  ltr:right-0 rtl:left-0 ltr:pr-3 rtl:pl-3  flex items-center text-zinc-400 hover:text-white transition"
+            >
+                <!-- Eye Icon (show password) -->
+                <svg x-show="!show" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <!-- Eye Slash Icon (hide password) -->
+                <svg x-show="show" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>
+            </button>
                     <p x-show="errors.password" x-text="errors.password" class="text-red-400 text-sm mt-1"></p>
                 </div>
 
@@ -57,7 +74,7 @@
                     type="submit" 
                     :disabled="loading"
                     :class="loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'"
-                    class="w-full text-white py-3 rounded-lg transition font-semibold flex items-center justify-center mb-4"
+                    class="bg-orange-500 w-full cursor-pointer hover:bg-orange-600 text-white font-bold py-4 px-10 rounded-xl shadow-lg hover:shadow-orange-500/50 transition-all duration-300 transform hover:scale-105"
                 >
                     <span x-show="!loading">Sign In</span>
                     <span x-show="loading" class="flex items-center">
@@ -65,7 +82,7 @@
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        Signing In...
+                        {{ trans('auth.signing_in') }}
                     </span>
                 </button>
             </form>
@@ -76,7 +93,7 @@
                     <div class="w-full border-t border-gray-700"></div>
                 </div>
                 <div class="relative flex justify-center text-sm">
-                    <span class="px-2 bg-gray-800 text-gray-400">Or continue with</span>
+                    <span class="px-2 bg-gray-800 text-gray-400">{{ trans('auth.continue-with') }}</span>
                 </div>
             </div>
 
@@ -88,14 +105,14 @@
                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                 </svg>
-                Sign in with Google
+                {{ trans('auth.google') }}
             </a>
 
             <!-- Register Link -->
             <div class="mt-6 text-center">
                 <p class="text-gray-400">
-                    Don't have an account? 
-                    <a href="{{ route('register') }}" class="text-blue-400 hover:text-blue-300 font-medium">Sign up</a>
+                    {{ trans('auth.have-account') }}  
+                    <a href="{{ route('register') }}" class="text-blue-400 hover:text-blue-300 font-medium">{{ trans('auth.sign_up') }}</a>
                 </p>
             </div>
         </div>

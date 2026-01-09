@@ -13,6 +13,7 @@ Checkout
     phone: '{{ auth()->check() ? auth()->user()->phone ?? '' : '' }}',
     address: '{{ auth()->check() ? addslashes(auth()->user()->address ?? '') : '' }}',
     'city_id': '{{  auth()->check() ? auth()->user()->city_id ?? '' : '' }}',
+    'instapay': '{{ $buisnessSettings->instapay_account ?? '' }}',
 })">
   <div class="container mx-auto px-4">
     <h2 class="text-white text-center text-4xl md:text-5xl font-bold mb-16">{{ trans('checkout.checkout') }}</h2>
@@ -20,6 +21,14 @@ Checkout
     <div class="max-w-md mx-auto">
       <div class="bg-gray-800 bg-opacity-95 backdrop-blur-md rounded-3xl shadow-2xl border border-gray-700 p-8 md:p-12">
     
+        <div x-show="success" x-transition class="mb-4 bg-green-900 border border-green-700 text-green-200 px-4 py-3 rounded-lg">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 me-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>{{ trans('checkout.order_success') }}</span>
+                </div>
+            </div>
         <form @submit.prevent="submitOrder" class="space-y-6">
           @csrf
 

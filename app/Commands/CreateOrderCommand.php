@@ -51,7 +51,7 @@ class CreateOrderCommand{
                 'customer_id' => $data['customer_id'],
                 'customer_type' => $data['customer_type'],
                 'payment_method' => $data['payment_method'],
-                'address' => $data['address'],
+                'customer_address' => $data['address'],
                 'amount' => $amount,
                 'status' => \App\Enums\OrderStatus::PENDING,
             ]);
