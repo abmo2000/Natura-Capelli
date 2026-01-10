@@ -50,4 +50,4 @@ Route::middleware(['locale'])->group(function(){
 Route::get('locale/{locale}' , LocaleController::class)->name('lang-switch');
 Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
-Route::get('queue', ArtisanController::class);
+Route::get('queue', ArtisanController::class)->middleware('secure');
