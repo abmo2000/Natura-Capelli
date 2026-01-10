@@ -154,9 +154,9 @@ class CartService{
     {
        
          $authConditions = !Auth::check() ? ['session_id' => $this->getSessionId()] : ['user_id' => Auth::id()];
-      
+          
        $cartItem =  CartItem::query()->firstOrCreate([
-           'product_type' => strtolower(basename(get_class($product))),
+           'product_type' => strtolower(class_basename($product)),
            'product_id' => $product->id,
            ...$authConditions
          ] , [

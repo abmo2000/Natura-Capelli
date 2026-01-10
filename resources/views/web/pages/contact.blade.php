@@ -56,14 +56,16 @@ Contact
         <div class="max-w-3xl mx-auto">
             <div class="bg-gray-800 bg-opacity-95 backdrop-blur-md rounded-3xl shadow-2xl border border-gray-700 p-8 md:p-12">
                 <h2 class="text-4xl font-bold text-white text-center mb-8">{{ trans('contact.send-message-header') }}</h2>
-                
-                <form action="" method="POST">
+                <x-errors>
+
+                </x-errors>
+                <form action="{{ route('contact-message') }}" method="POST">
                     @csrf
                     
                     <!-- Name Field -->
                     <div class="mb-6">
                         <label for="name" class="block text-white font-semibold mb-2 text-lg">{{ trans('auth.name') }}</label>
-                        <input type="text" id="name" name="name" required
+                        <input type="text" id="name" name="name"  value="{{ old('name') }}"
                             class="w-full px-5 py-4 border-2 border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 placeholder-gray-400"
                             placeholder="{{ trans('auth.name-placeholder') }}">
                     </div>
@@ -71,7 +73,7 @@ Contact
                     <!-- Email Field -->
                     <div class="mb-6">
                         <label for="email" class="block text-white font-semibold mb-2 text-lg">{{ trans('auth.email') }}</label>
-                        <input type="email" id="email" name="email" required
+                        <input type="email" id="email" name="email"  value="{{ old('email') }}" 
                             class="w-full px-5 py-4 border-2 border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 placeholder-gray-400"
                             placeholder="{{  trans('auth.email-placeholder') }}">
                     </div>
@@ -79,7 +81,8 @@ Contact
 
                     <div class="mb-6">
                         <label for="phone" class="block text-white font-semibold mb-2 text-lg">{{ trans('auth.phone') }}</label>
-                        <input type="tel" id="phone" name="phone" required
+                        <input type="tel" id="phone" name="phone" 
+                            value="{{ old('phone') }}"
                             class="w-full px-5 py-4 border-2 border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 placeholder-gray-400"
                             placeholder="{{ trans('auth.phone-placeholder') }}">
                     </div>
@@ -87,9 +90,9 @@ Contact
                     <!-- Message Field -->
                     <div class="mb-8">
                         <label for="message" class="block text-white font-semibold mb-2 text-lg">{{ trans('auth.message') }}</label>
-                        <textarea id="message" name="message" rows="6" required
+                        <textarea id="message" name="message" rows="6" 
                             class="w-full px-5 py-4 border-2 border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 resize-none placeholder-gray-400"
-                            placeholder="{{ trans('auth.message-placeholder') }}"></textarea>
+                            placeholder="{{ trans('auth.message-placeholder') }}">{{ old('message') }}</textarea>
                     </div>
 
                     <!-- Submit Button -->

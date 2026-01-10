@@ -12,11 +12,13 @@ use App\Http\Controllers\Web\PackagesController;
 use App\Http\Controllers\Web\PackagesApiController;
 use App\Http\Controllers\Web\ProductsApiCpntroller;
 use App\Http\Controllers\Web\Auth\GoogleAuthController;
+use App\Http\Controllers\Web\ContactController;
 
 Route::middleware(['locale'])->group(function(){
      Route::get('/', HomeController::class)->name('home');
 
      Route::view('/contact' , 'web.pages.contact')->name('contact');
+     Route::post('/contact-message' , ContactController::class)->name('contact-message');
 
      Route::view('about-us', 'web.pages.about-us')->name('about-us');
      
@@ -40,6 +42,8 @@ Route::middleware(['locale'])->group(function(){
           Route::get('checkout' , [OrderController::class , "index"])->middleware('checkOut-checker')->name('checkout');
           Route::post('order' , [OrderController::class , 'store'])->name('checkout');
      });
+
+
 });
 
 Route::get('locale/{locale}' , LocaleController::class)->name('lang-switch');
