@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
-use App\Rules\PhoneValidationRule;
+use App\Jobs\ContactMessageJob;
 use Illuminate\Http\Request;
+use App\Rules\PhoneValidationRule;
+use function Laravel\Prompts\info;
+use Illuminate\Support\Facades\Log;
+
+use App\Http\Controllers\Controller;
+use Devrabiul\ToastMagic\Facades\ToastMagic;
 use Illuminate\Support\Facades\Mail;
+
 
 class ContactController extends Controller
 {
@@ -29,13 +35,8 @@ class ContactController extends Controller
         'userMessage' => $request->message,  
     ];
 
-       $email = getBuisnessSettings('buisness-info')?->email ?? config('mail.from.address');
-        Mail::send('web.emails.contact', $data, function ($message) use ($data , $email) {
-            $message->to($email) 
-                    ->subject('New Contact Form Submission from ' . $data['name'])
-                    ->replyTo($data['email'], $data['name']);
-        });
-
-      return back()->with('success', 'Thank you for your message. We will get back to you soon!');
+      dispatch(new ContactMessageJob($data));
+     
+      return back()->with('success' , trans('contact.success-msg'));
     }
 }

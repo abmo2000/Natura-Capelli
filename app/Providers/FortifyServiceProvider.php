@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\RateLimiter;
 
 use Laravel\Fortify\Contracts\LoginResponse;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use Devrabiul\ToastMagic\ToastMagic;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 
@@ -31,8 +32,7 @@ class FortifyServiceProvider extends ServiceProvider
         return new class implements RegisterResponseContract {
             public function toResponse($request)
             {
-                toastr()->success(trans('auth.register-success-msg')??'Registered Successfully');
-               return redirect()->route('cart');
+               return redirect()->route('cart')->with('success' , trans('auth.register_success'));
             }
         };
        });

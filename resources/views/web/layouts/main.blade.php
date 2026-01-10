@@ -21,6 +21,7 @@
     </head>
     <body class="bg-black">
         @yield('content')
+        <x-flash-message></x-flash-message>
         <x-footer></x-footer>
         @stack('scripts_bottom')
     </body>
