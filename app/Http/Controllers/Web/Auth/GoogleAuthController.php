@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\CartService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
@@ -48,7 +49,9 @@ class GoogleAuthController extends Controller
             
             // Log the user in
             Auth::login($user, true);
-            
+             $cartService = app(CartService::class);
+             
+             $cartService->transferGuestCartToUser(Auth::id());
             // Redirect to dashboard or intended page
             return redirect()->intended('/cart');
             

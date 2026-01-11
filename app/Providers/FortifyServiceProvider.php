@@ -32,6 +32,8 @@ class FortifyServiceProvider extends ServiceProvider
         return new class implements RegisterResponseContract {
             public function toResponse($request)
             {
+                 app(CartService::class)->transferGuestCartToUser(auth()->user()->id);
+
                return redirect()->route('cart')->with('success' , trans('auth.register_success'));
             }
         };
