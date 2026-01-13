@@ -1,4 +1,5 @@
 // Checkout form Alpine.js component
+import intlTelInput from 'intl-tel-input';
 document.addEventListener("alpine:init", () => {
     Alpine.data('checkoutForm', (total = 0, userData = {}, hasDeliveryOption = false) => ({
         form: {
@@ -30,17 +31,50 @@ document.addEventListener("alpine:init", () => {
         
         init() {
             this.checkCityDeliveryOptions();
+            this.$nextTick(() => {
+                setTimeout(() => this.setupPhoneInput(), 100);
+            });
+        },
+
+         setupPhoneInput() {
+            const input = document.querySelector("#phone");
+         
+            if (!input) return;
+
+            this.iti = intlTelInput(input, {
+                initialCountry: "eg",
+                preferredCountries: ["eg", "sa", "ae"],
+                separateDialCode: true,
+                nationalMode: false,
+                autoPlaceholder: "polite",
+                loadUtils: () => import("intl-tel-input/utils")
+            });
+
+            // Set initial value if exists
+        
+            if (this.form.phone) {
+                this.iti.setNumber(this.form.phone);
+            }
+
+            // Update Alpine form data whenever user types or changes country
+            input.addEventListener('input', () => {
+                this.form.phone = this.iti.getNumber();
+            });
+
+            input.addEventListener('countrychange', () => {
+                this.form.phone = this.iti.getNumber();
+            });
         },
 
        checkCityDeliveryOptions() {
         this.$refs.citySelect.value = this.form.city_id || '';
-    const selectedOption = this.$refs.citySelect.selectedOptions[0];
-    if (!selectedOption || !selectedOption.value) {
-        this.showDeliveryOptions = false;
-        this.selectedCityHasDiscussion = false;
-        this.deliveryPrice = 0;
-        this.form.delivery_option = '';
-        return;
+        const selectedOption = this.$refs.citySelect.selectedOptions[0];
+        if (!selectedOption || !selectedOption.value) {
+            this.showDeliveryOptions = false;
+            this.selectedCityHasDiscussion = false;
+            this.deliveryPrice = 0;
+            this.form.delivery_option = '';
+            return;
     }
 
     const hasDiscussion = selectedOption.dataset.hasDiscussion === 'true';

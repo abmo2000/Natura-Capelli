@@ -75,16 +75,14 @@ Checkout
             <label for="phone" class="block text-gray-300 text-sm font-medium mb-2">
               {{ trans('checkout.phone_number') }} <span class="text-red-500">*</span>
             </label>
-            <div x-ignore.self>
+            <div>
               <input 
                 type="tel" 
                 id="phone" 
                 name="phone"
-                 x-model.lazy="form.phone"
-                @blur="validateField('phone')"
                 :placeholder="'{{ trans('checkout.phone_placeholder') ?? '+201148992811' }}'"
                 required
-                class="auth-input"
+                class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                 :class="{ 'border-red-500': errors.phone }"
               >
             </div>

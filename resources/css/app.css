@@ -75,6 +75,9 @@
       .iti {
     display: unset !important;
 }
+    .iti__selected-dial-code {
+        color: white !important;
+    }
 
     @media (max-width: 768px) {
     .carousel-container .product-card {
