@@ -21,6 +21,8 @@ class OrdersTable
     {
         return $table
             ->columns([
+                TextColumn::make('order_id')
+                ->searchable(),
                 TextColumn::make('customer_type')
                     ->searchable(),
                 TextColumn::make('customer.email') // Using relationship
@@ -49,8 +51,15 @@ class OrdersTable
             ])
             ->filters([
                  SelectFilter::make('status')
-            ->options(OrderStatus::toArray())
-            ->label('Status'),
+            ->options(OrderStatus::toAssociativeArray())
+            ->label('Status')
+            ->query(function(Builder $query, array $data): Builder {
+                
+                if (isset($data['value']) && $data['value'] !== '') {
+                    return $query->where('status', $data['value']);
+                }
+                 return $query;
+             }),
         
         // Filter by date range
         Filter::make('created_at')

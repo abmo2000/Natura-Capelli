@@ -66,6 +66,12 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsTo(City::class);
     }
 
+    public function orders(){
+        return $this->morphMany(Order::class , 'customer');
+    }
+
+    
+
     public function canAccessPanel(Panel $panel): bool{
          return $this->isAdmin();
     }

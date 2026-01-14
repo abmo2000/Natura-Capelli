@@ -12,8 +12,11 @@ Checkout
     email: '{{ auth()->check() ? auth()->user()->email ?? '' : '' }}',
     phone: '{{ auth()->check() ? auth()->user()->phone ?? '' : '' }}',
     address: '{{ auth()->check() ? addslashes(auth()->user()->address ?? '') : '' }}',
+    'insta_account': '{{ auth()->check() ? addslashes(auth()->user()->insta_account ?? '') : '' }}',
     'city_id': '{{  auth()->check() ? auth()->user()->city_id ?? '' : '' }}',
     'instapay': '{{ $buisnessSettings->instapay_account ?? '' }}',
+    'isFirstOrder': '{{ $isFirstOrder }}',
+
 })">
   <div class="container mx-auto px-4">
     <h2 class="text-white text-center text-4xl md:text-5xl font-bold mb-16">{{ trans('checkout.checkout') }}</h2>
@@ -80,6 +83,7 @@ Checkout
                 type="tel" 
                 id="phone" 
                 name="phone"
+                value="{{ auth()->user()->phone }}"
                 :placeholder="'{{ trans('checkout.phone_placeholder') ?? '+201148992811' }}'"
                 required
                 class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
@@ -163,7 +167,7 @@ Checkout
             </div>
 
             <!-- Proceed with Delivery Price -->
-            <div>
+           <div x-show="form.delivery_option == 'discuss'">
               <label class="flex items-start p-4 bg-gray-900 border rounded-lg cursor-pointer hover:border-orange-500 transition"
                 :class="form.delivery_option === 'proceed' ? 'border-orange-500' : 'border-gray-600'">
                 <input 
@@ -178,7 +182,17 @@ Checkout
                   <p class="text-gray-400 text-sm mt-1">
                     {{ trans('checkout.proceed_delivery_desc') }}
                     <span x-show="deliveryPrice > 0" class="text-orange-400 font-semibold">
-                      (+ EGP <span x-text="deliveryPrice.toFixed(2)"></span>)
+                        <template x-if="isFirstOrder">
+                            <span>
+                              <span class="text-gray-500 line-through mr-2">(+ EGP <span x-text="deliveryPrice.toFixed(2)"></span>)</span>
+                              <span class="text-green-400 font-semibold">(FREE Delivery - First Order!)</span>
+                            </span>
+                          </template>
+                          <template x-if="! isFirstOrder">
+                            <span class="text-orange-400 font-semibold">
+                              (+ EGP <span x-text="deliveryPrice.toFixed(2)"></span>)
+                            </span>
+                          </template>
                     </span>
                   </p>
                 </div>
@@ -195,15 +209,58 @@ Checkout
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
               </svg>
               <div class="flex-1">
-                <p class="text-blue-200 text-sm font-medium">{{ trans('checkout.delivery_included') }}</p>
-                <p class="text-blue-300 text-xs mt-1">
-                  {{ trans('checkout.delivery_fee_auto_added') }}: 
-                  <span class="font-semibold">EGP <span x-text="deliveryPrice.toFixed(2)"></span></span>
+               <span x-show="! isFirstOrder">{{ trans('checkout.delivery_included') }}</span>
+               <span x-show="isFirstOrder">First Order  - Free Delivery!</span>
+                 <p class="text-xs mt-1" :class="isFirstOrder ? 'text-green-300' : 'text-blue-300'">
+                  <template x-if="isFirstOrder">
+                    <span>
+                      {{ trans('checkout.delivery_fee_auto_added') }}: 
+                      <span class="line-through text-gray-400 mr-2">EGP <span x-text="deliveryPrice.toFixed(2)"></span></span>
+                      <span class="font-semibold text-green-400">FREE</span>
+                    </span>
+                  </template>
+                  <template x-if="! isFirstOrder">
+                    <span>
+                      {{ trans('checkout.delivery_fee_auto_added') }}: 
+                      <span class="font-semibold">EGP <span x-text="deliveryPrice.toFixed(2)"></span></span>
+                    </span>
+                  </template>
                 </p>
               </div>
             </div>
           </div>
+         
+          @else
+          <div x-show="deliveryPrice > 0" x-transition class="p-4 bg-blue-900 bg-opacity-30 border border-blue-600 rounded-lg">
+            <div class="flex items-start">
+              <svg class="w-5 h-5 text-blue-400 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+              </svg>
+              <div class="flex-1">
+               <span x-show="! isFirstOrder">{{ trans('checkout.delivery_included') }}</span>
+               <span x-show="isFirstOrder">First Order  - Free Delivery!</span>
+                 <p class="text-xs mt-1" :class="isFirstOrder ? 'text-green-300' : 'text-blue-300'">
+                  <template x-if="isFirstOrder">
+                    <span>
+                      {{ trans('checkout.delivery_fee_auto_added') }}: 
+                      <span class="line-through text-gray-400 mr-2">EGP <span x-text="deliveryPrice.toFixed(2)"></span></span>
+                      <span class="font-semibold text-green-400">FREE</span>
+                    </span>
+                  </template>
+                  <template x-if="! isFirstOrder">
+                    <span>
+                      {{ trans('checkout.delivery_fee_auto_added') }}: 
+                      <span class="font-semibold">EGP <span x-text="deliveryPrice.toFixed(2)"></span></span>
+                      
+                    </span>
+                  </template>
+                </p>
+              </div>
+            </div>
+          </div>
+
           @endif
+       
 
           <!-- Payment Method -->
           <div>
@@ -249,20 +306,42 @@ Checkout
             
             <p x-show="errors.payment_method" x-text="errors.payment_method" class="text-red-500 text-sm mt-2"></p>
           </div>
+          <div x-show="form.payment_method === 'instapay'">
+            <label for="insta_account" class="block text-gray-300 text-sm font-medium mb-2">
+              {{ trans('checkout.instapay_account') }} <span class="text-red-500">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="insta_account" 
+              x-model="form.insta_account"
+              @blur="validateField('insta_account')"
+              :placeholder="'{{ trans('checkout.instapay_account_placeholder') ?? 'example@instapay.com' }}'"
+              class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              :class="{ 'border-red-500': errors.insta_account }"
+            >
+            <p x-show="errors.insta_account" x-text="errors.insta_account" class="text-red-500 text-sm mt-1"></p>
+          </div>
 
           <!-- Order Total -->
           <div class="pt-6 border-t border-gray-600 space-y-2">
-            @if($orderSettings->has_delivery_option)
+          
             <!-- Show breakdown when delivery is added (either auto or selected) -->
-            <div x-show="shouldShowDeliveryFee()" class="flex justify-between items-center text-gray-400">
-              <span>{{ trans('checkout.subtotal') }}:</span>
-              <span x-text="'EGP ' + total.toFixed(2)"></span>
-            </div>
-            <div x-show="shouldShowDeliveryFee()" class="flex justify-between items-center text-gray-400">
-              <span>{{ trans('checkout.delivery_fee') }}:</span>
-              <span x-text="'EGP ' + deliveryPrice.toFixed(2)"></span>
-            </div>
-            @endif
+            <div x-show="form.delivery_option !== 'discuss'" class="flex justify-between items-center">
+                  <span class="text-gray-400">{{ trans('checkout.delivery_fee') }}:</span>
+                  <span>
+                    <template x-if="isFirstOrder">
+                      <span>
+                        <span class="line-through text-gray-500 mr-2">EGP <span x-text="deliveryPrice.toFixed(2)"></span></span>
+                        <span class="text-green-400 font-semibold">FREE</span>
+                      </span>
+                    </template>
+                    <template x-if="! isFirstOrder">
+                      <span class="text-gray-400">EGP <span x-text="deliveryPrice.toFixed(2)"></span></span>
+                     
+                    </template>
+                  </span>
+                </div>
+         
             <div class="flex justify-between items-center">
               <span class="text-gray-300 text-lg font-medium">{{ trans('checkout.order_total') }}:</span>
               <span class="text-green-500 text-2xl font-bold" x-text="'EGP ' + calculateTotal().toFixed(2)"></span>

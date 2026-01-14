@@ -22,8 +22,9 @@ class OrderController extends Controller
       $total =  $this->service->getTotal();
       $orderSettings = getBuisnessSettings('order_settings');
       $buisnessSettings = getBuisnessSettings('buisness-info');
-      
-        return view('web.pages.checkout')->with(['total' => $total ,  'orderSettings' => $orderSettings , 'buisnessSettings' => $buisnessSettings]);
+      $isUserFirstOrderDeliveryFree = (!Auth::user()->orders()->exists() && ($orderSettings?->allow_first_order_for_free));
+     
+        return view('web.pages.checkout')->with(['total' => $total ,  'orderSettings' => $orderSettings , 'buisnessSettings' => $buisnessSettings , 'isFirstOrder' => $isUserFirstOrderDeliveryFree]);
 
     }
     public function store(OrderCreateReq $request):JsonResponse{

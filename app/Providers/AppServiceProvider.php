@@ -2,13 +2,16 @@
 
 namespace App\Providers;
 
+use App\Events\OrderCreated;
+use App\Listeners\OrderCreationListener;
+use App\Models\User;
 use App\Models\Guest;
 use App\Models\Package;
 use App\Models\Product;
 use App\Models\ProductTrial;
-use App\Models\User;
 use App\Services\CartService;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
@@ -56,6 +59,12 @@ class AppServiceProvider extends ServiceProvider
             'producttrial' => ProductTrial::class,
             'package' => Package::class
          ]);
+
+
+     Event::listen(
+        OrderCreated::class,
+        [OrderCreationListener::class, 'handle']
+    );
 
     
                

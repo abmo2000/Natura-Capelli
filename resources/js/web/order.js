@@ -1,5 +1,6 @@
 // Checkout form Alpine.js component
 import intlTelInput from 'intl-tel-input';
+import { th } from 'intl-tel-input/i18n';
 document.addEventListener("alpine:init", () => {
     Alpine.data('checkoutForm', (total = 0, userData = {}, hasDeliveryOption = false) => ({
         form: {
@@ -8,6 +9,7 @@ document.addEventListener("alpine:init", () => {
             phone: userData.phone || '',
             address: userData.address || '',
             city_id: userData.city_id || '',
+            insta_account: userData.insta_account || '',
             delivery_option: '',
             payment_method: ''
         },
@@ -18,7 +20,8 @@ document.addEventListener("alpine:init", () => {
             address: '',
             city_id: '',
             delivery_option: '',
-            payment_method: ''
+            payment_method: '',
+             insta_account: '',
         },
         total: total,
         deliveryPrice: 0,
@@ -27,6 +30,7 @@ document.addEventListener("alpine:init", () => {
         hasDeliveryOption: hasDeliveryOption,
         loading: false,
         success: false,
+        isFirstOrder: userData.isFirstOrder,
         orderId: '',
         
         init() {
@@ -103,8 +107,9 @@ document.addEventListener("alpine:init", () => {
             // Show delivery fee breakdown if:
             // 1. User selected "proceed" option (for cities with discussion)
             // 2. City doesn't have discussion (auto-added delivery)
+            console.log(this.isFirstOrder);
             return this.deliveryPrice > 0 && 
-                   (this.form.delivery_option === 'proceed' || 
+                   (this.form.delivery_option !== 'discuss' || 
                    (this.showDeliveryOptions && !this.selectedCityHasDiscussion));
         },
 
@@ -114,12 +119,12 @@ document.addEventListener("alpine:init", () => {
             // Add delivery price if:
             // 1. User selected "proceed" option
             // 2. OR city doesn't have discussion (auto-added)
-            if (this.deliveryPrice > 0 && 
-                (this.form.delivery_option === 'proceed' || 
-                (this.showDeliveryOptions && !this.selectedCityHasDiscussion))) {
+            if (this.shouldShowDeliveryFee()) {
                 finalTotal += this.deliveryPrice;
             }
-            
+            if(finalTotal > this.total && this.isFirstOrder){
+                finalTotal -= this.deliveryPrice
+            }
             return finalTotal;
         },
         
@@ -166,18 +171,12 @@ document.addEventListener("alpine:init", () => {
                     }
                     break;
                     
-                case 'delivery_option':
-                    // Only validate if city has discussion option
-                    if (this.showDeliveryOptions && this.selectedCityHasDiscussion && !this.form.delivery_option) {
-                        this.errors.delivery_option = 'Please select a delivery option';
-                    }
-                    break;
-                    
                 case 'payment_method':
                     if (!this.form.payment_method) {
                         this.errors.payment_method = 'Please select a payment method';
                     }
                     break;
+               
             }
         },
         
@@ -240,6 +239,7 @@ document.addEventListener("alpine:init", () => {
                         city_id: this.form.city_id,
                         delivery_option: this.form.delivery_option || 'proceed',
                         payment_method: this.form.payment_method,
+                        insta_account: this.form.insta_account,
                     })
                 });
                 

@@ -4,6 +4,7 @@ namespace App\Commands;
 use App\Models\City;
 use App\Models\User;
 use App\Models\Order;
+use App\Events\OrderCreated;
 use App\Services\CartService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -38,12 +39,32 @@ class CreateOrderCommand{
                 $user->phone = $data['phone'];
              }
 
+             if(is_null($user->address)){
+                $user->address = $data['address'];
+             }
+
+             if(array_key_exists('insta_account' , $data)){
+                 $user->insta_account = $data['insta_account'];
+             }
+
              $user->save();
         
             $amount = $cartItems->sum(fn($item) => $item['price'] * $item['quantity']);
 
-            if(getBuisnessSettings('order_settings')?->has_delivery_option && $data['delivery_option'] === 'proceed'){
-                $amount += $city->price;
+             $data['delivery_price'] = $city->price;
+
+             $Totalamount = $amount +  $city->price;
+
+
+            if(getBuisnessSettings('order_settings')?->has_delivery_option && $data['delivery_option'] === 'discuss'){
+                $Totalamount =  $amount;
+                $data['delivery_price'] = 0;
+            }
+
+
+            if(getBuisnessSettings('order_settings')?->allow_first_order_for_free && ! $user->orders()->exists() ){
+                $Totalamount = $amount;
+                 $data['delivery_price'] = 0;
             }
 
             
@@ -52,13 +73,18 @@ class CreateOrderCommand{
                 'customer_type' => $data['customer_type'],
                 'payment_method' => $data['payment_method'],
                 'customer_address' => $data['address'],
-                'amount' => $amount,
+                'amount' => $Totalamount,
+                'delivery_option' => $data['delivery_option'],
+                'delivery_price' =>  $data['delivery_price'] ,
                 'status' => \App\Enums\OrderStatus::PENDING,
             ]);
 
             $this->storeItems($cartItems , $order);
               
               $cartService->clear();
+
+               event(new OrderCreated($cartItems , $amount , 
+               $order));
 
             return $order;
         });

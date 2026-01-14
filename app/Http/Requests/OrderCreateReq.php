@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use App\Rules\PhoneValidationRule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,7 +26,7 @@ class OrderCreateReq extends FormRequest
      */
     public function rules(): array
     {
-    
+      
         return [
             "name" => 'nullable|string|max:255',
             'email' => 'required|email',
@@ -34,6 +35,7 @@ class OrderCreateReq extends FormRequest
             'city_id' => 'required|exists:cities,id',
             'delivery_option' => 'sometimes|in:proceed,discuss',
             'payment_method' => 'required|string',
+            'insta_account' => [Rule::requiredIf(fn() => $this->input('payment_method') === 'instapay') , 'string' , 'max:50']
         ];
     }
 

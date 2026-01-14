@@ -86,13 +86,13 @@
                              x-transition:leave-end="opacity-0 scale-95"
                              class="absolute end-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
                             
-                            <a href="" 
+                            {{-- <a href="" 
                                class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
                                 <i class="fas fa-user-circle w-4"></i>
                                 <span>Profile</span>
-                            </a>
+                            </a> --}}
                             
-                            <div class="border-t border-gray-200 my-1"></div>
+                            {{-- <div class="border-t border-gray-200 my-1"></div> --}}
                             
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
