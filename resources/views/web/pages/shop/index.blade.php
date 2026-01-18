@@ -21,20 +21,20 @@ shop
                 @click="productType = 'products'; applyFilters()"
                 :class="productType === 'products' ? 'bg-orange-400 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'"
                 class="px-6 py-3 rounded-lg font-semibold transition-all duration-300">
-                Products 
+                {{ trans('shop.products') }}
             </button>
             <button 
                 @click="productType = 'packages'; applyFilters()"
                 :class="productType === 'packages' ? 'bg-orange-400 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'"
                 class="px-6 py-3 rounded-lg font-semibold transition-all duration-300">
-                  Packages 
+                  {{ trans('shop.packages') }}
             </button>
 
             <button 
                 @click="productType = 'trials'; applyFilters()"
                 :class="productType === 'trials' ? 'bg-orange-400 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'"
                 class="px-6 py-3 rounded-lg font-semibold transition-all duration-300">
-                  Trials
+                  {{ trans('shop.trial') }}
             </button>
         </div>
 
@@ -85,7 +85,7 @@ shop
                     <button 
                         @click="resetFilters()"
                         class="w-full bg-gray-800 text-white py-3 rounded-lg font-semibold hover:bg-gray-700 transition-all mb-3">
-                        Reset Filters
+                        {{ trans('shop.reset_filters') }}
                     </button>
                 </div>
             </aside>

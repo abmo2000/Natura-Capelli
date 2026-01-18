@@ -31,6 +31,16 @@
             margin: 20px 0;
             border-radius: 5px;
         }
+        .payment-note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .payment-note strong {
+            color: #856404;
+        }
         .items-table {
             width: 100%;
             border-collapse: collapse;
@@ -74,6 +84,14 @@
             <p><strong>Order Number:</strong> #{{ $order->order_id }}</p>
             <p><strong>Order Date:</strong> {{ $order->created_at->format('F d, Y h:i A') }}</p>
         </div>
+
+        @if($order->payment_method === 'instapay')
+        <div class="payment-note">
+            <h3 style="margin-top: 0; color: #856404;">Payment Instructions / تعليمات الدفع</h3>
+            <p><strong>English:</strong> If not paid, please pay {{ $totalAmount }} EGP to InstaPay address: <strong>heidi.a.rezk@instapay</strong></p>
+            <p><strong>العربية:</strong> إذا لم يتم الدفع بعد، من فضلك أدفع مبلغ {{ $totalAmount }} جنيه إلى عنوان انستاباي: <strong>heidi.a.rezk@instapay</strong></p>
+        </div>
+        @endif
         
         <h2>Order Items</h2>
         <table class="items-table">

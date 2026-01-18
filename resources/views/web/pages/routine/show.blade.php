@@ -36,9 +36,9 @@ Routine
         {{-- Related Products Section --}}
         
         <div class="mt-20">
-            <h2 class="text-3xl font-bold text-white mb-8 text-center">Related Products</h2>
+            <h2 class="text-3xl font-bold text-white mb-8 text-center">{{ trans('shop.realted_products') }}</h2>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-6">
         
                 @foreach ($routine->products as $product )
                   <x-product :product="$product"></x-product> 

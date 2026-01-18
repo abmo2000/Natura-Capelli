@@ -145,7 +145,7 @@ Checkout
           <!-- Delivery Options (Only shown for cities with discussion option) -->
           <div x-show="showDeliveryOptions && selectedCityHasDiscussion" x-transition class="space-y-3">
             <label class="block text-gray-300 text-sm font-medium mb-3">
-              {{ trans('checkout.delivery_options') }} <span class="text-red-500">*</span>
+              {{ trans('checkout.delivery_options') }} 
             </label>
 
             <!-- Discuss Delivery Option -->

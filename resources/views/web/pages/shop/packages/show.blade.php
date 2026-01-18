@@ -97,7 +97,7 @@ package
                 </div>
                 <!-- QUANTITY + ADD TO CART -->
                 <div>
-                    <label class="block text-white font-semibold mb-2">Quantity</label>
+                    <label class="block text-white font-semibold mb-2">{{ trans('shop.quantity') }}</label>
 
                     <div class="border border-gray-700 rounded-lg overflow-hidden bg-gray-900 w-fit">
                         <button
@@ -131,7 +131,7 @@ package
                         :disabled="adding"
                         class="mt-6 w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-10 rounded-lg font-semibold text-lg hover:from-orange-600 hover:to-red-600 transition flex items-center justify-center gap-2"
                     >
-                        <span x-show="!adding">Add to Cart</span>
+                        <span x-show="!adding">{{ trans('shop.addtocart') }}</span>
                         <span x-show="adding">Adding...</span>
                     </button>
 
@@ -140,7 +140,7 @@ package
                         x-transition
                         class="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg inline-block"
                     >
-                        Added to cart!
+                       {{ trans('shop.addtocart') }}
                     </div>
                 </div>
             </div>
@@ -151,7 +151,7 @@ package
         <!-- PRODUCTS GRID -->
         <!-- ========================= -->
         <h2 class="text-2xl font-bold text-white mb-6">
-            This Package Includes
+            {{ trans('shop.package_includes') }}
         </h2>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

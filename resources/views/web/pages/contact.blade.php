@@ -20,7 +20,7 @@ Contact
 
     <!-- Content -->
     <div class="container mx-auto px-4 relative z-10">
-           <h2 class="heading text-white text-center text-4xl font-bold mb-8 py-8">Contact</h2>
+           <h2 class="heading text-white text-center text-4xl font-bold mb-8 py-8">{{ trans('contact.contact') }}</h2>
         <!-- Contact Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
             

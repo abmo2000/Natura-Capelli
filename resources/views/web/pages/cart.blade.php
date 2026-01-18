@@ -81,7 +81,7 @@
                                                    class="text-white font-semibold text-xl hover:text-orange-100 transition-colors block mb-2">
                                                     {{ $item['name'] }}
                                                 </a>
-                                                <p class="text-gray-400 text-sm">{{ __('cart.price') }}: ${{ number_format($item['price'], 2) }}</p>
+                                                <p class="text-gray-400 text-sm">{{ __('cart.price') }}: EGP{{ number_format($item['price'], 2) }}</p>
                                             </div>
                                             <button @click="removeItem({{ $item['cart_item_id'] }})" 
                                                     :disabled="removing"
@@ -117,7 +117,7 @@
 
                                             <!-- Subtotal -->
                                             <div class="text-end">
-                                                <span class="text-orange-100 font-bold text-2xl">${{ number_format($item['subtotal'], 2) }}</span>
+                                                <span class="text-orange-100 font-bold text-2xl">EGP{{ number_format($item['subtotal'], 2) }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -137,7 +137,7 @@
                         <div class="space-y-4 mb-6">
                             <div class="flex justify-between text-gray-400">
                                 <span>{{ __('cart.items') }} ({{ $items->count() }})</span>
-                                <span>${{ number_format($total, 2) }}</span>
+                                <span>EGP{{ number_format($total, 2) }}</span>
                             </div>
                             
                             <div class="flex justify-between text-gray-400">
@@ -148,7 +148,7 @@
                             <div class="border-t border-gray-700 pt-4">
                                 <div class="flex justify-between text-white text-xl font-bold">
                                     <span>{{ __('cart.total') }}</span>
-                                    <span class="text-orange-100">${{ number_format($total, 2) }}</span>
+                                    <span class="text-orange-100">EGP{{ number_format($total, 2) }}</span>
                                 </div>
                             </div>
                         </div>

@@ -32,8 +32,8 @@ class OrderCreationListener implements ShouldQueue
      */
     public function handle(OrderCreated $event): void
     {
-            //  Mail::to($event->order->customer->email)
-            // ->send(new CustomerOrderConfirmation($event->order, $event->items, $event->totalAmount));
+             Mail::to($event->order->customer->email)
+            ->send(new CustomerOrderConfirmation($event->order, $event->items, $event->totalAmount));
 
         // Send email to admin
         $adminEmail = getBuisnessSettings('buisness-info')?->email;
