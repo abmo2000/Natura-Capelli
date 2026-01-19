@@ -39,6 +39,17 @@ class FortifyServiceProvider extends ServiceProvider
         };
        });
 
+          $this->app->singleton(LoginResponse::class, function () {
+            return new class implements LoginResponse {
+                public function toResponse($request)
+                {    
+                    app(CartService::class)->transferGuestCartToUser(auth()->user()->id);
+                    
+                    return response()->json();
+                }
+            };
+        });
+
     }
 
     /**
