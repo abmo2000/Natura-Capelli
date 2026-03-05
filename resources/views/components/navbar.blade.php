@@ -3,6 +3,7 @@
         userDropdown: false,
         scrolled: false, 
         cartCount: {{ $cartCount }},
+        theme: document.documentElement.classList.contains('theme-light') ? 'light' : 'dark',
         init() {
             window.addEventListener('scroll', () => {
                 this.scrolled = window.pageYOffset > 50;
@@ -10,6 +11,19 @@
             window.addEventListener('cart-updated', (e) => {
                 this.cartCount = e.detail.count;
             });
+            window.addEventListener('theme-changed', (e) => {
+                this.theme = e.detail.theme;
+            });
+        },
+        toggleTheme() {
+            const nextTheme = this.theme === 'light' ? 'dark' : 'light';
+
+            document.documentElement.classList.toggle('theme-light', nextTheme === 'light');
+            document.documentElement.dataset.theme = nextTheme;
+            localStorage.setItem('qaid_theme', nextTheme);
+
+            this.theme = nextTheme;
+            window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: nextTheme } }));
         },
         scrollToSection(sectionId) {
             const section = document.getElementById(sectionId);
@@ -42,16 +56,12 @@
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex space-x-8">
                     <a href="{{ route('home') }}" class="nav-link">{{ trans('navbar.home') }}</a>
-                    @if(Request::is('/'))    
-                    <a href="#about-section" @click.prevent="scrollToSection('about-section')" class="nav-link cursor-pointer">{{ trans('navbar.about') }}</a>
-                    @endif
                     <a href="{{ route('shop') }}" class="nav-link">{{ trans('navbar.shop') }}</a>
                     <a href="{{ route('routines.index') }}" class="nav-link">{{ trans('navbar.routine') }}</a>
                     <a href="{{ route('contact') }}" class="nav-link">{{ trans('navbar.contact') }}</a>
                     @if(Request::is('/'))    
                     <a href="#fearured-products" @click.prevent="scrollToSection('fearured-products')" class="nav-link cursor-pointer">{{ trans('navbar.featured-products') }}</a>
                     @endif
-                    <a href="{{ route('about-us') }}" class="nav-link">{{ trans('navbar.concepts') }}</a>
                 </div>
 
                 <!-- CTA Button -->
@@ -67,6 +77,14 @@
                               class="absolute -top-2 -end-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-lg">
                         </span>
                     </a>
+
+                    <!-- Theme Toggle -->
+                    <button @click="toggleTheme()"
+                            class="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all focus:outline-none focus:ring-2 focus:ring-orange-100"
+                            :title="theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
+                        <i x-show="theme === 'dark'" class="fas fa-sun text-white text-lg"></i>
+                        <i x-show="theme === 'light'" class="fas fa-moon text-white text-lg"></i>
+                    </button>
 
                     <!-- User Dropdown -->
                     @auth    
@@ -136,6 +154,14 @@
                         </span>
                     </a>
 
+                    <!-- Theme Toggle - Mobile -->
+                    <button @click="toggleTheme()"
+                            class="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all focus:outline-none"
+                            :title="theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
+                        <i x-show="theme === 'dark'" class="fas fa-sun text-white text-lg"></i>
+                        <i x-show="theme === 'light'" class="fas fa-moon text-white text-lg"></i>
+                    </button>
+
                     <!-- User Dropdown - Mobile -->
                     @auth
                         
@@ -204,11 +230,6 @@
         <div x-show="open" @click.away="open = false" x-transition class="md:hidden bg-footer backdrop-blur-md">
             <div class="px-4 pt-2 pb-4 space-y-2 bg-footer">
                 <a href="{{ route('home') }}" class="block nav-link">{{ trans('navbar.home') }}</a>
-                @if (Request::is('/'))    
-                <a href="#about-section" @click.prevent="scrollToSection('about-section')" class="block nav-link cursor-pointer">{{ trans('navbar.about') }}</a>
-                @endif
-               <a href="{{ route('about-us') }}" class="block nav-link">{{ trans('navbar.concepts') }}</a>
-
                 <a href="{{ route('shop') }}" class="block nav-link">{{ trans('navbar.shop') }}</a>
                 <a href="{{ route('routines.index') }}" class="block nav-link">{{ trans('navbar.routine') }}</a>
                 <a href="{{ route('contact') }}" class="block nav-link">{{ trans('navbar.contact') }}</a>

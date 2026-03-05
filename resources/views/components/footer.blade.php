@@ -8,10 +8,9 @@
 
             <!-- Middle Section - Navigation -->
             <div class="flex flex-col gap-3 items-center">
-                <h3 class="text-white font-bold text-xl tracking-wide">Natura Capelli</h3>
+                <h3 class="text-white font-bold text-xl tracking-wide">Qaid-eg</h3>
                 <div class="flex gap-6">
                     <a href="{{ route('home') }}" class="footer-link">{{ trans('navbar.home') }}</a>
-                    <a href="{{ route('about-us') }}" class="footer-link">{{ trans('navbar.concepts') }}</a>
                     <a href="{{ route('shop') }}" class="footer-link">{{ trans('navbar.shop') }}</a>
                     <a href="{{ route('contact') }}" class="footer-link">{{ trans('navbar.contact') }}</a>
                 </div>
@@ -40,10 +39,10 @@
         <!-- Bottom Section - Copyright & Credits -->
         <div class="pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
             <p class="text-gray-500">
-                Copyright © <span id="currentYear">2026</span> Natura Capelli. All rights reserved.
+                Copyright © <span id="currentYear">2026</span> Qaid-eg. All rights reserved.
             </p>
             <p class="text-gray-500">
-                Developed by <a href="#" class="text-white font-semibold hover:text-gray-300 transition">Natura Capelli</a>
+                Developed by <a href="#" class="text-white font-semibold hover:text-gray-300 transition">Qaid-eg</a>
             </p>
         </div>
     </div>

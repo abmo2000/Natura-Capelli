@@ -2,7 +2,6 @@
 namespace App\Commands;
 
 use App\Models\City;
-use App\Models\User;
 use App\Models\Order;
 use App\Events\OrderCreated;
 use App\Services\CartService;
@@ -21,8 +20,10 @@ class CreateOrderCommand{
      public function handle(array $data, \Closure $next)
     {
         $order = DB::transaction(function () use ($data) {
-        
-            $user =  User::query()->where('role_name' , 'customer')->findOrFail(Auth::id());
+
+            $user = (($data['customer_type'] ?? null) === 'user' && Auth::check())
+                ? Auth::user()
+                : null;
 
             $cartService = new CartService();
 
@@ -30,24 +31,26 @@ class CreateOrderCommand{
 
              $city = City::query()->findOrFail($data['city_id']);
              
-             if(is_null($user->city_id)){     
+                 if($user && is_null($user->city_id)){
                  $user->city_id = $city->id;
                  
              }
              
-             if(is_null($user->phone)){
+                 if($user && is_null($user->phone)){
                 $user->phone = $data['phone'];
              }
 
-             if(is_null($user->address)){
+                 if($user && is_null($user->address)){
                 $user->address = $data['address'];
              }
 
-             if(array_key_exists('insta_account' , $data)){
+                 if($user && array_key_exists('insta_account' , $data)){
                  $user->insta_account = $data['insta_account'];
              }
 
-             $user->save();
+                 if($user){
+                     $user->save();
+                 }
         
             $amount = $cartItems->sum(fn($item) => $item['price'] * $item['quantity']);
 
@@ -62,7 +65,7 @@ class CreateOrderCommand{
             }
 
 
-            if(getBuisnessSettings('order_settings')?->allow_first_order_for_free && ! $user->orders()->exists() ){
+            if($user && getBuisnessSettings('order_settings')?->allow_first_order_for_free && ! $user->orders()->exists() ){
                 $Totalamount = $amount;
                  $data['delivery_price'] = 0;
             }

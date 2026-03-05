@@ -27,6 +27,12 @@ class ProductsApiCpntroller extends Controller
                 : $q->whereHas('routines', fn($subQ) => $subQ->whereIn('routines.id', $request->routines))
         );
 
+        $query = $query->when(($request->has('brands') && is_array($request->brands)),
+            fn($q) => $is_trial === "true"
+                ? $q->whereHas('product', fn($subQ) => $subQ->whereIn('brand', $request->brands))
+                : $q->whereIn('brand', $request->brands)
+        );
+
         $perPage = $request->get('per_page', 9);
         $products = $query->paginate($perPage);
 

@@ -1,7 +1,7 @@
 @extends('web.layouts.main')
 
 @section('title')
-Routine
+Gaming Bundle
 @endsection
 
 @section('content')

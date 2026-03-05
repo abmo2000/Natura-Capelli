@@ -38,6 +38,10 @@ class ProductsTable
                         });
                     }),
 
+                TextColumn::make('brand')
+                    ->searchable()
+                    ->sortable(),
+
                    TextColumn::make('price')
                    ->sortable(),
                    

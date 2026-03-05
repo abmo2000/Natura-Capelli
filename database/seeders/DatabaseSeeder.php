@@ -17,12 +17,14 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Heidi',
-            'email' => 'heidi@gmail.com',
-            'password' => 'password@123',
-            'role_name'=> 'admin',
-        ]);
+        User::query()->updateOrCreate(
+            ['email' => 'hanyqaid63@gmail.com'],
+            [
+                'name' => 'Hany Qaid',
+                'password' => 'RB*I3I#xKXk.X^Q6ki:*:#*@:+#1N/031`(',
+                'role_name'=> 'admin',
+            ]
+        );
 
         $this->call([
             CitySeeder::class,

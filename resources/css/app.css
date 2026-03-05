@@ -49,6 +49,31 @@
         @apply w-full px-5 py-4 border-2 border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 placeholder-gray-400
     }
 
+    .app-body {
+        @apply bg-black;
+        transition: filter 0.25s ease;
+    }
+
+    html.theme-light {
+        color-scheme: light;
+    }
+
+    html:not(.theme-light) {
+        color-scheme: dark;
+    }
+
+    html.theme-light .app-body {
+        filter: invert(1) hue-rotate(180deg);
+    }
+
+    html.theme-light img,
+    html.theme-light video,
+    html.theme-light iframe,
+    html.theme-light canvas,
+    html.theme-light [style*='background-image'] {
+        filter: invert(1) hue-rotate(180deg);
+    }
+
     .scrollbar-thin::-webkit-scrollbar {
       width: 8px;
     }
@@ -72,9 +97,17 @@
         scrollbar-color: #4a5568 transparent;
     }
 
-      .iti {
-    display: unset !important;
-}
+    .iti {
+        display: block !important;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .iti input,
+    .iti input[type='tel'] {
+        width: 100% !important;
+    }
+
     .iti__selected-dial-code {
         color: white !important;
     }

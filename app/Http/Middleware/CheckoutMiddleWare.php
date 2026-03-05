@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Services\CartService;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckoutMiddleWare
@@ -17,13 +16,15 @@ class CheckoutMiddleWare
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!Auth::check()){
-            abort(403);
-        }
-
         $cartService = app(CartService::class);
 
         if($cartService->isEmpty()){
+            if($request->expectsJson()){
+                return response()->json([
+                    'message' => 'cart is empty'
+                ], 422);
+            }
+
             return redirect()->route('cart');
         }
 

@@ -12,11 +12,6 @@
         <a href="{{ route('products.show', $product->slug) . ($product->isTrial() ? '?trial=trial' : '') }}"
            class="absolute inset-0 z-10 cursor-pointer"></a>
         
-        @if($product->isTrial())
-        <div class="absolute top-4 start-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg z-20 pointer-events-none">
-            {{ trans('shop.trial') }}
-        </div>
-        @endif
         <!-- Sale Badge -->
         @if($product->hasSale())
         <div class="absolute top-4 start-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg z-20 pointer-events-none">

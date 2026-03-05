@@ -73,6 +73,16 @@ class ProductForm
                         ->visibility('public')
                         ->columnSpanFull(),
 
+                    FileUpload::make('images')
+                        ->label('Gallery Images')
+                        ->image()
+                        ->imageEditor()
+                        ->multiple()
+                        ->reorderable()
+                        ->directory('products')
+                        ->visibility('public')
+                        ->columnSpanFull(),
+
             
                         Section::make()
                             ->schema([
@@ -89,9 +99,13 @@ class ProductForm
                                     ->numeric()
                                     ->minValue(1),
 
+                                    TextInput::make('brand')
+                                    ->label('Brand')
+                                    ->required()
+                                    ->maxLength(255),
+
                                 Select::make('routines')
                                     ->label('Routines')
-                                    ->required()
                                     ->multiple()
                                     ->relationship('routines', 'id')
                                     ->options(function () {

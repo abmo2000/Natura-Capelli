@@ -23,6 +23,10 @@ class Product extends Model implements Translatable , Cartable
 
     protected $guarded = ['id' , 'created_at' , 'updated_at'];
 
+    protected $casts = [
+        'images' => 'array',
+    ];
+
     public $translatedAttributes = ['name' , 'description'];
      public $translationModel = \App\Models\Translations\ProductTranslation::class;
     public function routines():BelongsToMany{
@@ -50,6 +54,18 @@ class Product extends Model implements Translatable , Cartable
     {
         return $this->image;
     }
+
+    public function getGalleryImagesAttribute(): array
+    {
+        $images = is_array($this->images) ? $this->images : [];
+
+        return collect([$this->image, ...$images])
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+    }
+
     public function trial(){
         return $this->hasOne(ProductTrial::class);
     }
@@ -65,9 +81,10 @@ class Product extends Model implements Translatable , Cartable
      protected static function booted(): void
     {
         static::deleting(function (Product $product) {
-            // Delete the image file when the routine is deleted
-            if ($product->image) {
-                Storage::disk('local')->delete($product->image);
+            $images = is_array($product->images) ? $product->images : [];
+
+            foreach (collect([$product->image, ...$images])->filter()->unique() as $image) {
+                Storage::disk('local')->delete($image);
             }
         });
 

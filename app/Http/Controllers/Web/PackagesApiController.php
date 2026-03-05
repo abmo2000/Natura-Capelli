@@ -30,6 +30,13 @@ class PackagesApiController extends Controller
                     })
                 );
 
+                $query = $query->when(
+                    $request->has('brands') && is_array($request->brands),
+                    fn($q) => $q->whereHas('products', function ($query) use ($request) {
+                        $query->whereIn('brand', $request->brands);
+                    })
+                );
+
         $perPage = $request->get('per_page', 9);
         $packages = $query->paginate($perPage);
 

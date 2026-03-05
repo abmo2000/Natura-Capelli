@@ -20,8 +20,6 @@ Route::middleware(['locale'])->group(function(){
 
      Route::view('/contact' , 'web.pages.contact')->name('contact');
      Route::post('/contact-message' , ContactController::class)->name('contact-message');
-
-     Route::view('about-us', 'web.pages.about-us')->name('about-us');
      
      Route::resource('routines' , RoutineController::class)->only('show' , 'index');
 
@@ -39,8 +37,8 @@ Route::middleware(['locale'])->group(function(){
           Route::delete('clear' , [CartController::class , 'clear']);
      });
 
-     Route::group(['middleware' => 'auth'] , function(){
-          Route::get('checkout' , [OrderController::class , "index"])->middleware('checkOut-checker')->name('checkout');
+     Route::middleware('checkOut-checker')->group(function () {
+          Route::get('checkout' , [OrderController::class , "index"])->name('checkout');
           Route::post('order' , [OrderController::class , 'store'])->name('checkout');
      });
 

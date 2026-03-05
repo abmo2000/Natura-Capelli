@@ -1,7 +1,7 @@
 @extends('web.layouts.main')
 
 @section('title')
-Routine
+Gaming Bundles
 @endsection
 
 @section('content')
@@ -18,7 +18,7 @@ Routine
     
     {{-- Content --}}
     <div class="relative z-10">
-        <h2 class="heading text-white text-center text-4xl font-bold mb-8 py-8">Routines</h2>
+        <h2 class="heading text-white text-center text-4xl font-bold mb-8 py-8">Gaming Bundles</h2>
 
         @php
             // Define flexbox alignment patterns

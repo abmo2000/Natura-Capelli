@@ -7,7 +7,7 @@ Checkout
 @section('content')
 
 <x-navbar></x-navbar>
-<section class="py-16 md:py-24 bg-black min-h-screen" x-data="checkoutForm({{ $total }}, {
+<section class="checkout-page py-10 sm:py-14 md:py-20 bg-black min-h-screen" x-data="checkoutForm({{ $total }}, {
     name: '{{ auth()->check() ? addslashes(auth()->user()->name ?? '') : '' }}',
     email: '{{ auth()->check() ? auth()->user()->email ?? '' : '' }}',
     phone: '{{ auth()->check() ? auth()->user()->phone ?? '' : '' }}',
@@ -18,11 +18,11 @@ Checkout
     'isFirstOrder': '{{ $isFirstOrder }}',
 
 })">
-  <div class="container mx-auto px-4">
-    <h2 class="text-white text-center text-4xl md:text-5xl font-bold mb-16">{{ trans('checkout.checkout') }}</h2>
+  <div class="container mx-auto px-3 sm:px-4">
+    <h2 class="text-white text-center text-2xl sm:text-3xl md:text-4xl font-bold mb-8 sm:mb-12">{{ trans('checkout.checkout') }}</h2>
 
-    <div class="max-w-md mx-auto">
-      <div class="bg-gray-800 bg-opacity-95 backdrop-blur-md rounded-3xl shadow-2xl border border-gray-700 p-8 md:p-12">
+    <div class="max-w-2xl mx-auto">
+      <div class="bg-gray-800/95 backdrop-blur-md rounded-2xl sm:rounded-3xl shadow-xl border border-gray-700 p-4 sm:p-6 md:p-8">
     
         <div x-show="success" x-transition class="mb-4 bg-green-900 border border-green-700 text-green-200 px-4 py-3 rounded-lg">
                 <div class="flex items-center">
@@ -32,7 +32,7 @@ Checkout
                     <span>{{ trans('checkout.order_success') }}</span>
                 </div>
             </div>
-        <form @submit.prevent="submitOrder" class="space-y-6">
+        <form @submit.prevent="submitOrder" class="space-y-5 sm:space-y-6">
           @csrf
 
           <!-- Full Name -->
@@ -48,7 +48,7 @@ Checkout
               @blur="validateField('name')"
               :placeholder="'{{ trans('checkout.full_name_placeholder') ?? 'John Doe' }}'"
               required
-              class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              class="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
               :class="{ 'border-red-500': errors.name }"
             >
             <p x-show="errors.name" x-text="errors.name" class="text-red-500 text-sm mt-1"></p>
@@ -67,7 +67,7 @@ Checkout
               @blur="validateField('email')"
               :placeholder="'{{ trans('checkout.email_placeholder') ?? 'john@example.com' }}'"
               required
-              class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              class="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
               :class="{ 'border-red-500': errors.email }"
             >
             <p x-show="errors.email" x-text="errors.email" class="text-red-500 text-sm mt-1"></p>
@@ -83,10 +83,10 @@ Checkout
                 type="tel" 
                 id="phone" 
                 name="phone"
-                value="{{ auth()->user()->phone }}"
+                x-model="form.phone"
                 :placeholder="'{{ trans('checkout.phone_placeholder') ?? '+201148992811' }}'"
                 required
-                class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                class="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                 :class="{ 'border-red-500': errors.phone }"
               >
             </div>
@@ -106,7 +106,7 @@ Checkout
               @blur="validateField('address')"
               :placeholder="'{{ trans('checkout.address_placeholder') ?? 'مثال : شارع النصر ، مدينة نصر ، القاهرة' }}'"
               rows="3"
-              class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition resize-none"
+              class="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition resize-none"
               :class="{ 'border-red-500': errors.address }"
             ></textarea>
             <p x-show="errors.address" x-text="errors.address" class="text-red-500 text-sm mt-1"></p>
@@ -124,7 +124,7 @@ Checkout
               x-model="form.city_id"
               @change="onCityChange"
               required
-              class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              class="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
               :class="{ 'border-red-500': errors.city_id }"
             >
               <option value="">{{ trans('checkout.city_placeholder') ?? 'Select your city' }}</option>
@@ -150,7 +150,7 @@ Checkout
 
             <!-- Discuss Delivery Option -->
             <div>
-              <label class="flex items-start p-4 bg-gray-900 border rounded-lg cursor-pointer hover:border-orange-500 transition"
+              <label class="flex items-start p-3 sm:p-4 bg-gray-900 border rounded-lg cursor-pointer hover:border-orange-500 transition"
                 :class="form.delivery_option === 'discuss' ? 'border-orange-500' : 'border-gray-600'">
                 <input 
                   type="radio" 
@@ -159,7 +159,7 @@ Checkout
                   value="discuss" 
                   class="mt-1 text-orange-500 focus:ring-orange-500 focus:ring-2"
                 >
-                <div class="ml-3">
+                <div class="ms-3">
                   <p class="text-white font-medium">{{ trans('checkout.discuss_delivery') }}</p>
                   <p class="text-gray-400 text-sm mt-1">{{ trans('checkout.discuss_delivery_desc') }}</p>
                 </div>
@@ -168,7 +168,7 @@ Checkout
 
             <!-- Proceed with Delivery Price -->
            <div x-show="form.delivery_option == 'discuss'">
-              <label class="flex items-start p-4 bg-gray-900 border rounded-lg cursor-pointer hover:border-orange-500 transition"
+              <label class="flex items-start p-3 sm:p-4 bg-gray-900 border rounded-lg cursor-pointer hover:border-orange-500 transition"
                 :class="form.delivery_option === 'proceed' ? 'border-orange-500' : 'border-gray-600'">
                 <input 
                   type="radio" 
@@ -177,7 +177,7 @@ Checkout
                   value="proceed" 
                   class="mt-1 text-orange-500 focus:ring-orange-500 focus:ring-2"
                 >
-                <div class="ml-3 flex-1">
+                <div class="ms-3 flex-1">
                   <p class="text-white font-medium">{{ trans('checkout.proceed_with_delivery') }}</p>
                   <p class="text-gray-400 text-sm mt-1">
                     {{ trans('checkout.proceed_delivery_desc') }}
@@ -205,7 +205,7 @@ Checkout
           <!-- Auto Delivery Notice (For cities without discussion option) -->
           <div x-show="showDeliveryOptions && !selectedCityHasDiscussion && deliveryPrice > 0" x-transition class="p-4 bg-blue-900 bg-opacity-30 border border-blue-600 rounded-lg">
             <div class="flex items-start">
-              <svg class="w-5 h-5 text-blue-400 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="w-5 h-5 text-blue-400 mt-0.5 me-3" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
               </svg>
               <div class="flex-1">
@@ -233,7 +233,7 @@ Checkout
           @else
           <div x-show="deliveryPrice > 0" x-transition class="p-4 bg-blue-900 bg-opacity-30 border border-blue-600 rounded-lg">
             <div class="flex items-start">
-              <svg class="w-5 h-5 text-blue-400 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="w-5 h-5 text-blue-400 mt-0.5 me-3" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
               </svg>
               <div class="flex-1">
@@ -270,7 +270,7 @@ Checkout
             
             <!-- Cash on Delivery -->
             <div class="mb-3">
-              <label class="flex items-start p-4 bg-gray-900 border rounded-lg cursor-pointer hover:border-orange-500 transition"
+              <label class="flex items-start p-3 sm:p-4 bg-gray-900 border rounded-lg cursor-pointer hover:border-orange-500 transition"
                 :class="form.payment_method === 'cash_on_delivery' ? 'border-orange-500' : 'border-gray-600'">
                 <input 
                   type="radio" 
@@ -279,7 +279,7 @@ Checkout
                   value="cash_on_delivery" 
                   class="mt-1 text-orange-500 focus:ring-orange-500 focus:ring-2"
                 >
-                <div class="ml-3">
+                <div class="ms-3">
                   <p class="text-white font-medium">{{ trans('checkout.cash_on_delivery') }}</p>
                   <p class="text-gray-400 text-sm mt-1">{{ trans('checkout.pay_when_receive') }}</p>
                 </div>
@@ -288,7 +288,7 @@ Checkout
 
             <!-- InstaPay -->
             <div>
-              <label class="flex items-start p-4 bg-gray-900 border rounded-lg cursor-pointer hover:border-orange-500 transition"
+              <label class="flex items-start p-3 sm:p-4 bg-gray-900 border rounded-lg cursor-pointer hover:border-orange-500 transition"
                 :class="form.payment_method === 'instapay' ? 'border-orange-500' : 'border-gray-600'">
                 <input 
                   type="radio" 
@@ -297,7 +297,7 @@ Checkout
                   value="instapay"
                   class="mt-1 text-orange-500 focus:ring-orange-500 focus:ring-2"
                 >
-                <div class="ml-3">
+                <div class="ms-3">
                   <p class="text-white font-medium">{{ trans('checkout.instapay') }}</p>
                   <p class="text-gray-400 text-sm mt-1">{{ trans('checkout.pay_instantly') }}</p>
                 </div>
@@ -316,7 +316,7 @@ Checkout
               x-model="form.insta_account"
               @blur="validateField('insta_account')"
               :placeholder="'{{ trans('checkout.instapay_account_placeholder') ?? 'example@instapay.com' }}'"
-              class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              class="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
               :class="{ 'border-red-500': errors.insta_account }"
             >
             <p x-show="errors.insta_account" x-text="errors.insta_account" class="text-red-500 text-sm mt-1"></p>
@@ -343,8 +343,8 @@ Checkout
                 </div>
          
             <div class="flex justify-between items-center">
-              <span class="text-gray-300 text-lg font-medium">{{ trans('checkout.order_total') }}:</span>
-              <span class="text-green-500 text-2xl font-bold" x-text="'EGP ' + calculateTotal().toFixed(2)"></span>
+              <span class="text-gray-300 text-base sm:text-lg font-medium">{{ trans('checkout.order_total') }}:</span>
+              <span class="text-green-500 text-xl sm:text-2xl font-bold" x-text="'EGP ' + calculateTotal().toFixed(2)"></span>
             </div>
           </div>
 
@@ -352,11 +352,11 @@ Checkout
           <button 
             type="submit"
             :disabled="loading"
-            class="w-full py-4 bg-orange-600 hover:bg-orange-700 text-white text-lg font-semibold rounded-lg transition duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-orange-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full py-3.5 sm:py-4 bg-orange-600 hover:bg-orange-700 text-white text-base sm:text-lg font-semibold rounded-lg transition duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-orange-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span x-show="!loading">{{ trans('checkout.place_order') }}</span>
             <span x-show="loading" class="flex items-center justify-center">
-              <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+              <svg class="animate-spin h-5 w-5 me-3" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>

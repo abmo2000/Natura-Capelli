@@ -13,13 +13,29 @@
         <link href="https://fonts.googleapis.com/css2?family=Kurale&display=swap" rel="stylesheet">
 
           <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        <script>
+            (() => {
+                try {
+                    const storedTheme = localStorage.getItem('qaid_theme');
+                    const theme = storedTheme === 'light' ? 'light' : 'dark';
+
+                    document.documentElement.classList.toggle('theme-light', theme === 'light');
+                    document.documentElement.dataset.theme = theme;
+                } catch (_) {
+                    document.documentElement.classList.remove('theme-light');
+                    document.documentElement.dataset.theme = 'dark';
+                }
+            })();
+        </script>
+
         <!-- Styles / Scripts -->
          @vite(['resources/css/app.css', 'resources/js/app.js'])
            
     
          @stack('styles_bottom')
     </head>
-    <body class="bg-black">
+    <body class="app-body">
         @yield('content')
         <x-flash-message></x-flash-message>
         <x-footer></x-footer>

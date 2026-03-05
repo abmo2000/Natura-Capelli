@@ -29,13 +29,6 @@ shop
                 class="px-6 py-3 rounded-lg font-semibold transition-all duration-300">
                   {{ trans('shop.packages') }}
             </button>
-
-            <button 
-                @click="productType = 'trials'; applyFilters()"
-                :class="productType === 'trials' ? 'bg-orange-400 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'"
-                class="px-6 py-3 rounded-lg font-semibold transition-all duration-300">
-                  {{ trans('shop.trial') }}
-            </button>
         </div>
 
         <div class="flex flex-col lg:flex-row gap-8">
@@ -78,6 +71,24 @@ shop
                                 </label>
                             </template>
                             
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h4 class="text-white font-semibold mb-4">{{ trans('shop.brand') }}</h4>
+                        <div class="space-y-3">
+                             <template x-for="brand in brands" :key="brand">
+                                <label class="flex items-center text-gray-300 hover:text-white cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        :value="brand"
+                                        x-model="selectedBrands"
+                                        @change="applyFilters()"
+                                        class="w-4 h-4 rounded border-gray-600 bg-gray-700 text-orange-500 focus:ring-orange-500 focus:ring-offset-gray-900">
+                                    <span class="ms-3" x-text="brand"></span>
+                                </label>
+                            </template>
+
                         </div>
                     </div>
 
@@ -163,8 +174,10 @@ shop
         products: [],
         categories: @json($categories ?? []),
         routines: @json($routines ?? []),
+        brands: @json($brands ?? []),
         selectedCategories: [],
         selectedRoutines: [],
+        selectedBrands: [],
         productType: 'products', 
         currentPage: 1,
         perPage: 5,
@@ -173,7 +186,60 @@ shop
         loading: true,
 
         init() {
+            this.applyInitialFiltersFromQuery();
             this.fetchProducts();
+        },
+
+        normalizeFilterLabel(value) {
+            return (value ?? '')
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/[_-]+/g, ' ')
+                .replace(/\s+/g, ' ');
+        },
+
+        applyInitialFiltersFromQuery() {
+            const params = new URLSearchParams(window.location.search);
+
+            const categoryId = Number.parseInt(params.get('category_id'), 10);
+            if (!Number.isNaN(categoryId)) {
+                this.selectedCategories = [categoryId];
+                return;
+            }
+
+            const categoryIds = params
+                .getAll('categories[]')
+                .map((value) => Number.parseInt(value, 10))
+                .filter((value) => !Number.isNaN(value));
+
+            if (categoryIds.length > 0) {
+                this.selectedCategories = categoryIds;
+                return;
+            }
+
+            const categoryLabel = params.get('category');
+            if (!categoryLabel) {
+                return;
+            }
+
+            const normalizedLabel = this.normalizeFilterLabel(categoryLabel);
+
+            const matchedCategory = this.categories.find((category) => {
+                const translationTitles = Array.isArray(category.translations)
+                    ? category.translations.map((translation) => translation?.title)
+                    : [];
+
+                const possibleTitles = [category.title, ...translationTitles]
+                    .filter(Boolean)
+                    .map((title) => this.normalizeFilterLabel(title));
+
+                return possibleTitles.includes(normalizedLabel);
+            });
+
+            if (matchedCategory) {
+                this.selectedCategories = [matchedCategory.id];
+            }
         },
 
         async fetchProducts() {
@@ -199,11 +265,15 @@ shop
                     });
                 }
 
-                let isTrial = this.productType === 'trials';
+                if(this.selectedBrands.length > 0){
+                    this.selectedBrands.forEach(brand => {
+                        params.append('brands[]', brand);
+                    });
+                }
 
                 // Fetch from your API endpoint based on type
-                let url = this.productType === 'products'|| this.productType === 'trials'  
-                    ? `/api/products/${isTrial}/?${params.toString()}` 
+                let url = this.productType === 'products'
+                    ? `/api/products/false/?${params.toString()}` 
                     : `/api/packages?${params.toString()}`;
                     
                 const response = await fetch(url);
@@ -232,6 +302,7 @@ shop
         resetFilters() {
             this.selectedCategories = [];
             this.selectedRoutines = [];
+            this.selectedBrands = [];
             this.currentPage = 1;
             this.fetchProducts();
         },
