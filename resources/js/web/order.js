@@ -1,6 +1,4 @@
 // Checkout form Alpine.js component
-import intlTelInput from 'intl-tel-input';
-import { th } from 'intl-tel-input/i18n';
 document.addEventListener("alpine:init", () => {
     Alpine.data('checkoutForm', (total = 0, userData = {}, hasDeliveryOption = false) => ({
         form: {
@@ -35,39 +33,10 @@ document.addEventListener("alpine:init", () => {
         
         init() {
             this.checkCityDeliveryOptions();
-            this.$nextTick(() => {
-                setTimeout(() => this.setupPhoneInput(), 100);
-            });
         },
 
-         setupPhoneInput() {
-            const input = document.querySelector("#phone");
-         
-            if (!input) return;
-
-            this.iti = intlTelInput(input, {
-                initialCountry: "eg",
-                preferredCountries: ["eg", "sa", "ae"],
-                separateDialCode: true,
-                nationalMode: false,
-                autoPlaceholder: "polite",
-                loadUtils: () => import("intl-tel-input/utils")
-            });
-
-            // Set initial value if exists
-        
-            if (this.form.phone) {
-                this.iti.setNumber(this.form.phone);
-            }
-
-            // Update Alpine form data whenever user types or changes country
-            input.addEventListener('input', () => {
-                this.form.phone = this.iti.getNumber();
-            });
-
-            input.addEventListener('countrychange', () => {
-                this.form.phone = this.iti.getNumber();
-            });
+        setupPhoneInput() {
+            return;
         },
 
        checkCityDeliveryOptions() {

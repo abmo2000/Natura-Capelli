@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Pages;
 
+use App\Models\Brand;
 use Filament\Actions\DeleteAction;
 use Illuminate\Support\Facades\Storage;
 use Filament\Resources\Pages\EditRecord;
@@ -15,6 +16,11 @@ class EditProduct extends EditRecord
     protected array $saleData = [];
 
      protected array $trialData = [];
+
+    protected ?string $brandImage = null;
+
+    protected ?string $brandName = null;
+
     protected function getHeaderActions(): array
     {
         return [
@@ -29,6 +35,12 @@ class EditProduct extends EditRecord
         // Load translations into form
         $data['en'] = $this->record->translate('en')?->toArray() ?? [];
         $data['ar'] = $this->record->translate('ar')?->toArray() ?? [];
+
+        if (! empty($data['brand'])) {
+            $data['brand_image'] = Brand::query()
+                ->where('name', trim((string) $data['brand']))
+                ->value('image');
+        }
         
         return $data;
     }
@@ -71,6 +83,11 @@ class EditProduct extends EditRecord
              $data['trial_price'],
             $data['trial_capacity'],
         );
+
+                $this->brandImage = $data['brand_image'] ?? null;
+                $this->brandName = ! empty($data['brand']) ? trim((string) $data['brand']) : null;
+                unset($data['brand_image']);
+
           $this->trialData = $data['_trial'];
         return $data;
     }
@@ -121,8 +138,36 @@ class EditProduct extends EditRecord
             $this->record->trial()->delete(); 
         }
 
+        $this->syncSharedBrandImage();
+
           if ($oldImage) {
                 Storage::disk('local')->delete($oldImage);
           }
+    }
+
+    protected function syncSharedBrandImage(): void
+    {
+        if (empty($this->brandName)) {
+            return;
+        }
+
+        $brand = Brand::query()->firstOrCreate(
+            ['name' => $this->brandName],
+            ['image' => null],
+        );
+
+        if (empty($this->brandImage)) {
+            return;
+        }
+
+        $oldImage = $brand->image;
+
+        $brand->update([
+            'image' => $this->brandImage,
+        ]);
+
+        if (! empty($oldImage) && $oldImage !== $this->brandImage) {
+            Storage::disk('public')->delete($oldImage);
+        }
     }
 }

@@ -41,6 +41,7 @@ class ProductsApiCpntroller extends Controller
         ->map(function ($product , $index) {
              $productData['html'] = view('components.product', [
                     'product' => $product,
+                      'layout' => 'grid',
                     'index' => $index
                 ])->render();
             

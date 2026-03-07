@@ -24,7 +24,7 @@ class Category extends Model implements Translatable
         static::deleting(function (Category $category) {
             // Delete the image file when the routine is deleted
             if ($category->image) {
-                Storage::disk('local')->delete($category->image);
+                Storage::disk('public')->delete($category->image);
             }
         });
     }

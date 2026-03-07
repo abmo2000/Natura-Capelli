@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Validation\Rule;
-use App\Rules\PhoneValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -29,7 +28,7 @@ class OrderCreateReq extends FormRequest
         return [
             "name" => 'nullable|string|max:255',
             'email' => 'required|email',
-            'phone' => ['required', 'string' , new PhoneValidationRule()],
+            'phone' => 'required|string|min:8|max:30',
             'address' => 'nullable|string|max:255',
             'city_id' => 'required|exists:cities,id',
             'delivery_option' => 'sometimes|in:proceed,discuss',
@@ -46,7 +45,8 @@ class OrderCreateReq extends FormRequest
     public function messages()
     {
         return [
-            'phone.regex' => 'Phone number must start with +20 and be a valid Egyptian mobile number.',
+            'phone.min' => 'Phone number must be at least 8 characters.',
+            'phone.max' => 'Phone number must not exceed 30 characters.',
         ];
     }
 

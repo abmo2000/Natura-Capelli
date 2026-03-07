@@ -14,6 +14,14 @@ class CategoryForm
     {
         return $schema
             ->components([
+                FileUpload::make('image')
+                    ->label('Image')
+                    ->image()
+                    ->imageEditor()
+                    ->directory('categories')
+                    ->visibility('public')
+                    ->columnSpanFull(),
+
                      Tabs::make('Translations')
                  ->tabs([
                     Tab::make('English')

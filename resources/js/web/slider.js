@@ -1,4 +1,42 @@
 document.addEventListener('alpine:init', () => {
+    Alpine.data('categoryBubbleSlider', (total = 0) => ({
+        total,
+        visibleCount: 5,
+        startIndex: 0,
+        intervalId: null,
+
+        init() {
+            if (this.total <= this.visibleCount) {
+                return;
+            }
+
+            this.intervalId = setInterval(() => {
+                this.startIndex = (this.startIndex + 1) % this.total;
+            }, 500);
+        },
+
+        isVisible(index) {
+            if (this.total <= this.visibleCount) {
+                return true;
+            }
+
+            const end = this.startIndex + this.visibleCount;
+
+            if (end <= this.total) {
+                return index >= this.startIndex && index < end;
+            }
+
+            return index >= this.startIndex || index < (end - this.total);
+        },
+
+        destroy() {
+            if (this.intervalId) {
+                clearInterval(this.intervalId);
+                this.intervalId = null;
+            }
+        },
+    }));
+
     Alpine.data('productCarousel', () => ({
         isAtStart: true,
         isAtEnd: false,

@@ -10,6 +10,11 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
+    $categories = Category::query()
+      ->with('translations')
+      ->latest('id')
+      ->get();
+
     $categorySections = Category::query()
       ->with('translations')
       ->get()
@@ -32,6 +37,7 @@ class HomeController extends Controller
       ->values();
 
     return view('web.pages.home')->with([
+      'categories' => $categories,
       'categorySections' => $categorySections,
     ]);
     }

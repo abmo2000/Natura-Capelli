@@ -3,8 +3,9 @@
 namespace App\Filament\Resources\Orders\Tables;
 
 use App\Enums\OrderStatus;
+use App\Models\Order;
 use Filament\Tables\Table;
-use Filament\Actions\EditAction;
+use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Filters\Filter;
 use Filament\Actions\BulkActionGroup;
@@ -93,6 +94,11 @@ class OrdersTable
             ])
             ->recordActions([
                 ViewAction::make(),
+                Action::make('invoice')
+                    ->label('Invoice')
+                    ->icon('heroicon-o-document-text')
+                    ->url(fn (Order $record): string => route('dashboard.orders.invoice', $record))
+                    ->openUrlInNewTab(),
                 //EditAction::make(),
             ])
             ->toolbarActions([

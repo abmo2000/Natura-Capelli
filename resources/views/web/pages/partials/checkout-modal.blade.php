@@ -54,10 +54,10 @@
 
                 <!-- Phone -->
                 <div class="mb-4">
-                    <label for="phone" class="block text-gray-700 font-medium mb-2">Phone Number *</label>
+                    <label for="checkout_phone" class="block text-gray-700 font-medium mb-2">Phone Number *</label>
                     <input 
                         type="tel" 
-                        id="phone" 
+                        id="checkout_phone" 
                         x-model="form.phone"
                         :class="{ 'border-red-500': errors.phone }"
                         @blur="validateField('phone')"

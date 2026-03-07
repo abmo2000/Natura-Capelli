@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\Product;
 use App\Models\ProductTrial;
 use Illuminate\Http\Request;
@@ -45,10 +46,24 @@ class ProductController extends Controller
        ? ProductTrial::query()->whereRelation('product' , fn($q) => $q->where('products.slug' , $slug))  
        : Product::query()->where('slug' , $slug);
 
-        $product= $query->firstOrFail();
+          $product= $query->firstOrFail();
+
+          $baseProduct = $isTrial ? $product->product : $product;
+          $brandName = $baseProduct?->brand;
+          $brandImagePath = null;
+
+          if (! empty($brandName)) {
+                $brandImagePath = Brand::query()
+                     ->where('name', trim($brandName))
+                     ->value('image');
+          }
 
      
-           return view('web.pages.shop.show')->with(['product' => $product]);            
+              return view('web.pages.shop.show')->with([
+                     'product' => $product,
+                     'brandName' => $brandName,
+                     'brandImage' => ! empty($brandImagePath) ? asset('storage/' . ltrim($brandImagePath, '/')) : null,
+              ]);            
     }
 
     /**

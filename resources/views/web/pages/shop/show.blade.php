@@ -11,8 +11,9 @@ product
  @php
     $type = (isset($product) && method_exists($product, 'isTrial') && $product->isTrial()) ? 'trial' : 'product';
     $productId = isset($product->id) ? $product->id : null;
+    $cacheVersion = optional($product->updated_at)->timestamp ?? time();
     $galleryImages = collect($product->gallery_images)
-        ->map(fn (string $image) => asset('storage/' . $image))
+        ->map(fn (string $image) => asset('storage/' . ltrim($image, '/')) . '?v=' . $cacheVersion)
         ->values()
         ->all();
 @endphp
@@ -112,7 +113,7 @@ product
                     <h1 class="text-white text-3xl md:text-4xl font-bold mb-2">
                         {{ $product->name }}
                     </h1>
-                    
+
                     <!-- Capacity -->
                     @if($product->capacity)
                     <p class="text-gray-400 text-lg mt-2">
@@ -148,6 +149,19 @@ product
                         {!! $product->description !!}
                     </p>
                 </div>
+
+                @if(!empty($brandImage))
+                <div class="border-t border-gray-800 pt-6 text-white">
+                    <h3 class="text-white text-lg font-semibold mb-3">{{ trans('shop.brand') }}</h3>
+                    <div class="flex items-center">
+                        <img
+                            src="{{ $brandImage }}"
+                            alt="{{ $brandName ?? 'Brand' }}"
+                            class="w-14 h-14 rounded-full object-cover ring-1 ring-gray-700"
+                        >
+                    </div>
+                </div>
+                @endif
 
                 <div>
                     <!-- Quantity Selector -->

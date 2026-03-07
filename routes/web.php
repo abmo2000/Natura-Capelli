@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\ShopController;
 use App\Http\Controllers\Web\OrderController;
+use App\Http\Controllers\OrderInvoiceController;
 use App\Http\Controllers\Web\LocaleController;
 use App\Http\Controllers\Web\ContactController;
 use App\Http\Controllers\Web\ProductController;
@@ -49,3 +50,7 @@ Route::get('locale/{locale}' , LocaleController::class)->name('lang-switch');
 Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 Route::get('queue', ArtisanController::class)->middleware('secure');
+
+Route::middleware(['auth'])->group(function () {
+     Route::get('dashboard/orders/{order}/invoice', OrderInvoiceController::class)->name('dashboard.orders.invoice');
+});

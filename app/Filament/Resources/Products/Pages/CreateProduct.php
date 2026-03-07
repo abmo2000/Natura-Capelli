@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Products\Pages;
 
+use App\Models\Brand;
 use App\Filament\Resources\Products\ProductResource;
+use Illuminate\Support\Facades\Storage;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateProduct extends CreateRecord
@@ -15,6 +17,11 @@ class CreateProduct extends CreateRecord
      protected array $saleData = [];
       
      protected array $trialData = [];
+
+    protected ?string $brandImage = null;
+
+    protected ?string $brandName = null;
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
        
@@ -52,6 +59,10 @@ class CreateProduct extends CreateRecord
              $data['trial_price'],
             $data['trial_capacity'],
         );
+
+        $this->brandImage = $data['brand_image'] ?? null;
+        $this->brandName = ! empty($data['brand']) ? trim((string) $data['brand']) : null;
+        unset($data['brand_image']);
         
         $this->saleData = $data['_sale'];
         $this->trialData = $data['_trial'];
@@ -86,6 +97,34 @@ class CreateProduct extends CreateRecord
            ]);
 
            
-       } 
+       }
+
+       $this->syncSharedBrandImage();
+    }
+
+    protected function syncSharedBrandImage(): void
+    {
+        if (empty($this->brandName)) {
+            return;
+        }
+
+        $brand = Brand::query()->firstOrCreate(
+            ['name' => $this->brandName],
+            ['image' => null],
+        );
+
+        if (empty($this->brandImage)) {
+            return;
+        }
+
+        $oldImage = $brand->image;
+
+        $brand->update([
+            'image' => $this->brandImage,
+        ]);
+
+        if (! empty($oldImage) && $oldImage !== $this->brandImage) {
+            Storage::disk('public')->delete($oldImage);
+        }
     }
 }

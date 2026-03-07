@@ -36,7 +36,9 @@ class OrderCreationListener implements ShouldQueue
             ->send(new CustomerOrderConfirmation($event->order, $event->items, $event->totalAmount));
 
         // Send email to admin
-        $adminEmail = getBuisnessSettings('buisness-info')?->email;
+        $adminEmail = config('mail.to.address')
+            ?? getBuisnessSettings('buisness-info')?->email
+            ?? config('mail.from.address');
         Mail::to($adminEmail)
             ->send(new AdminOrderNotification($event->order, $event->totalAmount));
     }

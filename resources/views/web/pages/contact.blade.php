@@ -10,11 +10,19 @@ Contact
 
 <!-- Background Image Section -->
 <section class="relative py-16 md:py-24 min-h-screen overflow-hidden">
-    <!-- Background Image with Overlay -->
+    <!-- Background Video with Overlay -->
     <div class="absolute right-0 left-0 top-0 h-full w-full">
-        <img src="{{ asset('assets/images/headers/contactBackground.jfif') }}" 
-             alt="Contact Background" 
-             class="w-full h-full object-cover brightness-75 contrast-110">
+        <video
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+            poster="{{ asset('assets/images/headers/contactBackground.jfif') }}"
+            class="w-full h-full object-cover brightness-75 contrast-110"
+        >
+            <source src="{{ asset('assets/images/headers/Hero.mp4') }}" type="video/mp4">
+        </video>
         <div class="absolute top-0 left-0 w-full h-full bg-opacity-70 bg-gradient-to-b from-black/30 via-black/30 to-black/50"></div>
     </div>
 

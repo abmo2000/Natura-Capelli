@@ -40,8 +40,8 @@ Gaming Bundle
             
             <div class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-3">
         
-                @foreach ($routine->products as $product )
-                  <x-product :product="$product"></x-product> 
+                                @foreach ($routine->products as $product )
+                                    <x-product :product="$product" layout="grid"></x-product> 
                 @endforeach
                
             </div>

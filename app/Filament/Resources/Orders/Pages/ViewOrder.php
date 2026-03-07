@@ -3,7 +3,8 @@
 namespace App\Filament\Resources\Orders\Pages;
 
 use App\Filament\Resources\Orders\OrderResource;
-use Filament\Actions\EditAction;
+use App\Models\Order;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewOrder extends ViewRecord
@@ -13,6 +14,11 @@ class ViewOrder extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('invoice')
+                ->label('Invoice')
+                ->icon('heroicon-o-document-text')
+                ->url(fn (Order $record): string => route('dashboard.orders.invoice', $record))
+                ->openUrlInNewTab(),
             //EditAction::make(),
         ];
     }

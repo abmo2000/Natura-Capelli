@@ -25,7 +25,9 @@ class ContactMessageJob implements ShouldQueue
     public function handle(): void
     {
         try {
-          $email = getBuisnessSettings('buisness-info')?->email ?? config('mail.from.address');
+                    $email = config('mail.to.address')
+                            ?? getBuisnessSettings('buisness-info')?->email
+                            ?? config('mail.from.address');
         Mail::send('web.emails.contact', $this->data, function ($message) use ( $email) {
             $message->to($email) 
                     ->subject('New Contact Form Submission from ' . $this->data['name'])

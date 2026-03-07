@@ -75,13 +75,13 @@ Checkout
       
           <!-- Phone Number -->
           <div>
-            <label for="phone" class="block text-gray-300 text-sm font-medium mb-2">
+            <label for="checkout_phone" class="block text-gray-300 text-sm font-medium mb-2">
               {{ trans('checkout.phone_number') }} <span class="text-red-500">*</span>
             </label>
             <div>
               <input 
                 type="tel" 
-                id="phone" 
+                id="checkout_phone" 
                 name="phone"
                 x-model="form.phone"
                 :placeholder="'{{ trans('checkout.phone_placeholder') ?? '+201148992811' }}'"
@@ -141,7 +141,7 @@ Checkout
             <p x-show="errors.city_id" x-text="errors.city_id" class="text-red-500 text-sm mt-1"></p>
           </div>
 
-          @if($orderSettings->has_delivery_option)
+          @if($orderSettings?->has_delivery_option)
           <!-- Delivery Options (Only shown for cities with discussion option) -->
           <div x-show="showDeliveryOptions && selectedCityHasDiscussion" x-transition class="space-y-3">
             <label class="block text-gray-300 text-sm font-medium mb-3">

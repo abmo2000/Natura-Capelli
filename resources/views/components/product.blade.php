@@ -1,10 +1,13 @@
-@props(['product' => (object)[]])
-@php($type = $product->isTrial() ? 'trial' : 'product');
+@props(['product' => (object)[], 'layout' => 'carousel'])
+@php($type = $product->isTrial() ? 'trial' : 'product')
+@php($cardClasses = $layout === 'grid'
+    ? 'product-card cursor-pointer w-full'
+    : 'product-card cursor-pointer snap-start flex-none min-w-full sm:min-w-[calc((100%-1rem)/2)] md:min-w-[calc((100%-3rem)/3)] lg:min-w-[calc((100%-6rem)/5)] lg:max-w-[calc((100%-6rem)/5)]');
 @if( $type === 'trial')
-<div class="product-card cursor-pointer min-w-full md:min-w-0 md:flex-1 snap-start" x-data="productCard( 'trial', {{ $product->id }})">
+<div class="{{ $cardClasses }}" x-data="productCard( 'trial', {{ $product->id }})">
     
 @else
-    <div class="product-card cursor-pointer min-w-full md:min-w-0 md:flex-1 snap-start" x-data="productCard( 'product', {{ $product->id }})">
+    <div class="{{ $cardClasses }}" x-data="productCard( 'product', {{ $product->id }})">
 
 @endif
     <div class="relative group">
@@ -19,7 +22,7 @@
         </div>
         @endif
         
-        <img class="w-full h-64 object-contain pointer-events-none" src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
+        <img class="w-full h-64 object-contain pointer-events-none" src="{{ asset('storage/' . ltrim($product->image, '/')) }}?v={{ optional($product->updated_at)->timestamp }}" alt="{{ $product->name }}">
 
         <!-- Overlay -->
         <div class="absolute inset-0 bg-black/40 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>

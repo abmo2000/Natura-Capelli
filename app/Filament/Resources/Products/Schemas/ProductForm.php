@@ -104,6 +104,13 @@ class ProductForm
                                     ->required()
                                     ->maxLength(255),
 
+                                    FileUpload::make('brand_image')
+                                        ->label('Brand Image (shared per brand)')
+                                        ->image()
+                                        ->imageEditor()
+                                        ->directory('brands')
+                                        ->visibility('public'),
+
                                 Select::make('routines')
                                     ->label('Routines')
                                     ->multiple()

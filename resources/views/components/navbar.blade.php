@@ -57,7 +57,6 @@
                 <div class="hidden md:flex space-x-8">
                     <a href="{{ route('home') }}" class="nav-link">{{ trans('navbar.home') }}</a>
                     <a href="{{ route('shop') }}" class="nav-link">{{ trans('navbar.shop') }}</a>
-                    <a href="{{ route('routines.index') }}" class="nav-link">{{ trans('navbar.routine') }}</a>
                     <a href="{{ route('contact') }}" class="nav-link">{{ trans('navbar.contact') }}</a>
                     @if(Request::is('/'))    
                     <a href="#fearured-products" @click.prevent="scrollToSection('fearured-products')" class="nav-link cursor-pointer">{{ trans('navbar.featured-products') }}</a>
@@ -231,7 +230,6 @@
             <div class="px-4 pt-2 pb-4 space-y-2 bg-footer">
                 <a href="{{ route('home') }}" class="block nav-link">{{ trans('navbar.home') }}</a>
                 <a href="{{ route('shop') }}" class="block nav-link">{{ trans('navbar.shop') }}</a>
-                <a href="{{ route('routines.index') }}" class="block nav-link">{{ trans('navbar.routine') }}</a>
                 <a href="{{ route('contact') }}" class="block nav-link">{{ trans('navbar.contact') }}</a>
                  @if(Request::is('/'))  
                 <a href="#fearured-products" @click.prevent="scrollToSection('fearured-products')" class="block nav-link cursor-pointer">{{ trans('navbar.featured-products') }}</a>

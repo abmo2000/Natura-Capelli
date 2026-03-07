@@ -57,24 +57,6 @@ shop
                     </div>
 
                     <div class="mb-8">
-                        <h4 class="text-white font-semibold mb-4">{{ trans('shop.routine') }}</h4>
-                        <div class="space-y-3">
-                             <template x-for="routine in routines" :key="routine.id">
-                                <label class="flex items-center text-gray-300 hover:text-white cursor-pointer">
-                                    <input 
-                                        type="checkbox" 
-                                        :value="routine.id"
-                                        x-model="selectedRoutines"
-                                        @change="applyFilters()"
-                                        class="w-4 h-4 rounded border-gray-600 bg-gray-700 text-orange-500 focus:ring-orange-500 focus:ring-offset-gray-900">
-                                    <span class="ms-3" x-text="routine.title"></span>
-                                </label>
-                            </template>
-                            
-                        </div>
-                    </div>
-
-                    <div class="mb-8">
                         <h4 class="text-white font-semibold mb-4">{{ trans('shop.brand') }}</h4>
                         <div class="space-y-3">
                              <template x-for="brand in brands" :key="brand">
@@ -173,10 +155,8 @@ shop
     return {
         products: [],
         categories: @json($categories ?? []),
-        routines: @json($routines ?? []),
         brands: @json($brands ?? []),
         selectedCategories: [],
-        selectedRoutines: [],
         selectedBrands: [],
         productType: 'products', 
         currentPage: 1,
@@ -259,12 +239,6 @@ shop
                     });
                 }
 
-                if(this.selectedRoutines.length > 0){
-                    this.selectedRoutines.forEach(routine => {
-                        params.append('routines[]', routine);
-                    });
-                }
-
                 if(this.selectedBrands.length > 0){
                     this.selectedBrands.forEach(brand => {
                         params.append('brands[]', brand);
@@ -301,7 +275,6 @@ shop
 
         resetFilters() {
             this.selectedCategories = [];
-            this.selectedRoutines = [];
             this.selectedBrands = [];
             this.currentPage = 1;
             this.fetchProducts();

@@ -86,6 +86,7 @@ class Product extends Model implements Translatable , Cartable
             foreach (collect([$product->image, ...$images])->filter()->unique() as $image) {
                 Storage::disk('local')->delete($image);
             }
+
         });
 
     }
