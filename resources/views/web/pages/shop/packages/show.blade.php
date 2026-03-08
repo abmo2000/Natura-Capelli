@@ -156,26 +156,7 @@ package
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($package->products as $product)
-                <div class="bg-slate-800 p-4 rounded-xl">
-                    <div class="h-40 bg-slate-700 rounded-lg flex items-center justify-center mb-4">
-                        <img
-                            src="{{ asset('storage/' . $product->image) }}"
-                            alt="{{ $product->name }}"
-                            class="h-full object-contain"
-                        >
-                    </div>
-
-                    <h3 class="text-white font-semibold mb-1">
-                        {{ $product->title }}
-                    </h3>
-
-                    <p class="text-gray-400 text-sm">
-                        Regular Price:
-                        <span class="line-through">
-                            {{ $product->price }} EGP
-                        </span>
-                    </p>
-                </div>
+                <x-product :product="$product"></x-product>
             @endforeach
         </div>
 

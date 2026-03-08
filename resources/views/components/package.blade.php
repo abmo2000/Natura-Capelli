@@ -73,7 +73,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
                 <p class="text-gray-400 text-sm font-medium">
-                    {{ $package->products_count }} Products Included
+                    {{ $package->products_count }} {{ trans('shop.products_includes') }}  
                 </p>
             </div>
 

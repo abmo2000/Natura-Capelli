@@ -48,6 +48,11 @@ class OrderSettingsResource extends Resource
         ];
     }
 
+      public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
