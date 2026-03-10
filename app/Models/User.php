@@ -3,11 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Filament\Panel;
-use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -25,6 +25,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'role_name',
         'phone',
+        'insta_account',
         'address',
         'google_id',
         'city_id',
@@ -53,26 +54,26 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
-     /**
+    /**
      * Get the user role.
-     *
-     * @return bool
      */
-    public function isAdmin():bool{
-         return $this->role_name === 'admin';
+    public function isAdmin(): bool
+    {
+        return $this->role_name === 'admin';
     }
 
-    public function city(){
+    public function city()
+    {
         return $this->belongsTo(City::class);
     }
 
-    public function orders(){
-        return $this->morphMany(Order::class , 'customer');
+    public function orders()
+    {
+        return $this->morphMany(Order::class, 'customer');
     }
 
-    
-
-    public function canAccessPanel(Panel $panel): bool{
-         return $this->isAdmin();
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAdmin();
     }
 }

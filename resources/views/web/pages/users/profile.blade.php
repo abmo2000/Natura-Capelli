@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+@vite('resources/js/web/profile.js')
 <x-navbar></x-navbar>
 
 <section class="py-16 md:py-24 bg-black min-h-screen">
@@ -12,41 +13,42 @@
     <h2 class="text-white text-center text-4xl md:text-5xl font-bold mb-16">{{ trans('auth.profile') ?? 'My Profile' }}</h2>
 
     <div class="max-w-4xl mx-auto">
-      <div class="bg-gray-800 bg-opacity-95 backdrop-blur-md rounded-3xl shadow-2xl border border-gray-700 p-6 md:p-10">
+        <div x-data="profilePage({{ Js::from([
+          'name' => old('name', $user->name),
+          'email' => old('email', $user->email),
+          'phone' => old('phone', $user->phone),
+          'insta_account' => old('insta_account', $user->insta_account),
+          'city_id' => (string) old('city_id', $user->city_id),
+          'address' => old('address', $user->address),
+        ]) }}, '{{ route('users.profile.update') }}')" class="bg-gray-800 bg-opacity-95 backdrop-blur-md rounded-3xl shadow-2xl border border-gray-700 p-6 md:p-10">
         <div class="flex flex-col sm:flex-row gap-3 mb-8">
           <button
-            id="tab-personal-btn"
             type="button"
-            onclick="switchProfileTab('personal')"
-            class="profile-tab-btn bg-orange-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300"
+            x-on:click="switchTab('personal')"
+            :class="isActive('personal') ? 'bg-orange-500' : 'bg-gray-700 hover:bg-gray-600'"
+            class="profile-tab-btn text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300"
           >
             Personal Informations
           </button>
 
           <button
-            id="tab-orders-btn"
             type="button"
-            onclick="switchProfileTab('orders')"
-            class="profile-tab-btn bg-gray-700 text-white font-semibold py-3 px-6 rounded-xl hover:bg-gray-600 transition-all duration-300"
+            x-on:click="switchTab('orders')"
+            :class="isActive('orders') ? 'bg-orange-500' : 'bg-gray-700 hover:bg-gray-600'"
+            class="profile-tab-btn text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300"
           >
             User Orders
           </button>
         </div>
 
-        <div id="tab-personal" class="profile-tab-panel space-y-6">
+        <div x-show="isActive('personal')" class="profile-tab-panel space-y-6">
           <h3 class="text-2xl text-white font-bold">Personal Informations</h3>
 
-          @if(session('status'))
-            <div class="bg-green-900/40 border border-green-700 text-green-200 px-4 py-3 rounded-lg">
-              {{ session('status') }}
-            </div>
-          @endif
+          <div x-show="successMessage" x-transition class="bg-green-900/40 border border-green-700 text-green-200 px-4 py-3 rounded-lg" x-text="successMessage"></div>
+          <div x-show="errorMessage" x-transition class="bg-red-900/40 border border-red-700 text-red-200 px-4 py-3 rounded-lg" x-text="errorMessage"></div>
 
-          <x-errors></x-errors>
-
-          <form method="POST" action="{{ route('users.profile.update') }}" class="space-y-5">
+          <form @submit.prevent="submitProfile" class="space-y-5">
             @csrf
-            @method('PUT')
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -55,10 +57,13 @@
                   type="text"
                   id="name"
                   name="name"
-                  value="{{ old('name', $user->name) }}"
+                  x-model="form.name"
+                  @blur="validateField('name')"
                   required
                   class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                  :class="{ 'border-red-500': errors.name }"
                 >
+                <p x-show="errors.name" x-text="errors.name" class="text-red-500 text-sm mt-1"></p>
               </div>
 
               <div>
@@ -67,10 +72,13 @@
                   type="email"
                   id="email"
                   name="email"
-                  value="{{ old('email', $user->email) }}"
+                  x-model="form.email"
+                  @blur="validateField('email')"
                   required
                   class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                  :class="{ 'border-red-500': errors.email }"
                 >
+                <p x-show="errors.email" x-text="errors.email" class="text-red-500 text-sm mt-1"></p>
               </div>
 
               <div>
@@ -82,45 +90,71 @@
                   value="{{ old('phone', $user->phone) }}"
                   class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                 >
+                <p x-show="errors.phone" x-text="errors.phone" class="text-red-500 text-sm mt-1"></p>
               </div>
 
               <div>
+                <label for="insta_account" class="block text-gray-300 text-sm font-medium mb-2">InstaPay Account</label>
+                <input
+                  type="text"
+                  id="insta_account"
+                  name="insta_account"
+                  x-model="form.insta_account"
+                  class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                  :class="{ 'border-red-500': errors.insta_account }"
+                  placeholder="example@instapay"
+                >
+                <p x-show="errors.insta_account" x-text="errors.insta_account" class="text-red-500 text-sm mt-1"></p>
+              </div>
+
+             
+            </div>
+             <div>
                 <label for="city_id" class="block text-gray-300 text-sm font-medium mb-2">City</label>
                 <select
                   id="city_id"
                   name="city_id"
+                  x-model="form.city_id"
+                  @change="validateField('city_id')"
                   class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                  :class="{ 'border-red-500': errors.city_id }"
                 >
                   <option value="">Select your city</option>
                   @foreach(getCities() as $city)
-                    <option value="{{ $city['id'] }}" @selected((string) old('city_id', $user->city_id) === (string) $city['id'])>
+                    <option value="{{ (string) $city['id'] }}">
                       {{ $city['value'] }}
                     </option>
                   @endforeach
                 </select>
+                <p x-show="errors.city_id" x-text="errors.city_id" class="text-red-500 text-sm mt-1"></p>
               </div>
-            </div>
 
             <div>
               <label for="address" class="block text-gray-300 text-sm font-medium mb-2">Address</label>
               <textarea
                 id="address"
                 name="address"
+                x-model="form.address"
                 rows="3"
                 class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition resize-none"
-              >{{ old('address', $user->address) }}</textarea>
+                :class="{ 'border-red-500': errors.address }"
+              ></textarea>
+              <p x-show="errors.address" x-text="errors.address" class="text-red-500 text-sm mt-1"></p>
             </div>
 
             <button
               type="submit"
+              :disabled="loading"
               class="bg-orange-500 w-full md:w-auto cursor-pointer hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-orange-500/50 transition-all duration-300"
+              :class="{ 'opacity-60 cursor-not-allowed': loading }"
             >
-              Update Profile
+              <span x-show="!loading">Update Profile</span>
+              <span x-show="loading">Updating...</span>
             </button>
           </form>
         </div>
 
-        <div id="tab-orders" class="profile-tab-panel hidden">
+        <div x-show="isActive('orders')" x-cloak class="profile-tab-panel">
           <h3 class="text-2xl text-white font-bold mb-6">Orders</h3>
 
           @if(session('order_status'))
@@ -224,32 +258,6 @@
 </div>
 
 <script>
-  function switchProfileTab(tabName) {
-    const personalPanel = document.getElementById('tab-personal');
-    const ordersPanel = document.getElementById('tab-orders');
-    const personalBtn = document.getElementById('tab-personal-btn');
-    const ordersBtn = document.getElementById('tab-orders-btn');
-
-    if (tabName === 'personal') {
-      personalPanel.classList.remove('hidden');
-      ordersPanel.classList.add('hidden');
-
-      personalBtn.classList.remove('bg-gray-700');
-      personalBtn.classList.add('bg-orange-500');
-      ordersBtn.classList.remove('bg-orange-500');
-      ordersBtn.classList.add('bg-gray-700');
-      return;
-    }
-
-    ordersPanel.classList.remove('hidden');
-    personalPanel.classList.add('hidden');
-
-    ordersBtn.classList.remove('bg-gray-700');
-    ordersBtn.classList.add('bg-orange-500');
-    personalBtn.classList.remove('bg-orange-500');
-    personalBtn.classList.add('bg-gray-700');
-  }
-
   function openCancelModal(actionUrl, orderNumber) {
     const modal = document.getElementById('cancelOrderModal');
     const form = document.getElementById('cancelOrderForm');
