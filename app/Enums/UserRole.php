@@ -2,12 +2,10 @@
 
 namespace App\Enums;
 
-enum OrderStatus: string
+enum UserRole: string
 {
-    case PENDING = 'pending';
-    case COMPLETED = 'completed';
-    case CANCELLED = 'cancelled';
-    case SHIPPED = 'shipped';
+    case ADMIN = 'admin';
+    case USER = 'customer';
 
     public static function toArray(): array
     {

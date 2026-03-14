@@ -1,7 +1,7 @@
 import intlTelInput from 'intl-tel-input';
 
 document.addEventListener('alpine:init', () => {
-    Alpine.data('profilePage', (userData = {}, updateUrl = '') => ({
+    Alpine.data('profilePage', (userData = {}, updateUrl = '', cancelRoute = '') => ({
         activeTab: 'personal',
         form: {
             name: userData.name || '',
@@ -22,6 +22,12 @@ document.addEventListener('alpine:init', () => {
         loading: false,
         successMessage: '',
         errorMessage: '',
+        showCancelModal: false,
+        cancelOrderId: '',
+        cancelRoute,
+        cancelLoading: false,
+        cancelSuccessMessage: '',
+        cancelErrorMessage: '',
         iti: null,
 
         init() {
@@ -34,10 +40,67 @@ document.addEventListener('alpine:init', () => {
             this.activeTab = tabName;
             this.successMessage = '';
             this.errorMessage = '';
+            this.cancelSuccessMessage = '';
+            this.cancelErrorMessage = '';
         },
 
         isActive(tabName) {
             return this.activeTab === tabName;
+        },
+
+        openCancelModal(orderId) {
+            this.cancelOrderId = orderId || '';
+            this.showCancelModal = true;
+            document.body.style.overflow = 'hidden';
+        },
+
+        closeCancelModal() {
+            this.showCancelModal = false;
+            this.cancelOrderId = '';
+            document.body.style.overflow = '';
+        },
+
+        async cancelOrder() {
+            if (!this.cancelOrderId || !this.cancelRoute || this.cancelLoading) {
+                return;
+            }
+
+            this.cancelLoading = true;
+            this.cancelErrorMessage = '';
+            this.cancelSuccessMessage = '';
+
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ||
+                    document.querySelector('input[name="_token"]')?.value;
+
+                const response = await fetch(this.cancelRoute, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        order_id: this.cancelOrderId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    this.cancelSuccessMessage = data.message || 'Order cancelled successfully.';
+                    this.closeCancelModal();
+                    setTimeout(() => window.location.reload(), 700);
+                    return;
+                }
+
+                this.cancelErrorMessage = data.message || 'Unable to cancel order right now.';
+            } catch (error) {
+                console.error('Error cancelling order:', error);
+                this.cancelErrorMessage = 'Network error. Please try again.';
+            } finally {
+                this.cancelLoading = false;
+            }
         },
 
         validateField(field) {
