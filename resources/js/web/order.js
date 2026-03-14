@@ -253,20 +253,14 @@ document.addEventListener("alpine:init", () => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     
                     // Handle redirect based on payment method
-                    setTimeout(() => {
-                        if(data.payment_method === 'instapay'){
-                           window.open(userData.instapay, '_blank');
-                        }
-                        
-                        // Redirect to order confirmation page or reload
+                       setTimeout(() => {
                         if (data.redirect_url) {
                             window.location.href = data.redirect_url;
                         } else {
-                            window.location.reload();
+                            window.location.href = '/cart'; // ✅ go home instead of reload
                         }
-                         
-                    }, 2000);
-                    
+                    }, 3000);
+                            
                 } else {
                     // Handle validation errors from server
                     if (data.errors) {
