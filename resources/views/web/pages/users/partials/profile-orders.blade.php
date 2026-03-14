@@ -32,7 +32,7 @@
           @foreach($orders as $order)
             <tr class="hover:bg-gray-750 transition">
               <td class="px-4 py-3 text-sm text-white">{{ $order->order_id ?? ('#' . $order->id) }}</td>
-              <td class="px-4 py-3 text-sm text-gray-300">{{ $order->created_at?->format('Y-m-d h:i A') }}</td>
+              <td class="px-4 py-3 text-sm text-gray-300">{{ $order->created_at->format('F d, Y h:i A') }}</td>
               <td class="px-4 py-3 text-sm">
                 <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-300 uppercase">
                   {{ $order->status }}
