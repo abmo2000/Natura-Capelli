@@ -19,7 +19,10 @@ class ViewOrder extends ViewRecord
                 ->icon('heroicon-o-document-text')
                 ->url(fn (Order $record): string => route('dashboard.orders.invoice', $record))
                 ->openUrlInNewTab(),
-            //EditAction::make(),
+            Action::make('edit')
+                ->label('Edit Order')
+                ->icon('heroicon-o-pencil-square')
+                ->url(fn (Order $record): string => OrderResource::getUrl('edit', ['record' => $record])),
         ];
     }
 }

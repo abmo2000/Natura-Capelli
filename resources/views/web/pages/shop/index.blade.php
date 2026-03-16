@@ -34,7 +34,17 @@ shop
         <div class="flex flex-col lg:flex-row gap-8">
             <!-- Left Sidebar Filter -->
             <aside class="lg:w-64 flex-shrink-0">
-                <div class="bg-gray-900 rounded-lg p-6 sticky top-4">
+                <button
+                    type="button"
+                    @click="showMobileFilters = !showMobileFilters"
+                    class="lg:hidden w-full bg-gray-900 text-white py-3 px-4 rounded-lg font-semibold hover:bg-gray-800 transition-all mb-4 flex items-center justify-between">
+                    <span>{{ trans('shop.filters') }}</span>
+                    <span x-text="showMobileFilters ? '-' : '+'"></span>
+                </button>
+
+                <div
+                    class="bg-gray-900 rounded-lg p-6 lg:sticky lg:top-4"
+                    :class="showMobileFilters ? 'block' : 'hidden lg:block'">
                     <h3 class="text-white font-bold text-xl mb-6">{{ trans('shop.filters') }}</h3>
                 
                     <!-- Category Filter -->
@@ -160,7 +170,8 @@ shop
         selectedBrands: [],
         productType: 'products', 
         currentPage: 1,
-        perPage: 5,
+        perPage: 9,
+        showMobileFilters: false,
         totalProducts: 0,
         totalPages: 0,
         loading: true,

@@ -101,30 +101,24 @@ home
                     <h3 class="text-white text-2xl font-bold mb-6">{{ $section['title'] }}</h3>
 
                     <div class="relative max-w-7xl mx-auto">
-                        <button
-                            @click="scroll(-1)"
-                            x-show="isRTL() ? isAtStart : !isAtStart"
-                            x-transition
-                            class="absolute start-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 shadow-lg p-4 rounded-full transition-all duration-300 hover:scale-110"
-                            style="display: block !important;">
-                            <i class="fas fa-arrow-left text-xl text-gray-800"></i>
-                        </button>
-
-                        <button
-                            @click="scroll(1)"
-                            x-show="!isAtEnd"
-                            x-transition
-                            class="absolute end-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 shadow-lg p-4 rounded-full transition-all duration-300 hover:scale-110"
-                            style="display: block !important;">
-                            <i class="fas fa-arrow-right text-xl text-gray-800"></i>
-                        </button>
-
-                        <div class="overflow-hidden px-12">
-                            <div x-ref="carousel" @scroll="updateArrows()" class="carousel-container flex gap-4 md:gap-6 overflow-x-scroll py-4">
+                        <div class="overflow-hidden">
+                            <div x-ref="carousel" @scroll="updatePagination()" class="carousel-container flex gap-4 md:gap-6 overflow-x-scroll py-4">
                                 @foreach ($section['products'] as $product)
                                     <x-product :product="$product"></x-product>
                                 @endforeach
                             </div>
+                        </div>
+
+                        <div x-show="pages.length > 1" class="mt-4 flex items-center justify-center gap-3">
+                            <template x-for="page in pages" :key="page">
+                                <button
+                                    type="button"
+                                    @click="goToPage(page)"
+                                    :class="currentPage === page ? 'bg-white w-3 h-3' : 'bg-gray-600 hover:bg-gray-400 w-2.5 h-2.5'"
+                                    class="rounded-full transition-all duration-300"
+                                    aria-label="Go to slide">
+                                </button>
+                            </template>
                         </div>
                     </div>
                 </div>

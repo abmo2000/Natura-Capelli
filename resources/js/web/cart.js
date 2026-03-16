@@ -52,6 +52,40 @@ document.addEventListener('alpine:init' , () => {
                     }
                 },
                 
+                async buyNow() {
+                    if (this.adding) return;
+                    
+                    this.adding = true;
+                    
+                    try {
+                        const response = await fetch('/cart/add', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                type: type,
+                                product_id: product_id,
+                                quantity: this.quantity
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            this.updateCartCount(data.data.cart_count);
+                            window.location.href = '/checkout';
+                        } else {
+                            alert(data.message || 'Failed to add item to cart');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    } finally {
+                        this.adding = false;
+                    }
+                },
+
                 updateCartCount(count) {
                     // Dispatch event to update nav
                     window.dispatchEvent(new CustomEvent('cart-updated', {

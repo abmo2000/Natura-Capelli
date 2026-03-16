@@ -79,6 +79,7 @@ class CreateOrderCommand{
                 'amount' => $Totalamount,
                 'delivery_option' => $data['delivery_option'],
                 'delivery_price' =>  $data['delivery_price'] ,
+                'notes' => $data['notes'] ?? null,
                 'status' => \App\Enums\OrderStatus::PENDING,
             ]);
 

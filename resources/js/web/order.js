@@ -9,7 +9,8 @@ document.addEventListener("alpine:init", () => {
             city_id: userData.city_id || '',
             insta_account: userData.insta_account || '',
             delivery_option: '',
-            payment_method: ''
+            payment_method: '',
+            notes: ''
         },
         errors: {
             name: '',
@@ -209,6 +210,7 @@ document.addEventListener("alpine:init", () => {
                         delivery_option: this.form.delivery_option || 'proceed',
                         payment_method: this.form.payment_method,
                         insta_account: this.form.insta_account,
+                        notes: this.form.notes,
                     })
                 });
                 

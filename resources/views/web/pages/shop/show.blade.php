@@ -200,6 +200,13 @@ product
                         <span x-show="!adding">{{ trans('shop.addtocart') }}</span>
                         <span x-show="adding">Adding...</span>
                     </button>
+
+                    <!-- Buy Now Button -->
+                    <button @click="buyNow()" :disabled="adding" type="button" 
+                            class="w-full mt-3 bg-white text-gray-900 py-4 rounded-lg font-semibold text-lg hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                        <i class="fas fa-bolt"></i>
+                        <span>{{ trans('shop.buynow', [], app()->getLocale()) }}</span>
+                    </button>
                     
                     <div x-show="showSuccess" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 mt-4">
                         <i class="fas fa-check-circle"></i>

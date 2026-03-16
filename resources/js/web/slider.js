@@ -38,21 +38,54 @@ document.addEventListener('alpine:init', () => {
     }));
 
     Alpine.data('productCarousel', () => ({
-        isAtStart: true,
-        isAtEnd: false,
+        currentPage: 0,
+        pageCount: 1,
+        pages: [],
+        autoPlayInterval: null,
         
         init() {
             this.$nextTick(() => {
-                this.updateArrows();
-                window.addEventListener('resize', () => this.updateArrows());
+                this.updatePagination();
+                window.addEventListener('resize', () => {
+                    this.updatePagination();
+                    this.handleAutoPlay();
+                });
                 
-                // Update arrows after images load
+                // Update pagination after images load
                 const carousel = this.$refs.carousel;
                 const images = carousel.querySelectorAll('img');
                 images.forEach(img => {
-                    img.addEventListener('load', () => this.updateArrows());
+                    img.addEventListener('load', () => this.updatePagination());
                 });
+
+                this.handleAutoPlay();
             });
+        },
+
+        isDesktop() {
+            return window.innerWidth >= 1024;
+        },
+
+        handleAutoPlay() {
+            if (this.autoPlayInterval) {
+                clearInterval(this.autoPlayInterval);
+                this.autoPlayInterval = null;
+            }
+
+            if (!this.isDesktop()) return;
+
+            this.autoPlayInterval = setInterval(() => {
+                if (this.pageCount <= 1) return;
+                const nextPage = (this.currentPage + 1) % this.pageCount;
+                this.goToPage(nextPage);
+            }, 1500);
+        },
+
+        destroy() {
+            if (this.autoPlayInterval) {
+                clearInterval(this.autoPlayInterval);
+                this.autoPlayInterval = null;
+            }
         },
         
         scroll(direction) {
@@ -70,9 +103,24 @@ document.addEventListener('alpine:init', () => {
                     behavior: 'smooth'
                 });
                 
-                // Update arrows after scroll completes
-                setTimeout(() => this.updateArrows(), 300);
+                // Update pagination after scroll completes
+                setTimeout(() => this.updatePagination(), 300);
             }
+        },
+
+        goToPage(pageIndex) {
+            const carousel = this.$refs.carousel;
+            if (!carousel) return;
+
+            const clampedPage = Math.max(0, Math.min(pageIndex, this.pageCount - 1));
+            const pageWidth = carousel.clientWidth;
+
+            carousel.scrollTo({
+                left: clampedPage * pageWidth,
+                behavior: 'smooth',
+            });
+
+            this.currentPage = clampedPage;
         },
 
           isRTL() {
@@ -80,16 +128,24 @@ document.addEventListener('alpine:init', () => {
                document.body.dir === 'rtl' ||
                getComputedStyle(document.documentElement).direction === 'rtl';
     },
-        
-        updateArrows() {
+
+        updatePagination() {
             const carousel = this.$refs.carousel;
             if (!carousel) return;
             
-            const tolerance = 5; // pixel tolerance for detecting edges
-            this.isAtStart = carousel.scrollLeft <= tolerance;
-            this.isAtEnd = carousel.scrollLeft >= (carousel.scrollWidth - carousel.clientWidth - tolerance);
-            
-            console.log('Scroll:', carousel.scrollLeft, 'Max:', carousel.scrollWidth - carousel.clientWidth);
+            const maxScroll = Math.max(0, carousel.scrollWidth - carousel.clientWidth);
+
+            if (maxScroll <= 0) {
+                this.pageCount = 1;
+                this.currentPage = 0;
+                this.pages = [0];
+                return;
+            }
+
+            const pageWidth = carousel.clientWidth || 1;
+            this.pageCount = Math.ceil(maxScroll / pageWidth) + 1;
+            this.pages = Array.from({ length: this.pageCount }, (_, i) => i);
+            this.currentPage = Math.max(0, Math.min(this.pageCount - 1, Math.round(carousel.scrollLeft / pageWidth)));
         }
     }));
 });

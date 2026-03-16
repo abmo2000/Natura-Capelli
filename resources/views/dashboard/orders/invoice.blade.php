@@ -59,6 +59,12 @@
                     <p class="text-base text-gray-800">{{ $order->customer?->email ?? 'N/A' }}</p>
                     <p class="text-base text-gray-800">{{ $order->customer?->phone ?? 'N/A' }}</p>
                     <p class="text-base text-gray-800 mt-2">{{ $order->customer_address ?? $order->address ?? 'N/A' }}</p>
+                    @if($order->notes)
+                        <div class="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                            <p class="text-sm uppercase tracking-wide text-gray-700 mb-1 font-semibold text-muted">Customer Notes</p>
+                            <p class="text-base text-gray-800">{{ $order->notes }}</p>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="md:text-right">

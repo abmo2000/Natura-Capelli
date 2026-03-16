@@ -33,7 +33,8 @@ class OrderCreateReq extends FormRequest
             'city_id' => 'required|exists:cities,id',
             'delivery_option' => 'sometimes|in:proceed,discuss',
             'payment_method' => 'required|string',
-            'insta_account' => [Rule::requiredIf(fn() => $this->input('payment_method') === 'instapay') , 'nullable' ,'string' , 'max:50']
+            'insta_account' => [Rule::requiredIf(fn() => $this->input('payment_method') === 'instapay') , 'nullable' ,'string' , 'max:50'],
+            'notes' => 'nullable|string|max:1000',
         ];
     }
 

@@ -117,6 +117,12 @@ class OrderInfolist
                                 ->copyable()
                                 ->copyMessage('Instapay account copied!')
                                 ->copyMessageDuration(1500),
+                            TextEntry::make('notes')
+                                ->label('Customer Notes')
+                                ->icon('heroicon-m-chat-bubble-left-ellipsis')
+                                ->columnSpanFull()
+                                ->placeholder('No notes')
+                                ->markdown(),
                         ])
                         ->columns(3)
                         ->icon('heroicon-o-user-circle')
