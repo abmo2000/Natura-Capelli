@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\InStockScope;
 use App\Models\Interfaces\Cartable;
 use App\Models\Interfaces\ProductBaseInterface;
 use App\Models\Traits\CartableHandler;
@@ -64,6 +65,8 @@ class Product extends Model implements Translatable , Cartable
     
      protected static function booted(): void
     {
+        static::addGlobalScope(new InStockScope());
+
         static::deleting(function (Product $product) {
             // Delete the image file when the routine is deleted
             if ($product->image) {

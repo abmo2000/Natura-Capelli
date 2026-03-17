@@ -8,7 +8,6 @@ use App\Http\Requests\OrderCreateReq;
 use App\Services\CartService;
 use App\Services\OrderService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -16,14 +15,7 @@ class OrderController extends Controller
 
     public function index()
     {
-
-        $total = $this->service->getTotal();
-        $orderSettings = getBuisnessSettings('order_settings');
-        $buisnessSettings = getBuisnessSettings('buisness-info');
-        $isUserFirstOrderDeliveryFree = (! Auth::user()->orders()->exists() && ($orderSettings?->allow_first_order_for_free));
-
-        return view('web.pages.checkout')->with(['total' => $total,  'orderSettings' => $orderSettings, 'buisnessSettings' => $buisnessSettings, 'isFirstOrder' => $isUserFirstOrderDeliveryFree]);
-
+        return view('web.pages.checkout'); // no need to pass any data — mount() handles it all
     }
 
     public function store(OrderCreateReq $request): JsonResponse
@@ -33,7 +25,7 @@ class OrderController extends Controller
 
         $result = $this->orderService->create($data);
 
-        return response()->json($result);
+        return response()->json(['redirect_url' => route('cart'), ...$result]);
     }
 
     public function cancel(OrderCancelReq $request): JsonResponse
