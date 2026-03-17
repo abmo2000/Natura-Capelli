@@ -114,6 +114,22 @@
                     <td>EGP{{ number_format($item['subtotal']) }}</td>
                 </tr>
                 @endforeach
+                @if($order->delivery_price > 0)
+                <tr>
+                    <td colspan="3" style="text-align: right;"><strong>Shipping:</strong></td>
+                    <td>EGP{{ number_format($order->delivery_price) }}</td>
+                </tr>
+                @elseif($order->delivery_option === 'discuss')
+                <tr>
+                    <td colspan="3" style="text-align: right;"><strong>Shipping:</strong></td>
+                    <td><em>To be discussed</em></td>
+                </tr>
+                @else
+                <tr>
+                    <td colspan="3" style="text-align: right;"><strong>Shipping:</strong></td>
+                    <td style="color: green;">Free</td>
+                </tr>
+                @endif
                 <tr class="total-row">
                     <td colspan="3" style="text-align: right;">Total:</td>
                     <td>EGP{{ number_format($totalAmount) }}</td>

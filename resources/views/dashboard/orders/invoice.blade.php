@@ -109,6 +109,22 @@
                         <span class="text-gray-700 font-medium">Items Total</span>
                         <span class="text-gray-900 font-semibold">{{ number_format((float) $order->items->sum('amount'), 2) }} EGP</span>
                     </div>
+                    @if($order->delivery_price > 0)
+                    <div class="flex items-center justify-between text-base">
+                        <span class="text-gray-700 font-medium">Shipping</span>
+                        <span class="text-gray-900 font-semibold">{{ number_format((float) $order->delivery_price, 2) }} EGP</span>
+                    </div>
+                    @elseif($order->delivery_option === 'discuss')
+                    <div class="flex items-center justify-between text-base">
+                        <span class="text-gray-700 font-medium">Shipping</span>
+                        <span class="text-gray-900 font-semibold italic">To be discussed</span>
+                    </div>
+                    @else
+                    <div class="flex items-center justify-between text-base">
+                        <span class="text-gray-700 font-medium">Shipping</span>
+                        <span class="text-green-600 font-semibold">Free</span>
+                    </div>
+                    @endif
                     <div class="flex items-center justify-between text-lg font-bold border-t pt-2">
                         <span>Total</span>
                         <span>{{ number_format((float) $order->amount, 2) }} EGP</span>

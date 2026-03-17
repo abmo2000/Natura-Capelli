@@ -13,7 +13,8 @@ class ProductsApiCpntroller extends Controller
     {
        $query = $is_trial === "true" 
         ? ProductTrial::with(['product.category', 'product.routines'])
-        : Product::with(['category', 'routines']);
+            ->whereHas('product', fn($q) => $q->where('in_stock', true))
+        : Product::with(['category', 'routines'])->where('in_stock', true);
 
         $query = $query->when(($request->has('categories') && is_array($request->categories)), 
             fn($q) => $is_trial === "true"

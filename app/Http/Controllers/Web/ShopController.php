@@ -21,6 +21,7 @@ class ShopController extends Controller
          $routines = Routine::query()->select(['id'])->get();
 
                  $brands = Product::query()
+                        ->where('in_stock', true)
                         ->whereNotNull('brand')
                         ->where('brand', '!=', '')
                         ->select('brand')
