@@ -9,15 +9,13 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-      
-  
-         $products =Product::query()
-           ->where('featured' , true)
-          ->where('in_stock' , true)
-          ->get();
 
-          $data['products'] = $products;
+        $products = Product::query()
+            ->where('featured', true)
+            ->get();
 
-          return view('web.pages.home')->with($data);
+        $data['products'] = $products;
+
+        return view('web.pages.home')->with($data);
     }
 }

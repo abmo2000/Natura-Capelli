@@ -15,6 +15,7 @@ class OrderController extends Controller
 
     public function index()
     {
+
         return view('web.pages.checkout'); // no need to pass any data — mount() handles it all
     }
 
