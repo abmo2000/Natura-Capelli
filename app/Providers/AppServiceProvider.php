@@ -11,7 +11,11 @@ use App\Models\Order;
 use App\Models\Package;
 use App\Models\Product;
 use App\Models\ProductTrial;
+use App\Models\Routine;
 use App\Models\User;
+use App\Observers\ProductObserver;
+use App\Observers\ProductTrialObserver;
+use App\Observers\RoutineObserver;
 use App\Policies\OrderPolicy;
 use App\Services\CartService;
 use Gate;
@@ -49,6 +53,10 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('checkout', function (Request $request) {
             return Limit::perMinute(20)->by($request->user()?->id ?: $request->ip());
         });
+
+        Product::observe(ProductObserver::class);
+        ProductTrial::observe(ProductTrialObserver::class);
+        Routine::observe(RoutineObserver::class);
 
         View::composer('*', function ($view) {
             try {
