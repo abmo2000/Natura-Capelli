@@ -35,6 +35,7 @@ class OrderCreateReq extends FormRequest
             'payment_method' => 'required|string',
             'insta_account' => [Rule::requiredIf(fn() => $this->input('payment_method') === 'instapay') , 'nullable' ,'string' , 'max:50'],
             'notes' => 'nullable|string|max:1000',
+            'coupon_code' => 'nullable|string|max:100',
         ];
     }
 

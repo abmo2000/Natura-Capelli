@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Packages;
 
+use App\Enums\AdminRole;
 use App\Filament\Resources\Packages\Pages\CreatePackages;
 use App\Filament\Resources\Packages\Pages\EditPackages;
 use App\Filament\Resources\Packages\Pages\ListPackages;
@@ -13,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class PackagesResource extends Resource
 {
@@ -46,5 +48,17 @@ class PackagesResource extends Resource
             'create' => CreatePackages::route('/create'),
             'edit' => EditPackages::route('/{record}/edit'),
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user && $user->role_name !== AdminRole::ACCOUNTING_ADMIN;
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
     }
 }

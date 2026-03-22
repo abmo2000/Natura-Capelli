@@ -14,6 +14,7 @@ use App\Http\Controllers\Web\RoutineController;
 use App\Http\Controllers\Web\PackagesController;
 use App\Http\Controllers\Web\PackagesApiController;
 use App\Http\Controllers\Web\ProductsApiCpntroller;
+use App\Http\Controllers\Web\CouponValidateController;
 use App\Http\Controllers\Web\Auth\GoogleAuthController;
 
 Route::middleware(['locale'])->group(function(){
@@ -41,6 +42,7 @@ Route::middleware(['locale'])->group(function(){
      Route::middleware('checkOut-checker')->group(function () {
           Route::get('checkout' , [OrderController::class , "index"])->name('checkout');
           Route::post('order' , [OrderController::class , 'store'])->name('checkout');
+          Route::post('coupon/validate', CouponValidateController::class)->name('coupon.validate');
      });
 
 

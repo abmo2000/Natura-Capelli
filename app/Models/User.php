@@ -3,9 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\AdminRole;
 use Filament\Panel;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -24,6 +26,7 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'role_name',
+        'is_approved',
         'phone',
         'address',
         'google_id',
@@ -50,6 +53,8 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_approved' => 'boolean',
+            'role_name' => AdminRole::class,
         ];
     }
 
@@ -58,8 +63,29 @@ class User extends Authenticatable implements FilamentUser
      *
      * @return bool
      */
-    public function isAdmin():bool{
-         return $this->role_name === 'admin';
+    public function isAdmin(): bool
+    {
+        return in_array($this->role_name, AdminRole::cases());
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role_name === AdminRole::SUPER_ADMIN;
+    }
+
+    public function isSalesAdmin(): bool
+    {
+        return $this->role_name === AdminRole::SALES_ADMIN;
+    }
+
+    public function isAccountingAdmin(): bool
+    {
+        return $this->role_name === AdminRole::ACCOUNTING_ADMIN;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->is_approved;
     }
 
     public function city(){
@@ -70,9 +96,20 @@ class User extends Authenticatable implements FilamentUser
         return $this->morphMany(Order::class , 'customer');
     }
 
+    public function createdOrders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'admin_creator_id');
+    }
+
+    public function createdCoupons(): HasMany
+    {
+        return $this->hasMany(Coupon::class, 'created_by');
+    }
+
     
 
-    public function canAccessPanel(Panel $panel): bool{
-         return $this->isAdmin();
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAdmin() && ($this->isSuperAdmin() || $this->isApproved());
     }
 }

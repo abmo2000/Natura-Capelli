@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\Utilities\Get;
 
@@ -41,6 +42,24 @@ class ProductForm
                                             'h2', 'h3', 'italic', 'link', 'orderedList',
                                             'redo', 'strike', 'underline', 'undo',
                                         ]),
+
+                                    Section::make('SEO')
+                                        ->description('Search engine optimization meta tags for English')
+                                        ->collapsible()
+                                        ->schema([
+                                            TextInput::make('en.meta_title')
+                                                ->label('Meta Title (EN)')
+                                                ->maxLength(60)
+                                                ->placeholder('Concise page title for search engines (max 60 chars)')
+                                                ->helperText('Leave blank to use the product name'),
+
+                                            Textarea::make('en.meta_description')
+                                                ->label('Meta Description (EN)')
+                                                ->rows(3)
+                                                ->maxLength(160)
+                                                ->placeholder('Brief summary shown in search results (max 160 chars)')
+                                                ->helperText('Leave blank to use the product description'),
+                                        ]),
                                 ]),
 
                             Tab::make('Arabic')
@@ -59,6 +78,26 @@ class ProductForm
                                             'blockquote', 'bold', 'bulletList', 'codeBlock',
                                             'h2', 'h3', 'italic', 'link', 'orderedList',
                                             'redo', 'strike', 'underline', 'undo',
+                                        ]),
+
+                                    Section::make('SEO')
+                                        ->description('Search engine optimization meta tags for Arabic')
+                                        ->collapsible()
+                                        ->schema([
+                                            TextInput::make('ar.meta_title')
+                                                ->label('Meta Title (AR)')
+                                                ->maxLength(60)
+                                                ->placeholder('عنوان الصفحة لمحركات البحث (60 حرف كحد أقصى)')
+                                                ->extraAttributes(['dir' => 'rtl', 'style' => 'text-align:right;'])
+                                                ->helperText('اتركه فارغاً لاستخدام اسم المنتج'),
+
+                                            Textarea::make('ar.meta_description')
+                                                ->label('Meta Description (AR)')
+                                                ->rows(3)
+                                                ->maxLength(160)
+                                                ->placeholder('وصف مختصر يظهر في نتائج البحث (160 حرف كحد أقصى)')
+                                                ->extraAttributes(['dir' => 'rtl'])
+                                                ->helperText('اتركه فارغاً لاستخدام وصف المنتج'),
                                         ]),
                                 ]),
                             ])->columnSpanFull(),

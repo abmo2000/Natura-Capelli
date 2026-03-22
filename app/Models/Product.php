@@ -27,7 +27,7 @@ class Product extends Model implements Translatable , Cartable
         'images' => 'array',
     ];
 
-    public $translatedAttributes = ['name' , 'description'];
+    public $translatedAttributes = ['name' , 'description' , 'meta_title' , 'meta_description'];
      public $translationModel = \App\Models\Translations\ProductTranslation::class;
     public function routines():BelongsToMany{
         return $this->belongsToMany(Routine::class , 'products_routines');

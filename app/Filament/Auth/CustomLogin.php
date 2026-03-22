@@ -73,7 +73,7 @@ class CustomLogin extends Login{
                 return true;
             }
 
-            return $user->canAccessPanel(Filament::getCurrentOrDefaultPanel()) && $user->isAdmin();
+            return $user->canAccessPanel(Filament::getCurrentOrDefaultPanel());
         }, $data['remember'] ?? false)) {
             $this->fireFailedEvent($authGuard, $user, $credentials);
             $this->throwFailureValidationException();

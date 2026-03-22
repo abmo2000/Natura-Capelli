@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Order extends Model
 {
@@ -13,6 +13,16 @@ class Order extends Model
 
     public function customer(){
         return $this->morphTo();
+    }
+
+    public function adminCreator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'admin_creator_id');
+    }
+
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class, 'coupon_id');
     }
 
        public function products()
@@ -43,5 +53,10 @@ class Order extends Model
     public function items():HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function isAdminCreated(): bool
+    {
+        return ! is_null($this->admin_creator_id);
     }
 }

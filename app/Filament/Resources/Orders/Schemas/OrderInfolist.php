@@ -18,6 +18,11 @@ class OrderInfolist
                 Group::make([
                     Section::make('Order Information')
                         ->schema([
+                            TextEntry::make('adminCreator.name')
+                                ->label('Admin Creator')
+                                ->badge()
+                                ->color('info')
+                                ->placeholder('Website / Customer'),
                             TextEntry::make('status')
                                 ->badge()
                                 ->color(fn (string $state): string => match ($state) {
@@ -44,7 +49,7 @@ class OrderInfolist
                                 ->formatStateUsing(fn (string $state): string => ucfirst(str_replace('_', ' ', $state)))
                                 ->placeholder('N/A'),
                         ])
-                        ->columns(4)
+                        ->columns(5)
                         ->icon('heroicon-o-shopping-bag'),
 
                     Section::make('Order Items')

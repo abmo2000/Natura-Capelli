@@ -7,8 +7,10 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Pages\Dashboard;
 use App\Filament\Auth\CustomLogin;
+use App\Filament\Auth\AdminRegister;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
+use Illuminate\Support\Facades\Route;
 use Filament\Navigation\NavigationItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Widgets\FilamentInfoWidget;
@@ -25,6 +27,8 @@ use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use App\Filament\Resources\BuisnessInfos\BuisnessInfoResource;
 use App\Filament\Resources\ContentManagement\ContentManagementResource;
 use App\Filament\Resources\OrderSettings\OrderSettingsResource;
+use App\Filament\Resources\SeoSettings\SeoSettingsResource;
+use App\Filament\Pages\ManageSmtpSettings;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -35,6 +39,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(CustomLogin::class)
+            ->registration(AdminRegister::class)
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -67,21 +72,40 @@ class AdminPanelProvider extends PanelProvider
                 ->icon('heroicon-o-document-text')
                 ->group('Business Settings')
                 ->sort(1)
-                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.content-management.*')),
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.content-management.*'))
+                ->visible(fn () => auth()->user()?->isSuperAdmin()),
             
             NavigationItem::make('Business Info')
                 ->url(fn () => BuisnessInfoResource::getUrl('index'))
                 ->icon('heroicon-o-building-office')
                 ->group('Business Settings')
                 ->sort(2)
-                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.business-info.*')),
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.business-info.*'))
+                ->visible(fn () => auth()->user()?->isSuperAdmin()),
 
                          NavigationItem::make('Order Settings')
                 ->url(fn () => OrderSettingsResource::getUrl('index'))
                 ->icon('heroicon-o-building-office')
                 ->group('Business Settings')
-                ->sort(2)
-                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.order_settings.*')),
+                ->sort(3)
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.order_settings.*'))
+                ->visible(fn () => auth()->user()?->isSuperAdmin()),
+
+            NavigationItem::make('SMTP Settings')
+                ->url(fn () => ManageSmtpSettings::getUrl())
+                ->icon('heroicon-o-envelope')
+                ->group('Business Settings')
+                ->sort(4)
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.pages.manage-smtp-settings'))
+                ->visible(fn () => auth()->user()?->isSuperAdmin()),
+
+            NavigationItem::make('SEO Settings')
+                ->url(fn () => SeoSettingsResource::getUrl('index'))
+                ->icon('heroicon-o-magnifying-glass')
+                ->group('Business Settings')
+                ->sort(5)
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.seo-settings.*'))
+                ->visible(fn () => auth()->user()?->isSuperAdmin()),
         ])
         ->navigationGroups([
             NavigationGroup::make('Business Settings')

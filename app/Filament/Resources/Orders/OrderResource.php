@@ -10,6 +10,9 @@ use App\Filament\Resources\Orders\Schemas\OrderForm;
 use App\Filament\Resources\Orders\Schemas\OrderInfolist;
 use App\Filament\Resources\Orders\Tables\OrdersTable;
 use App\Models\Order;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -50,10 +53,40 @@ class OrderResource extends Resource
     {
         return [
             'index' => ListOrders::route('/'),
-            //'create' => CreateOrder::route('/create'),
+            'create' => CreateOrder::route('/create'),
             'view' => ViewOrder::route('/{record}'),
             'edit' => EditOrder::route('/{record}/edit'),
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        $user = Auth::user();
+
+        return $user instanceof User
+            && ($user->isSuperAdmin() || $user->isSalesAdmin());
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery()->with(['customer', 'adminCreator']);
+        $user = Auth::user();
+
+        if ($user instanceof User && $user->isSalesAdmin()) {
+            return $query->where('admin_creator_id', $user->id);
+        }
+
+        $salesAdminId = request()->integer('sales_admin_id');
+
+        if (
+            $user instanceof User
+            && ($user->isSuperAdmin() || $user->isAccountingAdmin())
+            && $salesAdminId > 0
+        ) {
+            return $query->where('admin_creator_id', $salesAdminId);
+        }
+
+        return $query;
     }
 
     

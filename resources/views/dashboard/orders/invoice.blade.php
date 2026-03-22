@@ -40,6 +40,11 @@
                 <div>
                     <h1 class="text-3xl md:text-4xl font-bold text-gray-950 text-strong">Qaid Store</h1>
                     <p class="text-base md:text-lg text-gray-700 mt-2 font-medium text-muted">Order #{{ $order->order_id }}</p>
+                    @if($order->adminCreator?->name)
+                        <p class="text-sm text-gray-600 mt-1 text-muted">
+                            Sales Admin: {{ $order->adminCreator->name }}
+                        </p>
+                    @endif
                 </div>
 
                 <button
@@ -123,6 +128,20 @@
                     <div class="flex items-center justify-between text-base">
                         <span class="text-gray-700 font-medium">Shipping</span>
                         <span class="text-green-600 font-semibold">Free</span>
+                    </div>
+                    @endif
+                    @if($order->coupon)
+                    @php
+                        $itemsSubtotal = (float) $order->items->sum('amount');
+                        $discountAmount = round($itemsSubtotal * ($order->coupon->discount_percentage / 100), 2);
+                    @endphp
+                    <div class="flex items-center justify-between text-base border-t pt-2">
+                        <span class="text-gray-700 font-medium">
+                            Coupon
+                            <span class="ml-1 inline-block bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 rounded tracking-wide">{{ $order->coupon->code }}</span>
+                            <span class="text-gray-500 text-sm ml-1">({{ $order->coupon->discount_percentage }}% off)</span>
+                        </span>
+                        <span class="text-green-600 font-semibold">- {{ number_format($discountAmount, 2) }} EGP</span>
                     </div>
                     @endif
                     <div class="flex items-center justify-between text-lg font-bold border-t pt-2">

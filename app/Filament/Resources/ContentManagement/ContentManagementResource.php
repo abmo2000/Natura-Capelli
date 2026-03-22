@@ -22,6 +22,13 @@ class ContentManagementResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->isSuperAdmin();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ContentManagementForm::configure($schema);

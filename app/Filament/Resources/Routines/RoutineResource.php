@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Routines;
 
+use App\Enums\AdminRole;
 use App\Filament\Resources\Routines\Pages\CreateRoutine;
 use App\Filament\Resources\Routines\Pages\EditRoutine;
 use App\Filament\Resources\Routines\Pages\ListRoutines;
@@ -13,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class RoutineResource extends Resource
 {
@@ -46,5 +48,17 @@ class RoutineResource extends Resource
             'create' => CreateRoutine::route('/create'),
             'edit' => EditRoutine::route('/{record}/edit'),
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user && $user->role_name !== AdminRole::ACCOUNTING_ADMIN;
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
     }
 }

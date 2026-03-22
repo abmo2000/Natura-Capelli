@@ -1,8 +1,33 @@
 @extends('web.layouts.main')
 
 @section('title')
-product
+{{ $product->meta_title ?: $product->name }}
 @endsection
+
+@push('meta')
+@php
+    $baseProduct = (isset($product) && method_exists($product, 'isTrial') && $product->isTrial()) ? $product->product : $product;
+    $seoTitle = $baseProduct->meta_title ?: $baseProduct->name;
+    $seoDescription = $baseProduct->meta_description
+        ?: \Illuminate\Support\Str::limit(strip_tags($baseProduct->description ?? ''), 160);
+    $seoImage = $baseProduct->image ? asset('storage/' . ltrim($baseProduct->image, '/')) : null;
+@endphp
+<meta name="description" content="{{ $seoDescription }}">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="product">
+<meta property="og:title" content="{{ $seoTitle }}">
+<meta property="og:description" content="{{ $seoDescription }}">
+@if($seoImage)
+<meta property="og:image" content="{{ $seoImage }}">
+@endif
+<meta property="og:url" content="{{ request()->url() }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $seoTitle }}">
+<meta name="twitter:description" content="{{ $seoDescription }}">
+@if($seoImage)
+<meta name="twitter:image" content="{{ $seoImage }}">
+@endif
+@endpush
 
 @section('content')
 

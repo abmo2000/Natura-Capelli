@@ -12,6 +12,14 @@ document.addEventListener("alpine:init", () => {
             payment_method: '',
             notes: ''
         },
+        coupon: {
+            code: '',
+            loading: false,
+            applied: false,
+            discountPercentage: 0,
+            message: '',
+            error: '',
+        },
         errors: {
             name: '',
             email: '',
@@ -95,7 +103,67 @@ document.addEventListener("alpine:init", () => {
             if(finalTotal > this.total && this.isFirstOrder){
                 finalTotal -= this.deliveryPrice
             }
-            return finalTotal;
+
+            // Subtract coupon discount (applied on the items subtotal)
+            finalTotal -= this.couponDiscount();
+
+            return Math.max(0, finalTotal);
+        },
+
+        couponDiscount() {
+            if (!this.coupon.applied || !this.coupon.discountPercentage) return 0;
+            return Math.round((this.total * (this.coupon.discountPercentage / 100)) * 100) / 100;
+        },
+
+        async applyCoupon() {
+            const code = this.coupon.code.trim();
+            if (!code) {
+                this.coupon.error = 'Please enter a coupon code.';
+                return;
+            }
+
+            this.coupon.loading = true;
+            this.coupon.error = '';
+
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ||
+                                  document.querySelector('input[name="_token"]')?.value;
+
+                const response = await fetch('/coupon/validate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    body: JSON.stringify({ code }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.valid) {
+                    this.coupon.applied = true;
+                    this.coupon.discountPercentage = data.discount_percentage;
+                    this.coupon.message = data.message;
+                    this.coupon.error = '';
+                } else {
+                    this.coupon.applied = false;
+                    this.coupon.discountPercentage = 0;
+                    this.coupon.error = data.message || data.errors?.code?.[0] || 'Invalid coupon code.';
+                }
+            } catch (e) {
+                this.coupon.error = 'Network error. Please try again.';
+            } finally {
+                this.coupon.loading = false;
+            }
+        },
+
+        removeCoupon() {
+            this.coupon.applied = false;
+            this.coupon.code = '';
+            this.coupon.discountPercentage = 0;
+            this.coupon.message = '';
+            this.coupon.error = '';
         },
         
         validateField(field) {
@@ -211,6 +279,7 @@ document.addEventListener("alpine:init", () => {
                         payment_method: this.form.payment_method,
                         insta_account: this.form.insta_account,
                         notes: this.form.notes,
+                        coupon_code: this.coupon.applied ? this.coupon.code.trim().toUpperCase() : null,
                     })
                 });
                 

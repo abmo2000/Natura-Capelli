@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Hany Qaid',
                 'password' => 'RB*I3I#xKXk.X^Q6ki:*:#*@:+#1N/031`(',
-                'role_name'=> 'admin',
+                'role_name'=> 'super_admin',
+                'is_approved' => true,
             ]
         );
 

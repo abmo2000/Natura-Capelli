@@ -3,6 +3,7 @@ namespace App\Commands;
 
 use App\Models\City;
 use App\Models\Order;
+use App\Models\Coupon;
 use App\Events\OrderCreated;
 use App\Services\CartService;
 use Illuminate\Support\Collection;
@@ -70,6 +71,27 @@ class CreateOrderCommand{
                  $data['delivery_price'] = 0;
             }
 
+            // Apply coupon discount if a valid code was provided
+            $couponId = null;
+            $adminCreatorId = null;
+            if (! empty($data['coupon_code'])) {
+                $couponCode = strtoupper(trim((string) $data['coupon_code']));
+
+                $coupon = Coupon::query()
+                    ->whereRaw('UPPER(code) = ?', [$couponCode])
+                    ->where('is_active', true)
+                    ->where(fn ($q) => $q->whereNull('starts_at')->orWhere('starts_at', '<=', now()))
+                    ->where(fn ($q) => $q->whereNull('expires_at')->orWhere('expires_at', '>=', now()))
+                    ->first();
+
+                if ($coupon) {
+                    $discount = round($amount * ($coupon->discount_percentage / 100), 2);
+                    $Totalamount = max(0, $Totalamount - $discount);
+                    $couponId = $coupon->id;
+                    $adminCreatorId = $coupon->created_by;
+                }
+            }
+
             
             $order = Order::query()->create([
                 'customer_id' => $data['customer_id'],
@@ -80,6 +102,8 @@ class CreateOrderCommand{
                 'delivery_option' => $data['delivery_option'],
                 'delivery_price' =>  $data['delivery_price'] ,
                 'notes' => $data['notes'] ?? null,
+                'coupon_id' => $couponId,
+                'admin_creator_id' => $adminCreatorId,
                 'status' => \App\Enums\OrderStatus::PENDING,
             ]);
 

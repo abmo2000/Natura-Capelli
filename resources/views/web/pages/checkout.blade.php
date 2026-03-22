@@ -135,6 +135,51 @@ Checkout
               {{-- Divider --}}
               <div class="border-t border-gray-700"></div>
 
+              {{-- Section: Coupon Code --}}
+              <div>
+                <h3 class="text-white text-lg font-semibold mb-4 flex items-center gap-2">
+                  <i class="fas fa-tag text-orange-500"></i>
+                  {{ trans('checkout.coupon_code') }}
+                </h3>
+
+                {{-- Applied coupon success state --}}
+                <div x-show="coupon.applied" x-transition class="flex items-center justify-between p-3 bg-green-900/40 border border-green-600 rounded-lg mb-3">
+                  <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-green-300 text-sm font-medium" x-text="coupon.message"></span>
+                  </div>
+                  <button type="button" @click="removeCoupon()"
+                    class="text-gray-400 hover:text-red-400 text-xs font-medium transition ml-3 underline">
+                    {{ trans('checkout.remove_coupon') }}
+                  </button>
+                </div>
+
+                {{-- Coupon input row --}}
+                <div x-show="!coupon.applied" class="flex gap-2">
+                  <input type="text" x-model="coupon.code"
+                    @keydown.enter.prevent="applyCoupon()"
+                    :placeholder="'{{ trans('checkout.coupon_placeholder') }}'"
+                    class="flex-1 px-4 py-2.5 text-sm bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 uppercase focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                    :class="{ 'border-red-500': coupon.error }">
+                  <button type="button" @click="applyCoupon()" :disabled="coupon.loading"
+                    class="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0">
+                    <span x-show="!coupon.loading">{{ trans('checkout.apply_coupon') }}</span>
+                    <span x-show="coupon.loading">
+                      <svg class="animate-spin h-4 w-4 inline" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+                <p x-show="coupon.error" x-text="coupon.error" class="text-red-400 text-sm mt-1.5"></p>
+              </div>
+
+              {{-- Divider --}}
+              <div class="border-t border-gray-700"></div>
+
               @if($orderSettings?->has_delivery_option)
               {{-- Section: Delivery Options --}}
               <div x-show="showDeliveryOptions && selectedCityHasDiscussion" x-transition class="space-y-3">
@@ -303,6 +348,10 @@ Checkout
                       </template>
                     </span>
                   </div>
+                  <div x-show="coupon.applied" class="flex justify-between items-center text-green-400">
+                    <span class="text-sm">{{ trans('checkout.discount') }} (<span x-text="coupon.discountPercentage"></span>%):</span>
+                    <span class="font-semibold text-sm">- EGP <span x-text="couponDiscount().toFixed(2)"></span></span>
+                  </div>
                   <div class="flex justify-between items-center">
                     <span class="text-gray-300 text-base sm:text-lg font-medium">{{ trans('checkout.order_total') }}:</span>
                     <span class="text-green-500 text-xl sm:text-2xl font-bold" x-text="'EGP ' + calculateTotal().toFixed(2)"></span>
@@ -353,6 +402,11 @@ Checkout
                     <span class="text-gray-400 text-sm">EGP <span x-text="deliveryPrice.toFixed(2)"></span></span>
                   </template>
                 </span>
+              </div>
+
+              <div x-show="coupon.applied" class="flex justify-between items-center text-green-400">
+                <span class="text-sm">{{ trans('checkout.discount') }} (<span x-text="coupon.discountPercentage"></span>%):</span>
+                <span class="font-semibold text-sm">- EGP <span x-text="couponDiscount().toFixed(2)"></span></span>
               </div>
 
               <div class="border-t border-gray-700 pt-3 flex justify-between items-center">

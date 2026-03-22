@@ -24,6 +24,12 @@ class OrdersTable
             ->columns([
                 TextColumn::make('order_id')
                 ->searchable(),
+                                TextColumn::make('adminCreator.name')
+                                        ->label('Admin Creator')
+                                        ->badge()
+                                        ->color('info')
+                                        ->formatStateUsing(fn (?string $state): string => $state ?: 'Website Order')
+                                        ->sortable(),
                 TextColumn::make('customer_type')
                     ->searchable(),
                 TextColumn::make('customer.email') // Using relationship
@@ -38,7 +44,7 @@ class OrdersTable
                 TextColumn::make('amount')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('address')
+                                TextColumn::make('customer_address')
                       ->label("Customer Address")
                     ->searchable(),
                 TextColumn::make('created_at')
