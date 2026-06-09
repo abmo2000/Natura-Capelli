@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+window._checkoutIti = { intlTelInput };
+
 import '@web/slider'
 import '@web/cart'
- import '@web/order'

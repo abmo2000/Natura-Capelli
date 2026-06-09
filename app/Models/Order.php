@@ -2,24 +2,28 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Order extends Model
 {
-    protected $guarded = ['id' , 'created_at' , 'updated_at'];
+    protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    protected $casts = [
+        'order_id' => 'string',
+    ];
 
-    public function customer(){
+    public function customer()
+    {
         return $this->morphTo();
     }
 
-       public function products()
+    public function products()
     {
         return $this->morphedByMany(Product::class, 'typeable', 'order_items')
             ->using(OrderItem::class)
-            ->withPivot([ 'quantity', 'amount'])
+            ->withPivot(['quantity', 'amount'])
             ->withTimestamps();
     }
 
@@ -27,7 +31,7 @@ class Order extends Model
     {
         return $this->morphedByMany(Package::class, 'typeable', 'order_items')
             ->using(OrderItem::class)
-            ->withPivot([ 'quantity', 'amount'])
+            ->withPivot(['quantity', 'amount'])
             ->withTimestamps();
     }
 
@@ -39,9 +43,13 @@ class Order extends Model
             ->withTimestamps();
     }
 
-   
-    public function items():HasMany
+    public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', OrderStatus::PENDING->value);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\NotAllowedToCancelOrder;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,7 +19,11 @@ return Application::configure(basePath: dirname(__DIR__))
       ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (NotAllowedToCancelOrder $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], 403);
+        });
     })->withEvents(discover: [
         __DIR__.'/../app/Listeners',
     ])->create();

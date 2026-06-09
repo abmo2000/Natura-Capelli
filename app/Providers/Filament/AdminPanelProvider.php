@@ -76,7 +76,7 @@ class AdminPanelProvider extends PanelProvider
                 ->sort(2)
                 ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.business-info.*')),
 
-                         NavigationItem::make('Order Settings')
+            NavigationItem::make('Order Settings')
                 ->url(fn () => OrderSettingsResource::getUrl('index'))
                 ->icon('heroicon-o-building-office')
                 ->group('Business Settings')

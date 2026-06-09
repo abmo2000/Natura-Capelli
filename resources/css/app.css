@@ -2,55 +2,62 @@
 @import '@fortawesome/fontawesome-free/css/all.css';
 @import 'intl-tel-input/build/css/intlTelInput.css';
 
+/* Tailwind source scanning */
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/* Theme variables */
 @theme {
     --font-sans: 'Kurale', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    --color-footer:#131313;
-    --color-grey:#4d4747; 
-    
 
+    --color-footer: #131313;
+    --color-grey: #4d4747;
 }
 
-@layer component{
+/* Components */
+@layer components {
+
     .nav-link{
-        @apply text-white hover:text-orange-100 transition
+        @apply text-white hover:text-orange-100 transition;
     }
 
     .footer-link{
-        @apply text-gray-400 hover:text-white transition-all duration-300 text-sm font-medium
+        @apply text-gray-400 hover:text-white transition-all duration-300 text-sm font-medium;
     }
 
     .icon{
-        @apply relative text-white hover:text-orange-100 transition-all duration-300 hover:scale-110
+        @apply relative text-white hover:text-orange-100 transition-all duration-300 hover:scale-110;
     }
 
     .custom-btn{
-        @apply inline-block border-2 border-white text-white px-12  py-4 text-lg md:text-xl font-semibold tracking-wider uppercase  hover:text-orange-100 transition-all duration-300  focus:ring-2 focus:ring-orange-100 focus:border-orange-100
+        @apply inline-block border-2 border-white text-white px-12 py-4 text-lg md:text-xl font-semibold tracking-wider uppercase hover:text-orange-100 transition-all duration-300 focus:ring-2 focus:ring-orange-100 focus:border-orange-100;
     }
 
     .heading{
-        @apply text-center font-bold text-white text-4xl mb-2
+        @apply text-center font-bold text-white text-4xl mb-2;
     }
 
     .sub-heading{
-        @apply text-gray-400 text-center mb-12
+        @apply text-gray-400 text-center mb-12;
     }
 
     .product-card{
-        @apply bg-gray-800 rounded-2xl  w-72 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 flex-shrink-0
+        @apply bg-gray-800 rounded-2xl w-72 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 flex-shrink-0;
+
+        scroll-snap-align: start;
+        will-change: transform;
     }
 
     .auth-input{
-        @apply w-full px-5 py-4 border-2 border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 placeholder-gray-400
+        @apply w-full px-5 py-4 border-2 border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 placeholder-gray-400;
     }
 
+    /* Scrollbar (Chrome, Edge, Safari) */
     .scrollbar-thin::-webkit-scrollbar {
-      width: 8px;
+        width: 8px;
     }
 
     .scrollbar-thin::-webkit-scrollbar-track {
@@ -66,50 +73,58 @@
         background: #718096;
     }
 
-    /* Firefox */
+    /* Scrollbar (Firefox) */
     .scrollbar-thin {
         scrollbar-width: thin;
         scrollbar-color: #4a5568 transparent;
     }
 
-      .iti {
-    display: unset !important;
-}
+    /* intl-tel-input adjustments */
+    .iti {
+        display: inline-block !important;
+        width: 100% !important;
+    }
+
     .iti__selected-dial-code {
         color: white !important;
     }
 
-    @media (max-width: 768px) {
+    /* Carousel container */
+    .carousel-container {
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .carousel-container::-webkit-scrollbar {
+        display: none;
+    }
+
+}
+
+/* Responsive carousel cards */
+
+@media (max-width: 768px) {
+
     .carousel-container .product-card {
         min-width: 100% !important;
         max-width: 100% !important;
         flex: 0 0 100% !important;
     }
+
 }
 
 @media (min-width: 769px) {
+
     .carousel-container .product-card {
         min-width: 300px;
         max-width: 350px;
         flex: 1;
     }
+
 }
 
-.carousel-container {
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-}
-
-.product-card {
-    scroll-snap-align: start;
-}
-
-/* Hide scrollbar but keep functionality */
-.carousel-container::-webkit-scrollbar {
-    display: none;
-}
-.carousel-container {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-}
+/* Alpine.js cloak */
+[x-cloak] { display: none !important; }

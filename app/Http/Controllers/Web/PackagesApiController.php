@@ -11,40 +11,41 @@ class PackagesApiController extends Controller
     public function __invoke(Request $request)
     {
         $query = Package::query()
-        ->with(['products'])
-        ->withCount(['products']);
+            ->with(['products'])
+            ->withCount(['products'])
+            ->whereDoesntHave('products', function ($q) {
+                $q->withoutGlobalScopes()
+                    ->where('in_stock', false);
+            });
 
+        $query = $query->when(
+            $request->has('categories') && is_array($request->categories),
+            fn ($q) => $q->whereHas('products', function ($query) use ($request) {
+                $query->whereIn('category_id', $request->categories);
+            })
+        );
 
-
-                $query = $query->when(
-                    $request->has('categories') && is_array($request->categories), 
-                    fn($q) => $q->whereHas('products', function($query) use ($request) {
-                        $query->whereIn('category_id', $request->categories);
-                    })
-                );
-
-                $query = $query->when(
-                    $request->has('routines') && is_array($request->routines), 
-                    fn($q) => $q->whereHas('products.routines', function($query) use ($request) {
-                        $query->whereIn('routine_id', $request->routines);
-                    })
-                );
+        $query = $query->when(
+            $request->has('routines') && is_array($request->routines),
+            fn ($q) => $q->whereHas('products.routines', function ($query) use ($request) {
+                $query->whereIn('routine_id', $request->routines);
+            })
+        );
 
         $perPage = $request->get('per_page', 9);
         $packages = $query->paginate($perPage);
 
-        
         $transformedPackages = $packages
-        ->values()
-        ->map(function ($package , $index) {
-             $packageData['html'] = view('components.package', [
+            ->values()
+            ->map(function ($package, $index) {
+                $packageData['html'] = view('components.package', [
                     'package' => $package,
-                    'index' => $index
+                    'index' => $index,
                 ])->render();
-            
+
                 return $packageData;
 
-        });
+            });
 
         return response()->json([
             'success' => true,
